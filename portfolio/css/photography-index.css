@@ -162,12 +162,33 @@ html {
   scroll-padding-top: 80px; /* Account for sticky header */
   -webkit-overflow-scrolling: touch;
   height: auto;
-  overflow-x: hidden !important;
+  overflow-x: hidden;
   overflow-y: auto;
-  width: 100% !important;
-  max-width: 100% !important;
+  width: 100%;
+  max-width: 100%;
   margin: 0;
   padding: 0;
+  /* Thin, subtle scrollbar - accessible but minimal */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(201, 166, 107, 0.3) transparent; /* Firefox */
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) - thin scrollbar */
+html::-webkit-scrollbar {
+  width: 8px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: rgba(201, 166, 107, 0.3);
+  border-radius: 4px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 166, 107, 0.5);
 }
 
 body {
@@ -176,11 +197,11 @@ body {
   font-family: var(--font-body);
   font-weight: 300;
   line-height: 1.7;
-  overflow-x: hidden !important;
+  overflow-x: hidden;
   overflow-y: auto;
   position: relative;
-  width: 100% !important;
-  max-width: 100% !important;
+  width: 100%;
+  max-width: 100%;
   height: auto;
   margin: 0;
   padding: 0;
@@ -190,7 +211,7 @@ main,
 #main-content {
   position: relative;
   z-index: 1; /* Above grid lines */
-  overflow-x: hidden !important;
+  overflow-x: hidden;
   overflow-y: visible;
   width: 100%;
   max-width: 100%;
@@ -251,6 +272,105 @@ textarea,
 img {
   max-width: 100%;
   display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Breadcrumbs
+   -------------------------------------------------------------------------- */
+.breadcrumbs {
+  position: absolute;
+  top: 190px;
+  left: 5vw;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  z-index: 10;
+  transform: translateZ(0); /* Force hardware acceleration */
+  will-change: transform; /* Optimize for position changes */
+}
+
+.breadcrumbs a {
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumbs a:hover {
+  color: var(--gold);
+}
+
+.breadcrumb-separator {
+  color: var(--text-dim);
+  opacity: 0.5;
+}
+
+.breadcrumb-current {
+  color: var(--gold);
+}
+
+/* Breadcrumbs - Tablet and Mobile Responsive (matching about page sizes) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Tablet: Hide desktop breadcrumbs, show tablet breadcrumbs in hero-lead-row */
+  .hero .breadcrumbs-desktop {
+    display: none;
+  }
+  
+  .hero .breadcrumbs-tablet {
+    display: inline-flex;
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 0;
+    font-size: 0.7rem; /* Same as about page tablet */
+  }
+  
+  /* Ensure hero-lead-row displays breadcrumbs on same line */
+  .hero .hero-lead-row {
+    flex-wrap: nowrap;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mobile: Show desktop breadcrumbs, hide tablet breadcrumbs */
+  .hero .breadcrumbs-desktop {
+    display: flex;
+    position: absolute;
+    top: 100px;
+    left: 5vw;
+    right: 5vw;
+    width: auto;
+    margin: 0;
+    justify-content: flex-start;
+    font-size: 0.65rem; /* Same as about page mobile */
+    gap: 6px; /* Same as about page mobile */
+  }
+  
+  .hero .breadcrumbs-tablet {
+    display: none;
+  }
+  
+  /* Ensure breadcrumbs don't overlap with content on mobile */
+  .hero {
+    padding-top: 140px;
+  }
+}
+
+/* Desktop: Show desktop breadcrumbs, hide tablet breadcrumbs */
+@media (min-width: 1025px) {
+  .hero .breadcrumbs-desktop {
+    display: flex;
+  }
+  
+  .hero .breadcrumbs-tablet {
+    display: none;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -480,6 +600,7 @@ img {
   color: var(--gold);
   font-weight: 600;
   animation: value-flicker 4s ease-in-out infinite;
+  transition: opacity 0.4s ease-in-out;
 }
 
 .info-separator {
@@ -668,6 +789,7 @@ h1, h2, h3, h4 {
 /* Logo on the left */
 .nav > .logo {
   flex-shrink: 0;
+  position: relative;
 }
 
 /* Navigation centered with flex-grow to push button right */
@@ -964,7 +1086,7 @@ h1, h2, h3, h4 {
     transform: translateX(-42px) scale(1);
     opacity: 1;
     max-width: 120px; /* More width for text */
-    font-size: 1.1rem !important; /* Ensure font size is applied */
+    font-size: 1.1rem; /* Ensure font size is applied */
     margin-right: -10px; /* Reduced negative margin to prevent horizontal scroll */
   }
   
@@ -973,7 +1095,7 @@ h1, h2, h3, h4 {
     transform: translateX(42px) scale(1);
     opacity: 1;
     max-width: 120px; /* More width for text */
-    font-size: 1.1rem !important; /* Ensure font size is applied */
+    font-size: 1.1rem; /* Ensure font size is applied */
     margin-left: -10px; /* Reduced negative margin to prevent horizontal scroll */
   }
   
@@ -1970,6 +2092,24 @@ h1, h2, h3, h4 {
   filter: brightness(0) invert(1); /* Brighter on hover */
 }
 
+.contact-social .social-telegram .icon-telegram {
+  filter: brightness(0) invert(1); /* Pure white */
+  opacity: 0.9;
+}
+
+.contact-social .social-telegram:hover {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.7) 100%);
+  border-color: rgba(34, 158, 217, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(34, 158, 217, 0.3), 0 0 20px rgba(34, 158, 217, 0.15);
+}
+
+.contact-social .social-telegram:hover .icon-telegram {
+  opacity: 1;
+  transform: scale(1.1);
+  filter: brightness(0) invert(1); /* Stay white */
+}
+
 /* Contact Form */
 .contact-form {
   display: grid;
@@ -2224,23 +2364,23 @@ h1, h2, h3, h4 {
 }
 
 .footer-brand-text .footer-tagline-desktop-inline {
-  color: var(--text-dim) !important; /* Gray text */
+  color: var(--text-dim); /* Gray text */
   position: relative;
 }
 
-.footer-tagline-mobile {
-  display: none;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-dim) !important; /* Gray text */
-  font-weight: 600;
-  margin-top: 8px;
-  position: relative;
-}
+  .footer-tagline-mobile {
+    display: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim); /* Gray text */
+    font-weight: 600;
+    margin-top: 8px;
+    position: relative;
+  }
 
 .footer-brand-text .footer-tagline-mobile {
-  color: var(--text-dim) !important; /* Gray text */
+  color: var(--text-dim); /* Gray text */
 }
 
 /* Golden outline animation for "Opening new experiences" near AM box - follows each letter */
@@ -2297,7 +2437,7 @@ h1, h2, h3, h4 {
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--gold) !important;
+  color: var(--gold);
   font-weight: 600;
   margin-top: 8px;
 }
@@ -2314,7 +2454,7 @@ h1, h2, h3, h4 {
   
   .footer-tagline-desktop-inline,
   .footer-brand-text .footer-tagline-desktop-inline {
-    display: none !important;
+    display: none;
   }
 }
 
@@ -2361,6 +2501,10 @@ h1, h2, h3, h4 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
   transition: all 0.3s ease;
 }
 
@@ -2373,11 +2517,19 @@ h1, h2, h3, h4 {
 /* X (formerly Twitter) - Pure black/white, clean and minimal */
 .social-x {
   color: #ffffff;
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .social-x .icon-x {
   filter: brightness(0) invert(1); /* Pure white */
   opacity: 0.7;
+}
+
+.social-x:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 .social-x:hover .icon-x {
@@ -2389,6 +2541,8 @@ h1, h2, h3, h4 {
 /* Threads by Meta - Dark charcoal/black gradient, more textured */
 .social-threads {
   color: #ffffff;
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.4) 0%, rgba(10, 10, 10, 0.5) 100%);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .social-threads .icon-threads {
@@ -2396,10 +2550,41 @@ h1, h2, h3, h4 {
   opacity: 0.8;
 }
 
+.social-threads:hover {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.7) 100%);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
 .social-threads:hover .icon-threads {
   opacity: 1;
   transform: scale(1.1);
   filter: brightness(0) invert(1); /* Brighter on hover */
+}
+
+/* Telegram - Pure white like X */
+.social-telegram {
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.4) 0%, rgba(10, 10, 10, 0.5) 100%);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.social-telegram .icon-telegram {
+  filter: brightness(0) invert(1); /* Pure white */
+  opacity: 0.7;
+}
+
+.social-telegram:hover {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.6) 0%, rgba(15, 15, 15, 0.7) 100%);
+  border-color: rgba(34, 158, 217, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(34, 158, 217, 0.3), 0 0 20px rgba(34, 158, 217, 0.15);
+}
+
+.social-telegram:hover .icon-telegram {
+  opacity: 1;
+  transform: scale(1.1);
+  filter: brightness(0) invert(1); /* Stay white on hover */
 }
 
 .footer-bottom {
@@ -3288,14 +3473,14 @@ h1, h2, h3, h4 {
   .logo.logo-text-expanded .logo-name-first {
     transform: translateX(-39px) scale(1);
     max-width: 110px;
-    font-size: 1.1rem !important; /* Ensure font size is applied */
+    font-size: 1.1rem; /* Ensure font size is applied */
     margin-right: -20px; /* Increased negative margin to reduce gap */
   }
   
   .logo.logo-text-expanded .logo-name-last {
     transform: translateX(39px) scale(1);
     max-width: 110px;
-    font-size: 1.1rem !important; /* Ensure font size is applied */
+    font-size: 1.1rem; /* Ensure font size is applied */
     margin-left: -20px; /* Increased negative margin to reduce gap */
   }
   
@@ -3757,5 +3942,4 @@ h1, h2, h3, h4 {
     margin-bottom: 16px;
   }
 }
-
 

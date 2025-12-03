@@ -1091,6 +1091,12 @@ footer {
   opacity: 0.75;
 }
 
+/* Telegram icon - pure white like X */
+.social-telegram .icon-telegram {
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+}
+
 /* Base social link styling */
 .footer-social a {
   display: flex;
@@ -1147,6 +1153,28 @@ footer {
 
 .social-threads:hover .icon-threads {
   filter: brightness(0) invert(1); /* Brighter white on hover */
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* =========================
+   Telegram
+   Brand: Pure white icon like X
+   ========================= */
+.social-telegram:hover {
+  background: #000000;
+  border-color: rgba(34, 158, 217, 0.5);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(34, 158, 217, 0.3),
+    0 4px 20px rgba(34, 158, 217, 0.4),
+    0 0 30px rgba(34, 158, 217, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px) scale(1.05);
+}
+
+.social-telegram:hover .icon-telegram {
+  filter: brightness(0) invert(1); /* Pure white */
   opacity: 1;
   transform: scale(1.1);
 }

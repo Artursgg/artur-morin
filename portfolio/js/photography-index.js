@@ -39,6 +39,57 @@
   setTimeout(hideLoader, 2000);
 })();
 
+// =============================================================================
+// Camera Settings Rotation - Rotate through different camera settings
+// =============================================================================
+(function() {
+  'use strict';
+  
+  // Camera settings options (3 options for each field)
+  const fNumbers = ['2.8', '4.0', '5.6'];
+  const isoValues = ['400', '800', '1600'];
+  const shutterValues = ['60', '125', '250'];
+  
+  let currentIndex = 0;
+  
+  function rotateCameraSettings() {
+    const fNumberElement = document.querySelector('.f-number');
+    const isoValueElement = document.querySelector('.iso-value');
+    const shutterValueElement = document.querySelector('.shutter-value');
+    
+    if (!fNumberElement || !isoValueElement || !shutterValueElement) {
+      return; // Elements not found, exit early
+    }
+    
+    // Update to next index (cycle through 0, 1, 2)
+    currentIndex = (currentIndex + 1) % fNumbers.length;
+    
+    // Update values with fade effect
+    fNumberElement.style.opacity = '0';
+    isoValueElement.style.opacity = '0';
+    shutterValueElement.style.opacity = '0';
+    
+    setTimeout(() => {
+      fNumberElement.textContent = fNumbers[currentIndex];
+      isoValueElement.textContent = isoValues[currentIndex];
+      shutterValueElement.textContent = shutterValues[currentIndex];
+      
+      fNumberElement.style.opacity = '1';
+      isoValueElement.style.opacity = '1';
+      shutterValueElement.style.opacity = '1';
+    }, 200); // Half of transition time for smooth fade
+  }
+  
+  // Start rotation when DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    const pageLoader = document.getElementById('page-loader');
+    if (pageLoader) {
+      // Rotate every 2 seconds
+      setInterval(rotateCameraSettings, 2000);
+    }
+  });
+})();
+
 // Smooth scrolling is handled by CSS scroll-behavior: smooth
 // No custom JavaScript needed for better performance
 
@@ -49,14 +100,14 @@
 let parallaxSections = [];
 let lastScrollTop = 0;
 let parallaxVelocity = 0;
-let ticking = false;
 
 // Initialize parallax sections - re-query on page load to ensure DOM is ready
 // Unified for all pages (same as photography-index.html)
 function initParallaxSections() {
   parallaxSections = document.querySelectorAll('.parallax');
-  // Initialize lastScrollTop to current scroll position to prevent jumps
-  lastScrollTop = window.scrollY || 0;
+  // Initialize lastScrollTop to 0 - will be set properly in first updateParallax call
+  // Defer reading window.scrollY to avoid forced reflow
+  lastScrollTop = 0;
   parallaxVelocity = 0;
   
   // Disable transitions on all parallax elements for immediate response (unified)
@@ -76,21 +127,34 @@ function updateParallax() {
     return;
   }
   
+  // Batch all reads first to avoid forced reflows
   const scrollTop = window.scrollY;
+  const viewportHeight = window.innerHeight;
   const delta = scrollTop - lastScrollTop;
   
   // Calculate scroll velocity for dynamic effects
   parallaxVelocity = delta * 0.1 + parallaxVelocity * 0.9;
   
-  parallaxSections.forEach((section) => {
-    const speed = Number(section.dataset.speed || 0.1);
+  // Batch all getBoundingClientRect() calls first (read phase)
+  const sectionData = Array.from(parallaxSections).map((section) => {
     const rect = section.getBoundingClientRect();
-    const sectionTop = rect.top + window.scrollY;
-    const sectionCenter = sectionTop + rect.height / 2;
+    const speed = Number(section.dataset.speed || 0.1);
+    return {
+      section,
+      speed,
+      rect,
+      sectionTop: rect.top + scrollTop,
+      sectionHeight: rect.height
+    };
+  });
+  
+  // Now perform all writes (write phase) - this avoids forced reflows
+  sectionData.forEach(({ section, speed, sectionTop, sectionHeight }) => {
+    const sectionCenter = sectionTop + sectionHeight / 2;
     
     // Calculate distance from viewport center
-    const distanceFromCenter = scrollTop + window.innerHeight / 2 - sectionCenter;
-    const normalizedDistance = distanceFromCenter / window.innerHeight;
+    const distanceFromCenter = scrollTop + viewportHeight / 2 - sectionCenter;
+    const normalizedDistance = distanceFromCenter / viewportHeight;
     
     // Apply easing for smoother motion
     const eased = easeOutCubic(Math.abs(normalizedDistance)) * Math.sign(normalizedDistance);
@@ -117,14 +181,6 @@ function updateParallax() {
 function onScroll() {
   // Update parallax immediately without throttling for smooth scrolling
   updateParallax();
-  
-  // Update current scroll position for momentum (if variables exist)
-  if (typeof currentScroll !== 'undefined') {
-    currentScroll = window.scrollY;
-  }
-  if (typeof scrollTarget !== 'undefined') {
-    scrollTarget = window.scrollY;
-  }
 }
 
 // =============================================================================
@@ -528,17 +584,55 @@ function generateChallenge() {
 
   // 50/50 chance of math question vs word typing
   if (Math.random() > 0.5) {
-    // Math question: two random numbers to add
-    const a = Math.floor(Math.random() * 5) + 4; // 4-8
-    const b = Math.floor(Math.random() * 4) + 2; // 2-5
-    challengeAnswer = String(a + b);
-    challengeText.textContent = `${a} + ${b} = ?`;
+    // Math question: variety of operations
+    const operation = Math.random();
+    if (operation < 0.5) {
+      // Addition
+      const a = Math.floor(Math.random() * 10) + 3; // 3-12
+      const b = Math.floor(Math.random() * 10) + 2; // 2-11
+      challengeAnswer = String(a + b);
+      challengeText.textContent = `${a} + ${b} = ?`;
+    } else if (operation < 0.75) {
+      // Subtraction (result must be positive)
+      const a = Math.floor(Math.random() * 8) + 8; // 8-15
+      const b = Math.floor(Math.random() * 5) + 2; // 2-6
+      challengeAnswer = String(a - b);
+      challengeText.textContent = `${a} - ${b} = ?`;
+    } else {
+      // Simple multiplication
+      const a = Math.floor(Math.random() * 5) + 2; // 2-6
+      const b = Math.floor(Math.random() * 5) + 2; // 2-6
+      challengeAnswer = String(a * b);
+      challengeText.textContent = `${a} × ${b} = ?`;
+    }
   } else {
-    // Word typing challenge
+    // Word typing challenge - expanded options
     const prompts = [
       { text: 'Type the word "Artur"', answer: "Artur" },
       { text: 'Type the word "Morin"', answer: "Morin" },
+      { text: 'Type the word "Photography"', answer: "Photography" },
+      { text: 'Type the word "Camera"', answer: "Camera" },
+      { text: 'Type the word "Lens"', answer: "Lens" },
+      { text: 'Type the word "Shutter"', answer: "Shutter" },
+      { text: 'Type the word "Aperture"', answer: "Aperture" },
+      { text: 'Type the word "Frame"', answer: "Frame" },
+      { text: 'Type the word "Light"', answer: "Light" },
+      { text: 'Type the word "Portrait"', answer: "Portrait" },
+      { text: 'Type the word "Editorial"', answer: "Editorial" },
+      { text: 'Type the word "Tallinn"', answer: "Tallinn" },
       { text: 'Type the number "2024"', answer: "2024" },
+      { text: 'Type the number "2025"', answer: "2025" },
+      { text: 'Type the number "100"', answer: "100" },
+      { text: 'Type the number "50"', answer: "50" },
+      { text: 'Type the number "24"', answer: "24" },
+      { text: 'Type the number "35"', answer: "35" },
+      { text: 'Type the word "Studio"', answer: "Studio" },
+      { text: 'Type the word "Creative"', answer: "Creative" },
+      { text: 'Type the word "Visual"', answer: "Visual" },
+      { text: 'Type the word "Story"', answer: "Story" },
+      { text: 'Type the word "Image"', answer: "Image" },
+      { text: 'Type the word "Photo"', answer: "Photo" },
+      { text: 'Type the word "Capture"', answer: "Capture" },
     ];
     const picked = prompts[Math.floor(Math.random() * prompts.length)];
     challengeAnswer = picked.answer;
@@ -710,28 +804,21 @@ if (contactForm) {
         });
       }
 
-      // Show success message
-      formStatus.textContent = 'Thank you! Your message has been sent.';
+      // Show success message briefly
+      formStatus.textContent = 'Sending...';
       formStatus.className = 'form-status success';
       
-      // Open mailto link
-      window.location.href = `mailto:hello@arturmorin.com?subject=${subject}&body=${body}`;
+      // Create and trigger mailto link (opens email client, not a new browser tab)
+      const mailtoLink = `mailto:hello@arturmorin.com?subject=${subject}&body=${body}`;
+      const mailtoAnchor = document.createElement('a');
+      mailtoAnchor.href = mailtoLink;
+      mailtoAnchor.style.display = 'none';
+      document.body.appendChild(mailtoAnchor);
+      mailtoAnchor.click();
+      document.body.removeChild(mailtoAnchor);
       
-      // Reset form after a delay
-      setTimeout(() => {
-        contactForm.reset();
-        // Clear errors
-        nameInput.setAttribute('aria-invalid', 'false');
-        emailInput.setAttribute('aria-invalid', 'false');
-        messageInput.setAttribute('aria-invalid', 'false');
-        nameError.textContent = '';
-        emailError.textContent = '';
-        messageError.textContent = '';
-        formStatus.textContent = '';
-        formStatus.className = '';
-        // Generate new challenge
-        generateChallenge();
-      }, 2000);
+      // Redirect to thank you page immediately
+      window.location.href = 'thank-you.html';
     } else {
       // Form has errors
       formStatus.textContent = 'Please fix the errors above and try again.';
@@ -911,10 +998,18 @@ function initializePage() {
 
 // Initialize immediately if DOM is ready, otherwise wait for DOMContentLoaded
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializePage);
+  document.addEventListener('DOMContentLoaded', () => {
+    // Use double RAF to ensure layout is complete before reading layout properties
+    requestAnimationFrame(() => {
+      requestAnimationFrame(initializePage);
+    });
+  });
 } else {
-  // DOM already ready, but use requestAnimationFrame to ensure rendering is complete
-  requestAnimationFrame(initializePage);
+  // DOM already ready, but use double requestAnimationFrame to ensure rendering is complete
+  // This defers layout reads until after the browser has completed layout calculations
+  requestAnimationFrame(() => {
+    requestAnimationFrame(initializePage);
+  });
 }
 
 // Wrap letters after DOM is ready
@@ -1221,176 +1316,6 @@ if (document.readyState === 'loading') {
     // Reset overlay state but don't remove active class immediately (let CSS handle it)
     // This ensures the overlay can be reused for next animation
     navGridOverlay.style.opacity = '';
-  }
-  
-  // Calculate corner positions relative to link center
-  function getCornerPositions(linkRect, ulRect) {
-    const linkCenterX = linkRect.left + linkRect.width / 2 - ulRect.left;
-    const linkCenterY = linkRect.top + linkRect.height / 2 - ulRect.top;
-    
-    // Get UL dimensions
-    const ulWidth = ulRect.width;
-    const ulHeight = ulRect.height;
-    
-    // Calculate corners of the grid area (30px from link center)
-    const corners = [
-      // Top-left corner
-      {
-        x: Math.max(0, linkCenterX - gridDistance),
-        y: Math.max(0, linkCenterY - gridDistance)
-      },
-      // Top-right corner
-      {
-        x: Math.min(ulWidth, linkCenterX + gridDistance),
-        y: Math.max(0, linkCenterY - gridDistance)
-      },
-      // Bottom-left corner
-      {
-        x: Math.max(0, linkCenterX - gridDistance),
-        y: Math.min(ulHeight, linkCenterY + gridDistance)
-      },
-      // Bottom-right corner
-      {
-        x: Math.min(ulWidth, linkCenterX + gridDistance),
-        y: Math.min(ulHeight, linkCenterY + gridDistance)
-      }
-    ];
-    
-    return {
-      center: { x: linkCenterX, y: linkCenterY },
-      corners: corners,
-      bounds: {
-        minX: Math.min(...corners.map(c => c.x)),
-        maxX: Math.max(...corners.map(c => c.x)),
-        minY: Math.min(...corners.map(c => c.y)),
-        maxY: Math.max(...corners.map(c => c.y))
-      }
-    };
-  }
-  
-  // Create # (hash) pattern around the text box for desktop hover
-  function createGridLines(positions, progress = 1) {
-    const { center } = positions;
-    
-    // Clear previous lines
-    const existingLines = navGridOverlay.querySelectorAll('line, path');
-    existingLines.forEach(line => line.remove());
-    
-    // Get link dimensions to form # around the text box
-    const boxWidth = 80; // Approximate width of nav link text
-    const boxHeight = 30; // Approximate height of nav link text
-    const spread = gridDistance * progress; // How far the # extends from the box
-    
-    // Create # pattern: two horizontal lines and two vertical lines forming a grid
-    // Top horizontal line
-    const topLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    topLine.setAttribute('x1', center.x - boxWidth/2 - spread);
-    topLine.setAttribute('y1', center.y - boxHeight/2 - spread);
-    topLine.setAttribute('x2', center.x + boxWidth/2 + spread);
-    topLine.setAttribute('y2', center.y - boxHeight/2 - spread);
-    topLine.setAttribute('stroke', 'rgba(255, 255, 255, 1)');
-    topLine.setAttribute('stroke-width', '2');
-    topLine.setAttribute('stroke-linecap', 'round');
-    topLine.style.opacity = progress;
-    topLine.style.filter = 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))';
-    navGridOverlay.appendChild(topLine);
-    
-    // Bottom horizontal line
-    const bottomLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    bottomLine.setAttribute('x1', center.x - boxWidth/2 - spread);
-    bottomLine.setAttribute('y1', center.y + boxHeight/2 + spread);
-    bottomLine.setAttribute('x2', center.x + boxWidth/2 + spread);
-    bottomLine.setAttribute('y2', center.y + boxHeight/2 + spread);
-    bottomLine.setAttribute('stroke', 'rgba(255, 255, 255, 1)');
-    bottomLine.setAttribute('stroke-width', '2');
-    bottomLine.setAttribute('stroke-linecap', 'round');
-    bottomLine.style.opacity = progress;
-    bottomLine.style.filter = 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))';
-    navGridOverlay.appendChild(bottomLine);
-    
-    // Left vertical line
-    const leftLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    leftLine.setAttribute('x1', center.x - boxWidth/2 - spread);
-    leftLine.setAttribute('y1', center.y - boxHeight/2 - spread);
-    leftLine.setAttribute('x2', center.x - boxWidth/2 - spread);
-    leftLine.setAttribute('y2', center.y + boxHeight/2 + spread);
-    leftLine.setAttribute('stroke', 'rgba(255, 255, 255, 1)');
-    leftLine.setAttribute('stroke-width', '2');
-    leftLine.setAttribute('stroke-linecap', 'round');
-    leftLine.style.opacity = progress;
-    leftLine.style.filter = 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))';
-    navGridOverlay.appendChild(leftLine);
-    
-    // Right vertical line
-    const rightLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    rightLine.setAttribute('x1', center.x + boxWidth/2 + spread);
-    rightLine.setAttribute('y1', center.y - boxHeight/2 - spread);
-    rightLine.setAttribute('x2', center.x + boxWidth/2 + spread);
-    rightLine.setAttribute('y2', center.y + boxHeight/2 + spread);
-    rightLine.setAttribute('stroke', 'rgba(255, 255, 255, 1)');
-    rightLine.setAttribute('stroke-width', '2');
-    rightLine.setAttribute('stroke-linecap', 'round');
-    rightLine.style.opacity = progress;
-    rightLine.style.filter = 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))';
-    navGridOverlay.appendChild(rightLine);
-    
-    // Middle horizontal line (crossing through center)
-    const middleHLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    middleHLine.setAttribute('x1', center.x - boxWidth/2 - spread);
-    middleHLine.setAttribute('y1', center.y);
-    middleHLine.setAttribute('x2', center.x + boxWidth/2 + spread);
-    middleHLine.setAttribute('y2', center.y);
-    middleHLine.setAttribute('stroke', 'rgba(255, 255, 255, 0.8)');
-    middleHLine.setAttribute('stroke-width', '1.5');
-    middleHLine.setAttribute('stroke-linecap', 'round');
-    middleHLine.style.opacity = progress * 0.8;
-    middleHLine.style.filter = 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.6))';
-    navGridOverlay.appendChild(middleHLine);
-    
-    // Middle vertical line (crossing through center)
-    const middleVLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    middleVLine.setAttribute('x1', center.x);
-    middleVLine.setAttribute('y1', center.y - boxHeight/2 - spread);
-    middleVLine.setAttribute('x2', center.x);
-    middleVLine.setAttribute('y2', center.y + boxHeight/2 + spread);
-    middleVLine.setAttribute('stroke', 'rgba(255, 255, 255, 0.8)');
-    middleVLine.setAttribute('stroke-width', '1.5');
-    middleVLine.setAttribute('stroke-linecap', 'round');
-    middleVLine.style.opacity = progress * 0.8;
-    middleVLine.style.filter = 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.6))';
-    navGridOverlay.appendChild(middleVLine);
-  }
-  
-  // Animate grid spreading
-  function animateGrid(link) {
-    if (currentAnimationFrame) {
-      cancelAnimationFrame(currentAnimationFrame);
-    }
-    
-    activeLink = link;
-    const linkRect = link.getBoundingClientRect();
-    const ulRect = navUl.getBoundingClientRect();
-    const positions = getCornerPositions(linkRect, ulRect);
-    
-    navGridOverlay.classList.add('active');
-    
-    const startTime = performance.now();
-    
-    function animate(currentTime) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / animationDuration, 1);
-      const easedProgress = easingFunction(progress);
-      
-      createGridLines(positions, easedProgress);
-      
-      if (progress < 1) {
-        currentAnimationFrame = requestAnimationFrame(animate);
-      } else {
-        currentAnimationFrame = null;
-      }
-    }
-    
-    currentAnimationFrame = requestAnimationFrame(animate);
   }
   
   // Calculate positions for mobile/tablet menu (viewport-relative)
@@ -1738,10 +1663,6 @@ if (document.readyState === 'loading') {
 window.addEventListener('scroll', () => {
   onScroll();
   updateNavBackground();
-  // Call updateBackToTop if it's available (defined later in IIFE)
-  if (typeof window.updateBackToTop === 'function') {
-    window.updateBackToTop();
-  }
 }, { passive: true });
 
 // Preloader fade out (if needed)
@@ -1750,93 +1671,55 @@ window.addEventListener('load', () => {
 });
 
 // =============================================================================
-// Back to Top Button - Cinema Lens Style
-// Shows/hides button based on scroll position and handles smooth scroll to top
+// Back/Forward Cache (bfcache) Support
+// Handle page restoration from bfcache to ensure everything works correctly
+// 
+// Note: Chrome may show a "WebSocket" bfcache warning due to third-party scripts
+// (Google Tag Manager, reCAPTCHA). This is a known false positive - our code
+// doesn't use WebSockets. The page is bfcache-compatible and will work correctly
+// when restored from cache.
 // =============================================================================
-(function() {
-  'use strict';
-  
-  // Wait for DOM to be ready before looking for button
-  function initBackToTop() {
-    const backToTopButton = document.getElementById('back-to-top');
-    if (!backToTopButton) {
-      // Button not found, try again after a short delay (in case script loads before HTML)
-      setTimeout(initBackToTop, 100);
-      return;
+window.addEventListener('pageshow', (event) => {
+  // Check if page was restored from bfcache
+  if (event.persisted) {
+    // Re-initialize parallax when restored from cache
+    if (typeof initParallaxSections === 'function') {
+      initParallaxSections();
+      updateParallax();
     }
     
-    // Show/hide button based on scroll position
-    // For about.html: show after "Ready to create" section (about-cta)
-    // For photography-index.html: show after about section
-    function updateBackToTop() {
-      const scrollY = window.scrollY || window.pageYOffset;
-      let showThreshold = 600; // Fallback
-      
-      // Check if we're on about.html page - check both pathname and if .about-cta exists
-      const aboutCtaSection = document.querySelector('.about-cta');
-      const isAboutPage = window.location.pathname.includes('about.html') || 
-                          window.location.href.includes('about.html') ||
-                          (aboutCtaSection !== null);
-      
-      if (isAboutPage) {
-        // On about page, show button after "Ready to create" section
-        if (aboutCtaSection) {
-          const ctaRect = aboutCtaSection.getBoundingClientRect();
-          const ctaTop = ctaRect.top + scrollY;
-          // Show button when scrolled to or past the CTA section - use a more generous threshold
-          showThreshold = Math.max(400, ctaTop - 400); // Show 400px before reaching the section, but at least 400px from top
-        } else {
-          // Fallback: show after 400px scroll on about page
-          showThreshold = 400;
-        }
-      } else {
-        // On main page, show button after about section
-        const aboutSection = document.getElementById('about');
-        if (aboutSection) {
-          const aboutRect = aboutSection.getBoundingClientRect();
-          const aboutTop = aboutRect.top + scrollY;
-          showThreshold = aboutTop;
-        }
-      }
-      
-      // Show button if scrolled past threshold
-      if (scrollY > showThreshold) {
-        backToTopButton.classList.add('visible');
-      } else {
-        backToTopButton.classList.remove('visible');
-      }
+    // Re-initialize navigation background
+    if (typeof updateNavBackground === 'function') {
+      updateNavBackground();
     }
     
-    // Smooth scroll to top when clicked
-    backToTopButton.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+    // Re-initialize reveal animations if needed
+    const revealElements = document.querySelectorAll('.reveal:not(.visible)');
+    if (revealElements.length > 0 && typeof revealObserver !== 'undefined') {
+      revealElements.forEach((el) => {
+        revealObserver.observe(el);
       });
-    });
+    }
     
-    // Initialize on page load - call immediately and also on next frame
-    updateBackToTop();
-    requestAnimationFrame(() => {
-      updateBackToTop();
-    });
-    
-    // Also call on scroll to ensure it updates
-    window.addEventListener('scroll', updateBackToTop, { passive: true });
-    
-    // Export function for use in scroll handler
-    window.updateBackToTop = updateBackToTop;
+    // Re-initialize logo state if needed
+    if (typeof checkInitialScroll === 'function') {
+      checkInitialScroll();
+    }
+  }
+}, { passive: true });
+
+// Clean up on pagehide to ensure bfcache eligibility
+// Using pagehide instead of beforeunload/unload (which block bfcache)
+window.addEventListener('pagehide', (event) => {
+  // Cancel any pending animations
+  if (typeof currentAnimationFrame !== 'undefined' && currentAnimationFrame) {
+    cancelAnimationFrame(currentAnimationFrame);
   }
   
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBackToTop);
-  } else {
-    // DOM already ready, but wait a frame to ensure layout is complete
-    requestAnimationFrame(initBackToTop);
-  }
-})();
+  // Clean up any timers or intervals if needed
+  // (Most timers are already scoped, but this ensures cleanup)
+}, { passive: true });
+
 
 // =============================================================================
 // Logo Touch Effect - Toggle switch for mobile/tablet
@@ -1929,29 +1812,62 @@ window.addEventListener('load', () => {
       }
       
       // Unified click handler for all devices
+      // Check if we're on a subpage (about.html or privacy-policy.html)
+      function isSubpage() {
+        const pathname = window.location.pathname;
+        const href = window.location.href;
+        return pathname.includes('about.html') || 
+               pathname.includes('privacy-policy.html') ||
+               href.includes('about.html') ||
+               href.includes('privacy-policy.html');
+      }
+      
       function handleLogoClick(e) {
         e.preventDefault();
         
+        const scrollY = window.scrollY || window.pageYOffset;
+        const scrollThreshold = 100; // Consider "at top" if scrolled less than 100px
+        const isAtTop = scrollY <= scrollThreshold;
+        const isOnSubpage = isSubpage();
+        
         if (isMobileTablet()) {
           // Mobile/Tablet behavior
-          if (isTextVisible) {
-            // Text is visible - scroll to top and collapse text
+          if (isOnSubpage && isAtTop) {
+            // On subpage at top - directly navigate to home (no text expansion needed)
+            window.location.href = 'photography-index.html';
+          } else if (isTextVisible) {
+            // Text is visible and scrolled down
+            if (isOnSubpage) {
+              // On subpage - scroll to top and collapse text
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+              toggleLogoText();
+            } else {
+              // On main page - scroll to top and collapse text
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+              toggleLogoText();
+            }
+          } else {
+            // Text is hidden - toggle to show text (for interaction)
+            toggleLogoText();
+          }
+        } else {
+          // Desktop behavior
+          if (isOnSubpage && isAtTop) {
+            // On subpage at top - navigate to home
+            window.location.href = 'photography-index.html';
+          } else {
+            // Scroll to top (main page) or scroll to top (subpage when scrolled)
             window.scrollTo({
               top: 0,
               behavior: 'smooth'
             });
-            // Collapse text immediately
-            toggleLogoText();
-          } else {
-            // Text is hidden - toggle to show text
-            toggleLogoText();
           }
-        } else {
-          // Desktop behavior - always scroll to top
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
         }
         
         return false;
@@ -1984,9 +1900,21 @@ window.addEventListener('load', () => {
           
           // Only handle if it's a tap (not a swipe) and quick tap
           if (touchDuration < 300 && deltaX < 10 && deltaY < 10) {
+            const scrollY = window.scrollY || window.pageYOffset;
+            const scrollThreshold = 100;
+            const isAtTop = scrollY <= scrollThreshold;
+            const isOnSubpage = isSubpage();
+            
+            // If on subpage at top, navigate directly (don't toggle)
+            if (isOnSubpage && isAtTop) {
+              e.preventDefault();
+              e.stopPropagation();
+              window.location.href = 'photography-index.html';
+              return false;
+            }
+            
             if (isTextVisible) {
-              // Text is already visible - allow navigation to home
-              // Don't prevent default
+              // Text is already visible - allow click handler to handle it
               return true;
             } else {
               // Text is hidden - toggle to show text

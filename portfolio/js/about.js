@@ -39,6 +39,57 @@
   setTimeout(hideLoader, 2000);
 })();
 
+// =============================================================================
+// Camera Settings Rotation - Rotate through different camera settings
+// =============================================================================
+(function() {
+  'use strict';
+  
+  // Camera settings options (3 options for each field)
+  const fNumbers = ['2.8', '4.0', '5.6'];
+  const isoValues = ['400', '800', '1600'];
+  const shutterValues = ['60', '125', '250'];
+  
+  let currentIndex = 0;
+  
+  function rotateCameraSettings() {
+    const fNumberElement = document.querySelector('.f-number');
+    const isoValueElement = document.querySelector('.iso-value');
+    const shutterValueElement = document.querySelector('.shutter-value');
+    
+    if (!fNumberElement || !isoValueElement || !shutterValueElement) {
+      return; // Elements not found, exit early
+    }
+    
+    // Update to next index (cycle through 0, 1, 2)
+    currentIndex = (currentIndex + 1) % fNumbers.length;
+    
+    // Update values with fade effect
+    fNumberElement.style.opacity = '0';
+    isoValueElement.style.opacity = '0';
+    shutterValueElement.style.opacity = '0';
+    
+    setTimeout(() => {
+      fNumberElement.textContent = fNumbers[currentIndex];
+      isoValueElement.textContent = isoValues[currentIndex];
+      shutterValueElement.textContent = shutterValues[currentIndex];
+      
+      fNumberElement.style.opacity = '1';
+      isoValueElement.style.opacity = '1';
+      shutterValueElement.style.opacity = '1';
+    }, 200); // Half of transition time for smooth fade
+  }
+  
+  // Start rotation when DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    const pageLoader = document.getElementById('page-loader');
+    if (pageLoader) {
+      // Rotate every 2 seconds
+      setInterval(rotateCameraSettings, 2000);
+    }
+  });
+})();
+
 // Smooth scrolling is handled by CSS scroll-behavior: smooth
 // No custom JavaScript needed for better performance
 
@@ -49,7 +100,6 @@
 let parallaxSections = [];
 let lastScrollTop = 0;
 let parallaxVelocity = 0;
-let ticking = false;
 
 // Initialize parallax sections - re-query on page load to ensure DOM is ready
 function initParallaxSections() {
@@ -115,14 +165,6 @@ function updateParallax() {
 function onScroll() {
   // Update parallax immediately without throttling for smooth scrolling
   updateParallax();
-
-  // Update current scroll position for momentum (if variables exist)
-  if (typeof currentScroll !== 'undefined') {
-    currentScroll = window.scrollY;
-  }
-  if (typeof scrollTarget !== 'undefined') {
-    scrollTarget = window.scrollY;
-  }
 }
 
 // =============================================================================
@@ -132,34 +174,80 @@ function onScroll() {
 // =============================================================================
 const revealElements = document.querySelectorAll('.reveal');
 
+// Helper function to check if element is in viewport (any part visible)
+function isInViewport(element) {
+  const rect = element.getBoundingClientRect();
+  const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+  const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+  
+  // Check if any part of element is visible in viewport
+  return (
+    rect.top < windowHeight &&
+    rect.bottom > 0 &&
+    rect.left < windowWidth &&
+    rect.right > 0
+  );
+}
+
+// Helper function to reveal element immediately
+function revealElement(element, delay = 0) {
+  setTimeout(() => {
+    element.classList.add('visible');
+    element.style.opacity = '1';
+    element.style.transform = 'translateY(0)';
+  }, delay);
+}
+
 const revealObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry, index) => {
       if (entry.isIntersecting) {
-        // Stagger animation delays for sequential reveals
-        const delay = entry.target.dataset.delay || (index % 3 * 100);
-        setTimeout(() => {
-          entry.target.classList.add('visible');
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }, delay);
+        // Reduced stagger delays for faster loading
+        const delay = entry.target.dataset.delay || (index % 3 * 50);
+        revealElement(entry.target, delay);
         revealObserver.unobserve(entry.target);
       }
     });
   },
   { 
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
+    threshold: 0.1, // Reduced from 0.15 for earlier trigger
+    rootMargin: '100px 0px 0px 0px' // Increased top margin to trigger earlier
   }
 );
 
 revealElements.forEach((el, index) => {
-  // Add stagger delay to elements
+  // Reduced stagger delays for philosophy, equipment, and awards grids
   if (el.closest('.philosophy-values') || el.closest('.equipment-grid') || el.closest('.awards-grid')) {
-    el.dataset.delay = index * 100;
+    el.dataset.delay = index * 50; // Reduced from 100ms to 50ms
   }
   revealObserver.observe(el);
 });
+
+// Make elements visible immediately if they're already in viewport on page load
+// This prevents slow loading on refresh when user is scrolled down
+function checkInitialViewport() {
+  revealElements.forEach((el) => {
+    if (isInViewport(el) && !el.classList.contains('visible')) {
+      const delay = el.dataset.delay || 0;
+      revealElement(el, delay);
+      revealObserver.unobserve(el);
+    }
+  });
+}
+
+// Check after page is fully loaded to ensure all elements are positioned correctly
+window.addEventListener('load', () => {
+  setTimeout(checkInitialViewport, 50);
+});
+
+// Also check on DOMContentLoaded for faster initial render
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(checkInitialViewport, 100);
+  });
+} else {
+  setTimeout(checkInitialViewport, 100);
+}
 
 // =============================================================================
 // Navigation Background on Scroll
@@ -382,10 +470,6 @@ function initializePage() {
   initParallaxSections();
   updateParallax();
   updateNavBackground();
-  // Call updateBackToTop if it's available (defined later in IIFE)
-  if (typeof window.updateBackToTop === 'function') {
-    window.updateBackToTop();
-  }
 }
 
 // Initialize immediately if DOM is ready, otherwise wait for DOMContentLoaded
@@ -402,10 +486,6 @@ if (document.readyState === 'loading') {
 window.addEventListener('scroll', () => {
   onScroll();
   updateNavBackground();
-  // Call updateBackToTop if it's available (defined later in IIFE)
-  if (typeof window.updateBackToTop === 'function') {
-    window.updateBackToTop();
-  }
 }, { passive: true });
 
 // =============================================================================
@@ -888,76 +968,6 @@ window.addEventListener('scroll', () => {
   clearGrid();
 })();
 
-// =============================================================================
-// Back to Top Button - Cinema Lens Style
-// Shows/hides button based on scroll position and handles smooth scroll to top
-// Simplified for about page - shows after "Ready to create" section
-// =============================================================================
-(function() {
-  'use strict';
-  
-  // Wait for DOM to be ready before looking for button
-  function initBackToTop() {
-    const backToTopButton = document.getElementById('back-to-top');
-    if (!backToTopButton) {
-      // Button not found, try again after a short delay (in case script loads before HTML)
-      setTimeout(initBackToTop, 100);
-      return;
-    }
-    
-    // Show/hide button based on scroll position
-    // For about.html: show after "Ready to create" section (about-cta)
-    function updateBackToTop() {
-      const scrollY = window.scrollY || window.pageYOffset;
-      let showThreshold = 400; // Default threshold
-      
-      // On about page, show button after "Ready to create" section
-      const aboutCtaSection = document.querySelector('.about-cta');
-      if (aboutCtaSection) {
-        const ctaRect = aboutCtaSection.getBoundingClientRect();
-        const ctaTop = ctaRect.top + scrollY;
-        // Show button when scrolled past the CTA section - use a more generous threshold
-        showThreshold = Math.max(400, ctaTop - 400); // Show 400px before reaching the section, but at least 400px from top
-      }
-      
-      // Show button if scrolled past threshold
-      if (scrollY > showThreshold) {
-        backToTopButton.classList.add('visible');
-      } else {
-        backToTopButton.classList.remove('visible');
-      }
-    }
-    
-    // Smooth scroll to top when clicked
-    backToTopButton.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-    
-    // Initialize on page load - call immediately and also on next frame
-    updateBackToTop();
-    requestAnimationFrame(() => {
-      updateBackToTop();
-    });
-    
-    // Also call on scroll to ensure it updates
-    window.addEventListener('scroll', updateBackToTop, { passive: true });
-    
-    // Export function for use in scroll handler
-    window.updateBackToTop = updateBackToTop;
-  }
-  
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBackToTop);
-  } else {
-    // DOM already ready, but wait a frame to ensure layout is complete
-    requestAnimationFrame(initBackToTop);
-  }
-})();
 
 // =============================================================================
 // Logo Touch Effect - Toggle switch for mobile/tablet
@@ -1049,30 +1059,63 @@ window.addEventListener('scroll', () => {
         }
       }
       
+      // Check if we're on a subpage (about.html or privacy-policy.html)
+      function isSubpage() {
+        const pathname = window.location.pathname;
+        const href = window.location.href;
+        return pathname.includes('about.html') || 
+               pathname.includes('privacy-policy.html') ||
+               href.includes('about.html') ||
+               href.includes('privacy-policy.html');
+      }
+      
       // Unified click handler for all devices
       function handleLogoClick(e) {
         e.preventDefault();
         
+        const scrollY = window.scrollY || window.pageYOffset;
+        const scrollThreshold = 100; // Consider "at top" if scrolled less than 100px
+        const isAtTop = scrollY <= scrollThreshold;
+        const isOnSubpage = isSubpage();
+        
         if (isMobileTablet()) {
           // Mobile/Tablet behavior
-          if (isTextVisible) {
-            // Text is visible - scroll to top and collapse text
+          if (isOnSubpage && isAtTop) {
+            // On subpage at top - directly navigate to home (no text expansion needed)
+            window.location.href = 'photography-index.html';
+          } else if (isTextVisible) {
+            // Text is visible and scrolled down
+            if (isOnSubpage) {
+              // On subpage - scroll to top and collapse text
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+              toggleLogoText();
+            } else {
+              // On main page - scroll to top and collapse text
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+              toggleLogoText();
+            }
+          } else {
+            // Text is hidden - toggle to show text (for interaction)
+            toggleLogoText();
+          }
+        } else {
+          // Desktop behavior
+          if (isOnSubpage && isAtTop) {
+            // On subpage at top - navigate to home
+            window.location.href = 'photography-index.html';
+          } else {
+            // Scroll to top
             window.scrollTo({
               top: 0,
               behavior: 'smooth'
             });
-            // Collapse text immediately
-            toggleLogoText();
-          } else {
-            // Text is hidden - toggle to show text
-            toggleLogoText();
           }
-        } else {
-          // Desktop behavior - always scroll to top
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
         }
         
         return false;
@@ -1105,9 +1148,21 @@ window.addEventListener('scroll', () => {
           
           // Only handle if it's a tap (not a swipe) and quick tap
           if (touchDuration < 300 && deltaX < 10 && deltaY < 10) {
+            const scrollY = window.scrollY || window.pageYOffset;
+            const scrollThreshold = 100;
+            const isAtTop = scrollY <= scrollThreshold;
+            const isOnSubpage = isSubpage();
+            
+            // If on subpage at top, navigate directly (don't toggle)
+            if (isOnSubpage && isAtTop) {
+              e.preventDefault();
+              e.stopPropagation();
+              window.location.href = 'photography-index.html';
+              return false;
+            }
+            
             if (isTextVisible) {
-              // Text is already visible - allow navigation to home
-              // Don't prevent default
+              // Text is already visible - allow click handler to handle it
               return true;
             } else {
               // Text is hidden - toggle to show text
@@ -1149,4 +1204,54 @@ window.addEventListener('scroll', () => {
 window.addEventListener('load', () => {
   document.body.classList.add('loaded');
 });
+
+// =============================================================================
+// Back/Forward Cache (bfcache) Support
+// Handle page restoration from bfcache to ensure everything works correctly
+// 
+// Note: Chrome may show a "WebSocket" bfcache warning due to third-party scripts
+// (Google Tag Manager, reCAPTCHA). This is a known false positive - our code
+// doesn't use WebSockets. The page is bfcache-compatible and will work correctly
+// when restored from cache.
+// =============================================================================
+window.addEventListener('pageshow', (event) => {
+  // Check if page was restored from bfcache
+  if (event.persisted) {
+    // Re-initialize parallax when restored from cache
+    if (typeof initParallaxSections === 'function') {
+      initParallaxSections();
+      updateParallax();
+    }
+    
+    // Re-initialize navigation background
+    if (typeof updateNavBackground === 'function') {
+      updateNavBackground();
+    }
+    
+    // Re-initialize reveal animations if needed
+    const revealElements = document.querySelectorAll('.reveal:not(.visible)');
+    if (revealElements.length > 0 && typeof revealObserver !== 'undefined') {
+      revealElements.forEach((el) => {
+        revealObserver.observe(el);
+      });
+    }
+    
+    // Re-initialize logo state if needed
+    if (typeof checkInitialScroll === 'function') {
+      checkInitialScroll();
+    }
+  }
+}, { passive: true });
+
+// Clean up on pagehide to ensure bfcache eligibility
+// Using pagehide instead of beforeunload/unload (which block bfcache)
+window.addEventListener('pagehide', (event) => {
+  // Cancel any pending animations
+  if (typeof currentAnimationFrame !== 'undefined' && currentAnimationFrame) {
+    cancelAnimationFrame(currentAnimationFrame);
+  }
+  
+  // Clean up any timers or intervals if needed
+  // (Most timers are already scoped, but this ensures cleanup)
+}, { passive: true });
 

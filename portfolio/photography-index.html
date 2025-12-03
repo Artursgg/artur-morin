@@ -59,6 +59,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com">
   
+  <!-- Preload LCP image for faster loading -->
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" fetchpriority="high">
+  
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Science+Gothic:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   
@@ -66,7 +69,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <script src="https://www.google.com/recaptcha/api.js?render=6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK"></script>
   
   <!-- Styles -->
-  <link rel="stylesheet" href="css/portfolio.css">
+  <link rel="stylesheet" href="css/photography-index.css">
   
   <!-- 
   ╔═══════════════════════════════════════════════════════════════╗
@@ -258,7 +261,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
       <div class="hero-image">
         <div class="image-frame reveal">
-          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" alt="Featured photograph - Mountain landscape">
+          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" alt="Featured photograph - Mountain landscape" fetchpriority="high" decoding="async">
           <div class="frame-corner tl"></div>
           <div class="frame-corner tr"></div>
           <div class="frame-corner bl"></div>
@@ -286,7 +289,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <article class="work-card work-card--large reveal">
           <a href="#" class="work-card-link">
             <div class="work-card-image">
-              <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80" alt="Concert photography">
+              <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80" alt="Editorial photography - Concert and music scene documentation">
               <div class="work-card-overlay">
                 <span class="view-project">View Project →</span>
               </div>
@@ -302,7 +305,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <article class="work-card reveal">
           <a href="#" class="work-card-link">
             <div class="work-card-image">
-              <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80" alt="Nature photography">
+              <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80" alt="Landscape photography - Wilderness and nature scenes">
               <div class="work-card-overlay">
                 <span class="view-project">View Project →</span>
               </div>
@@ -318,7 +321,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <article class="work-card reveal">
           <a href="#" class="work-card-link">
             <div class="work-card-image">
-              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80" alt="Fashion photography">
+              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80" alt="Fashion photography - Editorial fashion and style photography">
               <div class="work-card-overlay">
                 <span class="view-project">View Project →</span>
               </div>
@@ -334,7 +337,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <article class="work-card reveal">
           <a href="#" class="work-card-link">
             <div class="work-card-image">
-              <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800&q=80" alt="Portrait photography">
+              <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800&q=80" alt="Portrait photography - Professional portrait and documentary photography">
               <div class="work-card-overlay">
                 <span class="view-project">View Project →</span>
               </div>
@@ -350,7 +353,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <article class="work-card reveal">
           <a href="#" class="work-card-link">
             <div class="work-card-image">
-              <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80" alt="Commercial photography">
+              <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80" alt="Commercial photography - Brand and product photography">
               <div class="work-card-overlay">
                 <span class="view-project">View Project →</span>
               </div>
@@ -467,14 +470,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         
         <div class="contact-methods">
           <a href="mailto:hello@arturmorin.com" class="contact-email">hello@arturmorin.com</a>
-          <div class="contact-social">
-            <a href="https://x.com/_smilexfd_" target="_blank" rel="noopener noreferrer" class="social-x" aria-label="Artur Morin on X">
-              <img src="assets/icons/twitter-x.svg" alt="X" class="social-icon icon-x" width="20" height="20">
-            </a>
-            <a href="https://www.threads.net/@morinartur" target="_blank" rel="noopener noreferrer" class="social-threads" aria-label="Artur Morin on Threads">
-              <img src="assets/icons/threads.svg" alt="Threads" class="social-icon icon-threads" width="20" height="20">
-            </a>
-          </div>
         </div>
       </div>
 
@@ -540,6 +535,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="https://x.com/_smilexfd_" target="_blank" rel="noopener noreferrer" class="social-x" aria-label="Artur Morin on X">
           <img src="assets/icons/twitter-x.svg" alt="X" class="social-icon icon-x" width="16" height="16">
         </a>
+        <!-- Telegram -->
+        <a href="https://t.me/SmileXFD" target="_blank" rel="noopener noreferrer" class="social-telegram" aria-label="Artur Morin on Telegram">
+          <img src="assets/icons/telegram.svg" alt="Telegram" class="social-icon icon-telegram" width="16" height="16">
+        </a>
         <!-- Threads by Meta - Official logo -->
         <a href="https://www.threads.net/@morinartur" target="_blank" rel="noopener noreferrer" class="social-threads" aria-label="Artur Morin on Threads">
           <img src="assets/icons/threads.svg" alt="Threads" class="social-icon icon-threads" width="16" height="16">
@@ -551,17 +550,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </footer>
 
-  <!-- Back to Top Button - Cinema Lens Style -->
-  <button class="back-to-top" id="back-to-top" aria-label="Back to top" title="Back to top">
-    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 5L12 19M12 5L6 11M12 5L18 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <div class="lens-ring"></div>
-    <div class="lens-ring lens-ring--inner"></div>
-  </button>
-
   <script src="js/imageLoader.js"></script>
-  <script src="js/portfolio.js"></script>
+  <script src="js/photography-index.js"></script>
 </body>
 </html>
 

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-K97CNH32');</script>
+  <!-- End Google Tag Manager -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X89C2WMLSL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-X89C2WMLSL');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Thank You · Artur Morin</title>
+  <meta name="title" content="Thank You · Artur Morin">
+  <meta name="description" content="Thank you for contacting Artur Morin. Your message has been received and we'll get back to you soon.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://arturmorin.com/thank-you.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://arturmorin.com/thank-you.html">
+  <meta property="og:title" content="Thank You · Artur Morin">
+  <meta property="og:description" content="Thank you for contacting Artur Morin. Your message has been received.">
+  <meta property="og:site_name" content="Artur Morin Photography">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://arturmorin.com/thank-you.html">
+  <meta name="twitter:title" content="Thank You · Artur Morin">
+  <meta name="twitter:description" content="Thank you for contacting Artur Morin.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#0f0f0f">
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Science+Gothic:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/thank-you.css">
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K97CNH32"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  
+  <!-- Film grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
+  
+  <!-- Shutter Animation -->
+  <div class="shutter-animation" id="shutter">
+    <div class="shutter-blade shutter-blade-top"></div>
+    <div class="shutter-blade shutter-blade-bottom"></div>
+  </div>
+  
+  <!-- Flash Effect -->
+  <div class="flash-effect" id="flash"></div>
+  
+  <!-- Film Strips -->
+  <div class="film-strip film-strip-top"></div>
+  <div class="film-strip film-strip-bottom"></div>
+  
+  <!-- Aperture Ring -->
+  <div class="aperture-ring-thanks"></div>
+  
+  <!-- Thank You Container -->
+  <div class="thank-you-container">
+    <!-- Floating Particles -->
+    <div id="particles-container"></div>
+    
+    <div class="thank-you-content">
+      <!-- Checkmark Icon -->
+      <div class="thank-you-icon">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45" stroke="rgba(212, 177, 122, 0.2)" stroke-width="2" fill="none"/>
+          <path class="checkmark" d="M 25 50 L 45 70 L 75 30" />
+        </svg>
+      </div>
+      
+      <h1 class="thank-you-title">Message<br><span class="italic">Received</span></h1>
+      
+      <p class="thank-you-subtitle">Frame Captured</p>
+      
+      <p class="thank-you-message">
+        Thank you for reaching out! Your message has been sent successfully. 
+        I'll review it and get back to you as soon as possible. 
+        Looking forward to creating something amazing together.
+      </p>
+      
+      <a href="photography-index.html" class="back-to-site-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        <span>Back to Website</span>
+      </a>
+    </div>
+  </div>
+  
+  <script src="js/thank-you.js"></script>
+  <script>
+    // Shutter animation on load
+    window.addEventListener('load', () => {
+      const shutter = document.getElementById('shutter');
+      const flash = document.getElementById('flash');
+      
+      // Trigger shutter and flash
+      setTimeout(() => {
+        shutter.classList.add('active');
+        flash.style.animation = 'none';
+        setTimeout(() => {
+          flash.style.animation = 'flash 0.3s ease-out';
+        }, 10);
+      }, 100);
+      
+      // Remove shutter after animation
+      setTimeout(() => {
+        shutter.style.display = 'none';
+      }, 700);
+    });
+    
+    // Create floating particles
+    function createParticles() {
+      const container = document.getElementById('particles-container');
+      const particleCount = 15;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.bottom = '-10px';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+        container.appendChild(particle);
+      }
+    }
+    
+    createParticles();
+    
+    // Track thank you page view
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        'event': 'thank_you_page_view',
+        'page_type': 'form_submission_success'
+      });
+    }
+  </script>
+</body>
+</html>
+

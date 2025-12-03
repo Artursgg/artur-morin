@@ -1,0 +1,415 @@
+/* ==========================================================================
+   Thank You Page - Complete Styles
+   ========================================================================== */
+
+/* CSS Variables */
+:root {
+  --bg: #0f0f0f;
+  --bg-warm: #141210;
+  --text: #f5f0e8;
+  --text-muted: #c8c0b8;
+  --text-dim: #a89f96;
+  --gold: #d4b17a;
+  --gold-light: #e5d0a8;
+  --gold-dark: #9d8263;
+  --font-display: 'Science Gothic', 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --section-padding: 120px;
+  --radius-md: 16px;
+}
+
+/* Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.italic {
+  font-style: italic;
+}
+
+/* Film Grain Overlay */
+.grain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Thank You Container */
+.thank-you-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 5vw;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Camera Shutter Animation */
+.shutter-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.shutter-blade {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  background: var(--bg);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shutter-blade-top {
+  top: 0;
+  transform-origin: bottom center;
+}
+
+.shutter-blade-bottom {
+  bottom: 0;
+  transform-origin: top center;
+}
+
+.shutter-animation.active .shutter-blade-top {
+  transform: translateY(-100%);
+}
+
+.shutter-animation.active .shutter-blade-bottom {
+  transform: translateY(100%);
+}
+
+/* Aperture Ring Effect */
+.aperture-ring-thanks {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  border: 2px solid rgba(212, 177, 122, 0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: pulseAperture 3s ease-in-out infinite;
+}
+
+.aperture-ring-thanks::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border: 1px solid rgba(212, 177, 122, 0.15);
+  border-radius: 50%;
+}
+
+@keyframes pulseAperture {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+/* Film Strip Effect */
+.film-strip {
+  position: absolute;
+  width: 100%;
+  height: 120px;
+  background: repeating-linear-gradient(
+    90deg,
+    #0f0f0f 0px,
+    #0f0f0f 40px,
+    rgba(212, 177, 122, 0.1) 40px,
+    rgba(212, 177, 122, 0.1) 80px
+  );
+  border-top: 2px solid rgba(212, 177, 122, 0.3);
+  border-bottom: 2px solid rgba(212, 177, 122, 0.3);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.film-strip-top {
+  top: 0;
+}
+
+.film-strip-bottom {
+  bottom: 0;
+}
+
+/* Film Perforations */
+.film-strip::before,
+.film-strip::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 18px,
+    rgba(212, 177, 122, 0.2) 18px,
+    rgba(212, 177, 122, 0.2) 22px
+  );
+}
+
+.film-strip::before {
+  top: 10px;
+}
+
+.film-strip::after {
+  bottom: 10px;
+}
+
+/* Thank You Content */
+.thank-you-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 700px;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.thank-you-icon {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 40px;
+  position: relative;
+  animation: checkmarkDraw 1.2s ease-out 0.5s both;
+}
+
+@keyframes checkmarkDraw {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.checkmark {
+  width: 100%;
+  height: 100%;
+  stroke: var(--gold);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: checkmarkStroke 0.8s ease-out 0.5s forwards;
+}
+
+@keyframes checkmarkStroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.thank-you-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.thank-you-message {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 50px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.thank-you-subtitle {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--gold);
+  margin-bottom: 40px;
+}
+
+/* Back Button */
+.back-to-site-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  background: transparent;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.back-to-site-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--gold);
+  transition: left 0.3s ease;
+  z-index: -1;
+}
+
+.back-to-site-btn:hover {
+  color: var(--bg);
+  border-color: var(--gold);
+}
+
+.back-to-site-btn:hover::before {
+  left: 0;
+}
+
+.back-to-site-btn svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.back-to-site-btn:hover svg {
+  transform: translateX(-4px);
+}
+
+/* Floating Particles */
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0.6;
+  pointer-events: none;
+  animation: float 8s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(50px);
+    opacity: 0;
+  }
+}
+
+/* Camera Flash Effect */
+.flash-effect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  animation: flash 0.3s ease-out;
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .thank-you-container {
+    padding: 80px 4vw;
+  }
+  
+  .thank-you-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 30px;
+  }
+  
+  .thank-you-message {
+    font-size: 1rem;
+    margin-bottom: 40px;
+  }
+  
+  .aperture-ring-thanks {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .aperture-ring-thanks::before {
+    width: 140px;
+    height: 140px;
+  }
+}
+

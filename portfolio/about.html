@@ -3,7 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About · Artur Morin</title>
+  
+  <!-- Primary Meta Tags -->
+  <title>About · Artur Morin | Visual Storyteller & Photographer</title>
+  <meta name="title" content="About · Artur Morin | Visual Storyteller & Photographer">
+  <meta name="description" content="Learn about Artur Morin, a Tallinn-based photographer with 8+ years of experience. From street photography to National Geographic features, discover the journey behind the lens.">
+  <meta name="keywords" content="Artur Morin, photographer biography, Tallinn photographer, photography journey, visual storyteller, photographer about">
+  <meta name="author" content="Artur Morin">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://arturmorin.com/about.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://arturmorin.com/about.html">
+  <meta property="og:title" content="About · Artur Morin | Visual Storyteller & Photographer">
+  <meta property="og:description" content="Learn about Artur Morin, a Tallinn-based photographer with 8+ years of experience. From street photography to National Geographic features.">
+  <meta property="og:image" content="https://arturmorin.com/assets/images/portfolio/about/me.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Artur Morin Photography">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://arturmorin.com/about.html">
+  <meta name="twitter:title" content="About · Artur Morin | Visual Storyteller & Photographer">
+  <meta name="twitter:description" content="Learn about Artur Morin, a Tallinn-based photographer with 8+ years of experience.">
+  <meta name="twitter:image" content="https://arturmorin.com/assets/images/portfolio/about/me.jpg">
+  <meta name="twitter:creator" content="@morinartur">
+  
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
@@ -12,8 +40,43 @@
   <meta name="theme-color" content="#0f0f0f">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <!-- Preload LCP image for faster loading -->
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Science+Gothic:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/about.css">
+  
+  <!-- Structured Data (JSON-LD) for Rich Results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "Artur Morin",
+      "jobTitle": "Photographer & Visual Storyteller",
+      "description": "Tallinn-based photographer specializing in editorial, fashion, and documentary photography with 8+ years of experience",
+      "url": "https://arturmorin.com",
+      "image": "https://arturmorin.com/assets/images/portfolio/about/me.jpg",
+      "sameAs": [
+        "https://x.com/_smilexfd_",
+        "https://www.threads.net/@morinartur"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Tallinn",
+        "addressCountry": "Estonia"
+      },
+      "knowsAbout": ["Photography", "Editorial Photography", "Fashion Photography", "Documentary Photography", "Portrait Photography", "Commercial Photography"],
+      "award": [
+        "IPA Award - Gold Documentary Series (2024)",
+        "Sony World Photography - Shortlist Landscape (2023)",
+        "PDN Photo Annual - Winner Portrait Category (2022)",
+        "Communication Arts - Excellence Commercial (2021)"
+      ]
+    }
+  }
+  </script>
 </head>
 <body>
   <!-- Loading Screen - Camera Aperture Iris -->
@@ -131,7 +194,7 @@
         <p class="about-hero-lead">For over eight years, I've been capturing moments that matter. From the streets of Tallinn to the peaks of Patagonia, my camera has been my companion in telling stories that words alone cannot express.</p>
       </div>
       <div class="about-hero-image reveal">
-        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" alt="Artur Morin - Photographer portrait">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" alt="Artur Morin - Photographer portrait" fetchpriority="high" decoding="async">
         <div class="image-decoration"></div>
       </div>
     </section>
@@ -322,6 +385,10 @@
         <a href="https://x.com/_smilexfd_" target="_blank" rel="noopener noreferrer" class="social-x" aria-label="Artur Morin on X">
           <img src="assets/icons/twitter-x.svg" alt="X" class="social-icon icon-x" width="16" height="16">
         </a>
+        <!-- Telegram -->
+        <a href="https://t.me/SmileXFD" target="_blank" rel="noopener noreferrer" class="social-telegram" aria-label="Artur Morin on Telegram">
+          <img src="assets/icons/telegram.svg" alt="Telegram" class="social-icon icon-telegram" width="16" height="16">
+        </a>
         <!-- Threads by Meta - Official logo -->
         <a href="https://www.threads.net/@morinartur" target="_blank" rel="noopener noreferrer" class="social-threads" aria-label="Artur Morin on Threads">
           <img src="assets/icons/threads.svg" alt="Threads" class="social-icon icon-threads" width="16" height="16">
@@ -332,15 +399,6 @@
       <p>&copy; 2025 Artur Morin. All rights reserved.</p>
     </div>
   </footer>
-
-  <!-- Back to Top Button - Cinema Lens Style -->
-  <button class="back-to-top" id="back-to-top" aria-label="Back to top" title="Back to top">
-    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 5L12 19M12 5L6 11M12 5L18 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <div class="lens-ring"></div>
-    <div class="lens-ring lens-ring--inner"></div>
-  </button>
 
   <script src="js/imageLoader.js"></script>
   <script src="js/about.js"></script>

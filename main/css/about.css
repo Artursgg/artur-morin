@@ -688,6 +688,24 @@ footer {
   fill: #ffffff;
 }
 
+/* Telegram - Pure white like X */
+.social-telegram {
+  --brand-color: #ffffff;
+  --brand-bg: #000000;
+}
+
+.social-telegram:hover {
+  background: var(--brand-bg);
+  border-color: rgba(34, 158, 217, 0.5);
+  box-shadow: 
+    0 8px 24px rgba(34, 158, 217, 0.4),
+    0 0 30px rgba(34, 158, 217, 0.2);
+}
+
+.social-telegram:hover .icon-telegram {
+  fill: #ffffff;
+}
+
 /* --------------------------------------------------------------------------
    Responsive Adjustments - Tablet (max-width: 1024px)
    -------------------------------------------------------------------------- */
