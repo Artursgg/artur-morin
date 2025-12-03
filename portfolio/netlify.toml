@@ -25,11 +25,9 @@
   to = "/photography-index.html"
   status = 200
 
-# Handle 404 errors - redirect to main page
-[[redirects]]
-  from = "/*"
-  to = "/photography-index.html"
-  status = 200
+# Note: Netlify automatically uses 404.html for 404 errors
+# The 404.html file in the publish directory will be used automatically
+# No redirect needed - Netlify handles 404s natively
 
 # Headers for security and performance
 [[headers]]
