@@ -5,8 +5,8 @@
   # Base directory - where your site files are located
   base = "portfolio"
   
-  # Publish directory - relative to base directory
-  publish = "portfolio"
+  # Publish directory - relative to base directory (current directory after setting base)
+  publish = "."
   
   # Build command (optional - only needed if you have a build process)
   # command = "npm run build"
