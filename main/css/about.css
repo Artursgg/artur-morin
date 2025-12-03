@@ -1,0 +1,1121 @@
+/* ==========================================================================
+   About Page Stylesheet
+   Author: Artur Morin
+   Description: Styles for the About page with tabbed content, carousel,
+                interactive ritual list, and support grid.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CSS Variables
+   Shared color palette - should stay in sync with style2.css.
+   -------------------------------------------------------------------------- */
+:root {
+  --bg: #03040a;
+  --panel: rgba(255, 255, 255, 0.05);
+  --panel-strong: rgba(255, 255, 255, 0.12);
+  --text: #f3f5ff;
+  --muted: #9aa4be;
+  --accent: #1de9ff;       /* Primary cyan accent */
+  --accent-2: #ff34b3;     /* Secondary magenta for gradients */
+  /* Typography */
+  --font-display: "Science Gothic", "Inter", system-ui, -apple-system, sans-serif;
+  --font-body: "Science Gothic", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-body);
+}
+
+/* All headings use Science Gothic */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Reset & Base Styles
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* Radial gradient matches the main page for consistency */
+  background: radial-gradient(circle at top, #08112b 0%, #020308 60%, #010104 100%);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  border-radius: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   Sticky Navigation
+   Matches the main page header style for consistent branding.
+   -------------------------------------------------------------------------- */
+.about-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 7vw;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(5, 8, 15, 0.92);
+  backdrop-filter: blur(18px); /* Frosted glass effect */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Logo with text label */
+.about-nav .logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text);
+}
+
+.about-nav .logo img {
+  width: 44px;
+  height: 44px;
+}
+
+/* Navigation links - centered */
+.about-nav nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.about-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+}
+
+.about-nav a {
+  color: var(--muted);
+  font-weight: 600;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.about-nav a:hover,
+.about-nav a.active {
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   Sun Glow Effect (About Link) - Synced with main page
+   Rotating rays behind the "About" link in header/footer.
+   -------------------------------------------------------------------------- */
+.sun-glow {
+  position: relative;
+  color: #ffd54f !important;
+  text-shadow: 
+    0 0 6px rgba(255, 213, 79, 0.5),
+    0 0 12px rgba(255, 183, 77, 0.3),
+    0 0 20px rgba(255, 160, 60, 0.2);
+  transition: text-shadow 0.4s ease;
+}
+
+.sun-glow::before,
+.sun-glow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.35;
+  transition: opacity 0.4s ease;
+}
+
+.sun-glow::before {
+  width: 52px;
+  height: 52px;
+  background:
+    linear-gradient(to right, transparent 0%, transparent 44%, rgba(255, 210, 80, 0.5) 49%, rgba(255, 210, 80, 0.5) 51%, transparent 56%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, transparent 44%, rgba(255, 210, 80, 0.5) 49%, rgba(255, 210, 80, 0.5) 51%, transparent 56%, transparent 100%);
+  filter: blur(0.5px);
+  animation: sunRotatePrimary 12s linear infinite;
+}
+
+.sun-glow::after {
+  width: 46px;
+  height: 46px;
+  background:
+    linear-gradient(to right, transparent 0%, transparent 45%, rgba(255, 190, 60, 0.35) 49%, rgba(255, 190, 60, 0.35) 51%, transparent 55%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, transparent 45%, rgba(255, 190, 60, 0.35) 49%, rgba(255, 190, 60, 0.35) 51%, transparent 55%, transparent 100%);
+  filter: blur(0.8px);
+  animation: sunRotateSecondary 18s linear infinite;
+}
+
+@keyframes sunRotatePrimary {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes sunRotateSecondary {
+  0% { transform: translate(-50%, -50%) rotate(45deg); }
+  100% { transform: translate(-50%, -50%) rotate(405deg); }
+}
+
+.sun-glow:hover {
+  text-shadow: 
+    0 0 8px rgba(255, 213, 79, 0.8),
+    0 0 16px rgba(255, 183, 77, 0.5),
+    0 0 28px rgba(255, 160, 60, 0.35);
+}
+
+.sun-glow:hover::before,
+.sun-glow:hover::after {
+  opacity: 0.7;
+}
+
+.sun-glow:hover::before {
+  animation: sunRotatePrimary 6s linear infinite;
+}
+
+.sun-glow:hover::after {
+  animation: sunRotateSecondary 9s linear infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Main Content Container
+   -------------------------------------------------------------------------- */
+main {
+  padding: 60px 6vw 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+/* --------------------------------------------------------------------------
+   Hero Section
+   Large headline with supporting text and badge pills.
+   -------------------------------------------------------------------------- */
+.about-hero {
+  max-width: 980px;
+}
+
+/* Eyebrow text - small label above headings */
+.eyebrow {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.about-hero h1 {
+  /* Fluid typography using clamp() */
+  font-size: clamp(2.6rem, 4vw, 4rem);
+  margin-bottom: 18px;
+}
+
+.about-hero .lead {
+  color: var(--muted);
+  max-width: 720px;
+}
+
+/* Badge pills showing key features */
+.hero-badges {
+  margin-top: 30px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-badges div {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.85rem;
+}
+
+/* --------------------------------------------------------------------------
+   Tenets Section (Tabbed Content)
+   Two-column layout with switchable content panels.
+   -------------------------------------------------------------------------- */
+.tenets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 40px;
+  background: var(--panel);
+  border-radius: 36px;
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.tenet-copy h2 {
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  margin-bottom: 12px;
+}
+
+.tenet-copy p {
+  color: var(--muted);
+}
+
+.tenet-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Tab buttons row */
+.tenet-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.tenet-tab {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Active/selected tab state */
+.tenet-tab[aria-selected="true"] {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.tenet-tab:hover {
+  transform: translateY(-2px);
+}
+
+/* Content list (updates via JS) */
+.tenet-list {
+  list-style: none;
+  display: grid;
+  gap: 14px;
+}
+
+.tenet-list li {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* --------------------------------------------------------------------------
+   Carousel Section
+   Image carousel with adaptive sizing and infinite loop.
+   -------------------------------------------------------------------------- */
+.carousel-block {
+  overflow: visible; /* Allow nav buttons to extend outside */
+}
+
+.carousel-block header {
+  max-width: 720px;
+  margin-bottom: 24px;
+}
+
+/* Carousel container - horizontal layout */
+.carousel {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  min-height: 300px; /* Ensure height for landscape images */
+}
+
+/* Visible window that masks the sliding track */
+.carousel-window {
+  overflow: hidden;
+  border-radius: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Smooth size transitions when changing slides */
+  transition: width 0.6s cubic-bezier(0.4, 0.15, 0.15, 1), 
+              height 0.6s cubic-bezier(0.4, 0.15, 0.15, 1);
+  width: 760px;  /* Default width */
+  height: 500px; /* Default height */
+}
+
+/* Sliding track containing all slides */
+.carousel-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.4, 0.15, 0.15, 1);
+  height: 100%;
+}
+
+/* Individual slide */
+.carousel-slide {
+  min-width: 100%; /* Each slide takes full width of window */
+  height: 100%;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Slide images - contain within bounds without stretching */
+.carousel-slide img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 20px;
+}
+
+/* Previous/Next navigation buttons */
+.carousel-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.carousel-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Dot indicators below carousel */
+.carousel-dots {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.carousel-dots button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.carousel-dots button[aria-selected="true"] {
+  background: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Interaction Lab (Ritual Checklist)
+   Interactive list where users can mark items complete.
+   -------------------------------------------------------------------------- */
+.interaction-lab {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+  background: var(--panel-strong);
+  border-radius: 32px;
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Progress bar container */
+.interaction-progress {
+  margin-top: 24px;
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Progress bar fill - width controlled via CSS variable */
+.interaction-progress-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  border-radius: inherit;
+  /* scaleX instead of width for smoother animation */
+  transform: scaleX(calc(var(--progress, 0%) / 100));
+  transform-origin: left center;
+  transition: transform 0.3s ease;
+}
+
+#interaction-count {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Ritual list items */
+.interaction-list {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.interaction-list button {
+  width: 100%;
+  text-align: left;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s ease, padding-left 0.2s ease;
+}
+
+/* Status indicator dot */
+.interaction-list button::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Completed state */
+.interaction-list button.done {
+  border-color: var(--accent);
+  padding-left: 26px;
+}
+
+/* Checkmark for completed items */
+.interaction-list button.done::before {
+  content: "✓";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Support Grid
+   Three-column feature grid at bottom of page.
+   -------------------------------------------------------------------------- */
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.support-grid article {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 24px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.support-grid article:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+}
+
+.support-grid h3 {
+  margin-bottom: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Parallax Effect (Synced with Main Page)
+   Uses same CSS variable pattern as the main stylesheet.
+   -------------------------------------------------------------------------- */
+.parallax {
+  will-change: transform;
+  transition: transform 0.2s ease-out;
+  transform: translate3d(0, var(--parallax-offset, 0px), 0);
+}
+
+/* --------------------------------------------------------------------------
+   Reveal Animation (Synced with Main Page)
+   Elements fade in and slide up when entering viewport.
+   -------------------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   Footer (Synced with main page)
+   Three-column layout: brand left, links center, social right.
+   -------------------------------------------------------------------------- */
+footer {
+  padding: 50px 6vw 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.footer-brand img {
+  width: 32px;
+  height: 32px;
+}
+
+.footer-tagline {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 4px;
+  opacity: 0.8;
+}
+
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  justify-content: center;
+}
+
+.footer-links a {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   Social Icons with Brand Colors (Synced with main page)
+   -------------------------------------------------------------------------- */
+.footer-social {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* Base icon sizing */
+.icon {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+  transition: fill 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+}
+
+/* Base social link styling */
+.footer-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--muted);
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.footer-social a:hover {
+  transform: translateY(-3px);
+}
+
+/* X (formerly Twitter) - Pure white on black */
+.social-x {
+  --brand-color: #ffffff;
+  --brand-bg: #000000;
+}
+
+.social-x:hover {
+  background: var(--brand-bg);
+  border-color: var(--brand-color);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+}
+
+.social-x:hover .icon-x {
+  fill: var(--brand-color);
+}
+
+/* Threads by Meta - Black/dark charcoal gradient */
+.social-threads {
+  --brand-primary: #000000;
+  --brand-gradient: linear-gradient(135deg, #000000 0%, #333333 50%, #000000 100%);
+}
+
+.social-threads:hover {
+  background: var(--brand-gradient);
+  border-color: #444444;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 255, 255, 0.1);
+}
+
+.social-threads:hover .icon-threads {
+  fill: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Adjustments - Tablet (max-width: 1024px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  /* Tenets section - stack vertically */
+  .tenets {
+    grid-template-columns: 1fr;
+  }
+
+  /* Interaction lab - stack vertically */
+  .interaction-lab {
+    grid-template-columns: 1fr;
+  }
+
+  /* Support grid - 2 columns with last item centered */
+  .support-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .support-grid article:last-child {
+    grid-column: 1 / -1;
+    max-width: 400px;
+    justify-self: center;
+  }
+
+  /* Carousel - arrows in top right corner */
+  .carousel-block {
+    position: relative;
+  }
+
+  .carousel {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .carousel-btn {
+    position: absolute;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    z-index: 5;
+  }
+
+  .carousel-btn.prev {
+    right: 56px;
+  }
+
+  .carousel-btn.next {
+    right: 0;
+  }
+
+  .carousel-window {
+    width: 100%;
+    max-width: 700px;
+    border: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Adjustments - Mobile (max-width: 768px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* Header - stack vertically and center nav */
+  .about-nav {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 4vw;
+  }
+
+  .about-nav .logo {
+    font-size: 0.85rem;
+  }
+
+  .about-nav .logo img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .about-nav nav {
+    position: static;
+    transform: none;
+    width: 100%;
+  }
+
+  .about-nav ul {
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+
+  /* Main content spacing */
+  main {
+    padding: 30px 4vw 60px;
+    gap: 40px;
+  }
+
+  /* Hero section */
+  .about-hero {
+    text-align: center;
+  }
+
+  .about-hero h1 {
+    font-size: 1.75rem;
+    line-height: 1.3;
+  }
+
+  .about-hero .lead {
+    font-size: 0.95rem;
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+  }
+
+  .hero-badges {
+    justify-content: center;
+  }
+
+  .hero-badges div {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  /* Tenets section */
+  .tenets {
+    padding: 20px;
+    border-radius: 20px;
+    gap: 24px;
+  }
+
+  .tenet-copy h2 {
+    font-size: 1.4rem;
+  }
+
+  .tenet-copy p {
+    font-size: 0.9rem;
+  }
+
+  .tenet-nav {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .tenet-tab {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  .tenet-list li {
+    padding: 12px 14px;
+    font-size: 0.85rem;
+  }
+
+  /* Carousel block */
+  .carousel-block {
+    position: relative;
+  }
+
+  .carousel-block header {
+    text-align: center;
+    padding-right: 80px; /* Space for arrows */
+  }
+
+  .carousel-block h2 {
+    font-size: 1.4rem;
+  }
+
+  .carousel-block .lead {
+    font-size: 0.9rem;
+  }
+
+  /* Carousel - arrows in top right corner */
+  .carousel {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    min-height: auto;
+  }
+
+  .carousel-btn {
+    position: absolute;
+    top: 0;
+    width: 36px;
+    height: 36px;
+    z-index: 5;
+    font-size: 1rem;
+  }
+
+  .carousel-btn.prev {
+    right: 48px;
+  }
+
+  .carousel-btn.next {
+    right: 0;
+  }
+
+  .carousel-window {
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    max-height: 50vh;
+    border-radius: 20px;
+    border: none;
+  }
+
+  .carousel-slide {
+    padding: 8px;
+  }
+
+  .carousel-slide img {
+    border-radius: 16px;
+  }
+
+  .carousel-dots {
+    margin-top: 12px;
+  }
+
+  .carousel-dots button {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* Interaction lab */
+  .interaction-lab {
+    padding: 20px;
+    border-radius: 20px;
+    gap: 20px;
+  }
+
+  .lab-copy h2 {
+    font-size: 1.4rem;
+  }
+
+  .lab-copy p {
+    font-size: 0.9rem;
+  }
+
+  .interaction-list button {
+    padding: 12px 14px;
+    font-size: 0.85rem;
+  }
+
+  /* Support grid - single column */
+  .support-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .support-grid article {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .support-grid article:last-child {
+    max-width: none;
+  }
+
+  .support-grid h3 {
+    font-size: 1rem;
+  }
+
+  .support-grid p {
+    font-size: 0.85rem;
+  }
+
+  /* Footer - stack vertically */
+  footer {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+    padding: 30px 4vw 50px;
+  }
+
+  .footer-brand {
+    align-items: center;
+  }
+
+  .footer-brand p {
+    font-size: 0.85rem;
+  }
+
+  .footer-links {
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+
+  .footer-social {
+    justify-content: center;
+  }
+
+  .footer-social a {
+    width: 38px;
+    height: 38px;
+  }
+
+  .icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Adjustments - Small Mobile (max-width: 480px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .about-nav {
+    padding: 12px 3vw;
+    gap: 12px;
+  }
+
+  .about-nav .logo {
+    font-size: 0.75rem;
+    gap: 8px;
+  }
+
+  .about-nav .logo img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .about-nav ul {
+    gap: 10px;
+    font-size: 0.8rem;
+  }
+
+  main {
+    padding: 24px 3vw 50px;
+    gap: 32px;
+  }
+
+  .about-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .about-hero .lead {
+    font-size: 0.85rem;
+  }
+
+  .eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+  }
+
+  .hero-badges div {
+    font-size: 0.7rem;
+    padding: 5px 10px;
+  }
+
+  /* Tenets - single column tabs */
+  .tenets {
+    padding: 16px;
+  }
+
+  .tenet-copy h2 {
+    font-size: 1.2rem;
+  }
+
+  .tenet-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .tenet-tab {
+    padding: 10px 14px;
+  }
+
+  /* Carousel */
+  .carousel-block header {
+    padding-right: 70px;
+  }
+
+  .carousel-block h2 {
+    font-size: 1.2rem;
+  }
+
+  .carousel-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .carousel-btn.prev {
+    right: 42px;
+  }
+
+  .carousel-window {
+    min-height: 180px;
+    max-height: 45vh;
+    border-radius: 16px;
+    border: none;
+  }
+
+  /* Interaction lab */
+  .interaction-lab {
+    padding: 16px;
+  }
+
+  .lab-copy h2 {
+    font-size: 1.2rem;
+  }
+
+  /* Support grid */
+  .support-grid article {
+    padding: 14px;
+  }
+
+  /* Footer */
+  footer {
+    padding: 24px 3vw 40px;
+    gap: 16px;
+  }
+
+  .footer-brand p {
+    font-size: 0.8rem;
+  }
+
+  .footer-links {
+    gap: 12px;
+    font-size: 0.8rem;
+  }
+
+  .footer-social a {
+    width: 36px;
+    height: 36px;
+  }
+
+  .icon {
+    width: 16px;
+    height: 16px;
+  }
+}

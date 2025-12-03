@@ -1,0 +1,72 @@
+{
+  "portfolio": {
+    "editorial": [
+      {
+        "id": "editorial-001",
+        "title": "Echoes of Sound",
+        "description": "A visual journey through Tallinn's underground music scene",
+        "thumbnail": "../assets/images/portfolio/editorial/thumbnails/echoes-sound-thumb.jpg",
+        "full": "../assets/images/portfolio/editorial/full/echoes-sound-full.jpg",
+        "category": "Editorial",
+        "year": "2024",
+        "client": "Independent"
+      }
+    ],
+    "fashion": [
+      {
+        "id": "fashion-001",
+        "title": "Velvet Dreams",
+        "description": "Vogue Italia SS24",
+        "thumbnail": "../assets/images/portfolio/fashion/thumbnails/velvet-dreams-thumb.jpg",
+        "full": "../assets/images/portfolio/fashion/full/velvet-dreams-full.jpg",
+        "category": "Fashion",
+        "year": "2024",
+        "client": "Vogue Italia"
+      }
+    ],
+    "landscape": [
+      {
+        "id": "landscape-001",
+        "title": "Wilderness Untold",
+        "description": "National Geographic feature",
+        "thumbnail": "../assets/images/portfolio/landscape/thumbnails/wilderness-untold-thumb.jpg",
+        "full": "../assets/images/portfolio/landscape/full/wilderness-untold-full.jpg",
+        "category": "Landscape",
+        "year": "2024",
+        "client": "National Geographic"
+      }
+    ],
+    "portrait": [
+      {
+        "id": "portrait-001",
+        "title": "Faces of Resilience",
+        "description": "Documentary series",
+        "thumbnail": "../assets/images/portfolio/portrait/thumbnails/faces-resilience-thumb.jpg",
+        "full": "../assets/images/portfolio/portrait/full/faces-resilience-full.jpg",
+        "category": "Portrait",
+        "year": "2024",
+        "client": "Independent"
+      }
+    ],
+    "commercial": [
+      {
+        "id": "commercial-001",
+        "title": "Nordic Essence",
+        "description": "Brand campaign for Lumina",
+        "thumbnail": "../assets/images/portfolio/commercial/thumbnails/nordic-essence-thumb.jpg",
+        "full": "../assets/images/portfolio/commercial/full/nordic-essence-full.jpg",
+        "category": "Commercial",
+        "year": "2024",
+        "client": "Lumina"
+      }
+    ],
+    "documentary": []
+  },
+  "hero": {
+    "featured": "../assets/images/portfolio/hero/featured-hero.jpg"
+  },
+  "about": {
+    "portrait": "../assets/images/portfolio/about/me.jpg"
+  }
+}
+
