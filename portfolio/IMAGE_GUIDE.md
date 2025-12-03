@@ -90,8 +90,8 @@ Open `portfolio/data/images.json` and add a new entry to the appropriate categor
   "id": "editorial-002",
   "title": "Your Project Title",
   "description": "A brief description of the project",
-  "thumbnail": "../assets/images/portfolio/editorial/thumbnails/your-image-thumb.jpg",
-  "full": "../assets/images/portfolio/editorial/full/your-image-full.jpg",
+   "thumbnail": "assets/images/portfolio/editorial/thumbnails/your-image-thumb.jpg",
+   "full": "assets/images/portfolio/editorial/full/your-image-full.jpg",
   "category": "Editorial",
   "year": "2024",
   "client": "Client Name (or 'Independent')"
@@ -133,8 +133,8 @@ Copy this template when adding new images:
   "id": "category-XXX",
   "title": "Project Title",
   "description": "Project description",
-  "thumbnail": "../assets/images/portfolio/category/thumbnails/filename-thumb.jpg",
-  "full": "../assets/images/portfolio/category/full/filename-full.jpg",
+   "thumbnail": "assets/images/portfolio/category/thumbnails/filename-thumb.jpg",
+   "full": "assets/images/portfolio/category/full/filename-full.jpg",
   "category": "Category Name",
   "year": "2024",
   "client": "Client Name"
