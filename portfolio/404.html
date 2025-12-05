@@ -10,6 +10,8 @@
     (function() {
       'use strict';
       
+      let bannerFound = false;
+      
       function forceBannerVisible() {
         // Find all possible CookieYes banner selectors
         const selectors = [
@@ -17,25 +19,47 @@
           '.cky-banner',
           '[id*="cookieyes"]',
           '[class*="cky-banner"]',
-          '[class*="cookieyes"]'
+          '[class*="cookieyes"]',
+          '[id*="cky"]',
+          'div[class*="cookie"]'
         ];
         
         selectors.forEach(selector => {
           try {
             const elements = document.querySelectorAll(selector);
             elements.forEach(el => {
-              if (el) {
+              if (el && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.textContent.trim().length > 0)) {
+                bannerFound = true;
                 el.style.setProperty('display', 'block', 'important');
                 el.style.setProperty('visibility', 'visible', 'important');
                 el.style.setProperty('opacity', '1', 'important');
                 el.style.setProperty('z-index', '99999', 'important');
                 el.style.setProperty('position', 'fixed', 'important');
+                el.style.setProperty('bottom', '0', 'important');
+                el.style.setProperty('left', '0', 'important');
+                el.style.setProperty('right', '0', 'important');
                 // Remove any hidden classes
-                el.classList.remove('hidden', 'cky-hidden', 'cookieyes-hidden');
+                el.classList.remove('hidden', 'cky-hidden', 'cookieyes-hidden', 'cky-notice-box-hidden');
+                // Force remove display:none
+                if (el.style.display === 'none') {
+                  el.style.display = 'block';
+                }
               }
             });
-          } catch(e) {}
+          } catch(e) {
+            console.error('CookieYes selector error:', e);
+          }
         });
+        
+        // Also check for iframes that might contain the banner
+        try {
+          const iframes = document.querySelectorAll('iframe[src*="cookieyes"], iframe[src*="cky"]');
+          iframes.forEach(iframe => {
+            iframe.style.setProperty('display', 'block', 'important');
+            iframe.style.setProperty('visibility', 'visible', 'important');
+            iframe.style.setProperty('z-index', '99999', 'important');
+          });
+        } catch(e) {}
       }
       
       // Run immediately
@@ -43,17 +67,31 @@
       
       // Run on DOM ready
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', forceBannerVisible);
+        document.addEventListener('DOMContentLoaded', function() {
+          forceBannerVisible();
+          setTimeout(forceBannerVisible, 1000);
+          setTimeout(forceBannerVisible, 2000);
+        });
       } else {
         forceBannerVisible();
+        setTimeout(forceBannerVisible, 1000);
+        setTimeout(forceBannerVisible, 2000);
       }
       
       // Run on window load
-      window.addEventListener('load', forceBannerVisible);
+      window.addEventListener('load', function() {
+        forceBannerVisible();
+        setTimeout(forceBannerVisible, 500);
+        setTimeout(forceBannerVisible, 1500);
+      });
       
       // Monitor for changes and force visibility
       const observer = new MutationObserver(function(mutations) {
-        forceBannerVisible();
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'childList' || mutation.type === 'attributes') {
+            forceBannerVisible();
+          }
+        });
       });
       
       // Start observing when body is available
@@ -63,7 +101,12 @@
             childList: true,
             subtree: true,
             attributes: true,
-            attributeFilter: ['style', 'class', 'id']
+            attributeFilter: ['style', 'class', 'id', 'hidden']
+          });
+          observer.observe(document.documentElement, {
+            childList: true,
+            subtree: false,
+            attributes: true
           });
         } else {
           setTimeout(startObserving, 100);
@@ -72,8 +115,25 @@
       
       startObserving();
       
-      // Continuously check every 500ms
-      setInterval(forceBannerVisible, 500);
+      // Continuously check every 300ms for first 10 seconds, then every 1 second
+      let checkCount = 0;
+      const fastInterval = setInterval(function() {
+        forceBannerVisible();
+        checkCount++;
+        if (checkCount >= 33) { // ~10 seconds
+          clearInterval(fastInterval);
+        }
+      }, 300);
+      
+      // Also check every 1 second indefinitely
+      setInterval(forceBannerVisible, 1000);
+      
+      // Debug: Log after 3 seconds
+      setTimeout(function() {
+        if (!bannerFound) {
+          console.warn('CookieYes banner not found in DOM. Check CookieYes dashboard settings and domain configuration.');
+        }
+      }, 3000);
     })();
   </script>
   
