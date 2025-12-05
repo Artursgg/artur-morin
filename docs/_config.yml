@@ -1,0 +1,25 @@
+# Jekyll configuration for GitHub Pages
+# This enables clean URLs (removes .html extension)
+
+# Permalink structure - removes .html extension
+permalink: /:title/
+
+# Exclude files from processing (keep as-is)
+exclude:
+  - README.md
+  - LICENSE
+  - .gitignore
+  - .DS_Store
+  - netlify.toml
+  - nginx.conf
+  - apache.conf
+  - QUICK_SETUP.sh
+  - *.md
+
+# Include all necessary files
+include:
+  - assets
+  - css
+  - js
+  - data
+  - images
