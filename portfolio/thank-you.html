@@ -5,6 +5,78 @@
   <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/0cc137e141492894816e3e85bd125764/script.js"></script>
   <!-- End cookieyes banner -->
   
+  <!-- Force CookieYes banner to stay visible -->
+  <script>
+    (function() {
+      'use strict';
+      
+      function forceBannerVisible() {
+        // Find all possible CookieYes banner selectors
+        const selectors = [
+          '#cookieyes-banner',
+          '.cky-banner',
+          '[id*="cookieyes"]',
+          '[class*="cky-banner"]',
+          '[class*="cookieyes"]'
+        ];
+        
+        selectors.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+              if (el) {
+                el.style.setProperty('display', 'block', 'important');
+                el.style.setProperty('visibility', 'visible', 'important');
+                el.style.setProperty('opacity', '1', 'important');
+                el.style.setProperty('z-index', '99999', 'important');
+                el.style.setProperty('position', 'fixed', 'important');
+                // Remove any hidden classes
+                el.classList.remove('hidden', 'cky-hidden', 'cookieyes-hidden');
+              }
+            });
+          } catch(e) {}
+        });
+      }
+      
+      // Run immediately
+      forceBannerVisible();
+      
+      // Run on DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', forceBannerVisible);
+      } else {
+        forceBannerVisible();
+      }
+      
+      // Run on window load
+      window.addEventListener('load', forceBannerVisible);
+      
+      // Monitor for changes and force visibility
+      const observer = new MutationObserver(function(mutations) {
+        forceBannerVisible();
+      });
+      
+      // Start observing when body is available
+      function startObserving() {
+        if (document.body) {
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class', 'id']
+          });
+        } else {
+          setTimeout(startObserving, 100);
+        }
+      }
+      
+      startObserving();
+      
+      // Continuously check every 500ms
+      setInterval(forceBannerVisible, 500);
+    })();
+  </script>
+  
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
