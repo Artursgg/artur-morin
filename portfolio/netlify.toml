@@ -8,9 +8,10 @@
   # Build command (optional - only needed if you have a build process)
   # command = "npm run build"
 
-[build.environment]
+# [build.environment]
   # Node.js version for Netlify Functions (if you add serverless functions later)
-  NODE_VERSION = "18.18.0"
+  # NODE_VERSION = "18.17.0"
+  # Commented out - static site doesn't need Node.js
 
 # Redirect rules - handle routing for your site
 [[redirects]]
