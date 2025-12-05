@@ -967,7 +967,10 @@ if (contactForm) {
       } catch (error) {
         // Silently handle timeout/errors - form can still submit
         if (error.message !== 'reCAPTCHA timeout') {
-          console.error('reCAPTCHA error:', error);
+          // Only log if it's not a 401 domain error (domain not authorized in reCAPTCHA console)
+          if (!error.message || (!error.message.includes('401') && !error.message.includes('Unauthorized'))) {
+            console.warn('reCAPTCHA error (form will still submit):', error.message || 'Domain not authorized. Please add ' + window.location.hostname + ' to reCAPTCHA console.');
+          }
         }
         // Continue with form submission even if reCAPTCHA fails (graceful degradation)
       }
