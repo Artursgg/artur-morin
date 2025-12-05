@@ -31,6 +31,9 @@
   opacity: 0 !important;
   position: absolute !important;
   bottom: -9999px !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -48,19 +51,76 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px; /* Account for sticky header */
-  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent; /* Remove blue tap highlight on mobile */
   height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  /* Fill overscroll gaps with dark background */
+  background: #030409;
+  /* Thin, subtle scrollbar - accessible but minimal */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent; /* Firefox */
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) - thin scrollbar */
+html::-webkit-scrollbar {
+  width: 8px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 body {
   /* Radial gradient creates depth - lighter at top, darker at bottom */
   background: radial-gradient(circle at top, #17243d 0%, #05070d 60%, #030409 100%);
+  background-color: #030409; /* Fallback dark color for overscroll areas */
   color: var(--text);
   min-height: 100vh;
   line-height: 1.6;
   overflow-x: hidden; /* Prevents horizontal scroll on mobile */
+  overflow-y: auto; /* Allows vertical scrolling */
+  scroll-behavior: smooth; /* Ensure smooth scrolling on body as well */
   /* Enhanced smooth scrolling with momentum */
   -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent; /* Remove blue tap highlight on mobile */
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Remove blue focus/active outlines on all interactive elements */
+*:focus,
+*:active {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+a:active,
+button:active {
+  -webkit-tap-highlight-color: transparent !important;
 }
 
 /* All headings use Science Gothic display font */
@@ -1011,6 +1071,11 @@ footer {
   justify-content: space-between;
   gap: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 
 .footer-brand {
