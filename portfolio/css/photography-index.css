@@ -1608,6 +1608,161 @@ h1, h2, h3, h4 {
 .frame-corner.bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
 .frame-corner.br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
 
+/* --------------------------------------------------------------------------
+   Picture of the Week Section
+   -------------------------------------------------------------------------- */
+.picture-of-week {
+  padding: var(--section-padding) 5vw;
+  position: relative;
+}
+
+.potw-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.potw-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.potw-badge-wrapper {
+  position: relative;
+  display: inline-block;
+  padding: 20px;
+}
+
+.potw-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding: 12px 20px;
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-md);
+  background: rgba(201, 166, 107, 0.05);
+  position: relative;
+  z-index: 2;
+}
+
+.potw-letters {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  /* Width and height will be set by JavaScript */
+}
+
+.letter-float {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--gold);
+  opacity: 0.6;
+  top: 50%;
+  left: 50%;
+  width: 1em;
+  height: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  /* Transform will be set by JavaScript */
+  will-change: transform;
+  z-index: 1; /* Ensure letters are above background but below badge */
+  pointer-events: none;
+}
+
+.potw-content {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.potw-image {
+  position: relative;
+}
+
+.potw-image .image-frame {
+  position: relative;
+  overflow: hidden;
+}
+
+.potw-image .image-frame img {
+  width: 100%;
+  height: 700px;
+  object-fit: cover;
+  filter: contrast(1.05) saturate(0.9);
+  transition: transform 0.6s ease;
+}
+
+/* Landscape images - natural aspect ratio, larger size */
+.potw-image .image-frame.potw-landscape {
+  max-width: 100%;
+}
+
+.potw-image .image-frame.potw-landscape img {
+  height: auto;
+  width: 100%;
+  object-fit: contain;
+  max-height: 900px;
+}
+
+/* Portrait images - maintain natural aspect ratio */
+.potw-image .image-frame.potw-portrait {
+  max-width: 100%;
+}
+
+.potw-image .image-frame.potw-portrait img {
+  height: auto;
+  width: 100%;
+  object-fit: contain;
+  max-height: 800px;
+}
+
+.potw-image .image-frame:hover img {
+  transform: scale(1.02);
+}
+
+.potw-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.potw-caption h3 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.2;
+  margin: 0;
+  color: var(--text);
+}
+
+.potw-caption p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.potw-location {
+  font-size: 0.9rem;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .image-caption {
   margin-top: 20px;
   display: flex;
@@ -1864,35 +2019,6 @@ h1, h2, h3, h4 {
   color: var(--text-dim);
   padding: 6px 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* --------------------------------------------------------------------------
-   Quote Section
-   -------------------------------------------------------------------------- */
-.quote {
-  padding: 100px 5vw;
-  background: var(--bg-warm);
-  text-align: center;
-}
-
-.quote blockquote {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.quote p {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2.2rem);
-  font-style: italic;
-  line-height: 1.5;
-  margin-bottom: 24px;
-}
-
-.quote cite {
-  font-size: 0.85rem;
-  letter-spacing: 0.1em;
-  color: var(--gold);
-  font-style: normal;
 }
 
 /* --------------------------------------------------------------------------
@@ -3616,12 +3742,48 @@ h1, h2, h3, h4 {
   }
 
   /* Quote Section */
-  .quote {
-    padding: 80px 4vw;
+  /* Picture of the Week - Tablet */
+  .picture-of-week {
+    padding: var(--section-padding) 4vw;
   }
 
-  .quote p {
-    font-size: clamp(1.3rem, 5vw, 1.8rem);
+  .potw-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .potw-image .image-frame img {
+    height: 500px;
+  }
+
+  /* Landscape - natural aspect ratio on tablet */
+  .potw-image .image-frame.potw-landscape img {
+    max-height: 700px;
+  }
+
+  /* Portrait - maintain aspect ratio on tablet */
+  .potw-image .image-frame.potw-portrait img {
+    max-height: 600px;
+  }
+
+  .potw-caption {
+    align-items: center;
+  }
+
+  .potw-caption h3 {
+    text-align: center;
+  }
+
+  .potw-caption p {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .potw-badge {
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
   }
 
   /* About Preview */
@@ -3841,13 +4003,68 @@ h1, h2, h3, h4 {
   }
 
   /* Quote */
-  .quote {
-    padding: 60px 4vw;
+  /* Picture of the Week - Mobile */
+  .picture-of-week {
+    padding: var(--section-padding) 4vw;
   }
 
-  .quote p {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
+  .potw-header {
+    margin-bottom: 40px;
+  }
+
+  .potw-badge {
+    font-size: 0.7rem;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+  }
+
+  .potw-badge-wrapper {
+    padding: 15px;
+  }
+
+  .letter-float {
+    font-size: 0.85rem;
+    opacity: 0.5;
+  }
+
+  .potw-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    text-align: center;
+  }
+
+  .potw-image .image-frame img {
+    height: 400px;
+  }
+
+  /* Landscape - natural aspect ratio on mobile */
+  .potw-image .image-frame.potw-landscape img {
+    max-height: 500px;
+  }
+
+  /* Portrait - maintain aspect ratio on mobile */
+  .potw-image .image-frame.potw-portrait img {
+    max-height: 500px;
+  }
+
+  .potw-caption {
+    align-items: center;
+    gap: 16px;
+  }
+
+  .potw-caption h3 {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    text-align: center;
+  }
+
+  .potw-caption p {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .potw-location {
+    font-size: 0.85rem;
+    justify-content: center;
   }
 
   /* Contact */

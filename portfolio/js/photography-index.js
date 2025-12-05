@@ -28,9 +28,16 @@
   });
 
   // Strategy 3: Also try on DOMContentLoaded
+  // Check if DOMContentLoaded has already fired
+  if (document.readyState === "loading") {
+    // DOMContentLoaded hasn't fired yet, add listener
   document.addEventListener("DOMContentLoaded", function() {
     setTimeout(hideLoader, 500);
   });
+  } else {
+    // DOMContentLoaded has already fired, call hideLoader directly
+    setTimeout(hideLoader, 500);
+  }
 
   // Strategy 4: Aggressive fallback - force hide after 1 second
   setTimeout(hideLoader, 1000);
@@ -2075,6 +2082,552 @@ window.addEventListener('pagehide', (event) => {
     );
     servicesObserver.observe(servicesSection);
   }
+})();
+
+// =============================================================================
+// Hero Carousel (Threads-styled from main/about.html)
+// Adaptive sizing and infinite loop carousel for hero images
+// =============================================================================
+(function() {
+  'use strict';
+  
+  const heroImage = document.querySelector('.hero-image');
+  if (!heroImage) return;
+  
+  const originalSlides = Array.from(heroImage.querySelectorAll('.carousel-slide'));
+  const track = heroImage.querySelector('.carousel-track');
+  const windowEl = heroImage.querySelector('.carousel-window');
+  const prevBtn = heroImage.querySelector('.carousel-btn.prev');
+  const nextBtn = heroImage.querySelector('.carousel-btn.next');
+  const dots = Array.from(heroImage.querySelectorAll('.carousel-dots button'));
+  
+  if (!track || !windowEl || originalSlides.length === 0) return;
+  
+  let currentIndex = 0;
+  let isTransitioning = false;
+  const imageData = new Map();
+  
+  // Clone first and last slides for infinite loop
+  const firstClone = originalSlides[0].cloneNode(true);
+  const lastClone = originalSlides[originalSlides.length - 1].cloneNode(true);
+  firstClone.setAttribute('aria-hidden', 'true');
+  lastClone.setAttribute('aria-hidden', 'true');
+  track.appendChild(firstClone);
+  track.insertBefore(lastClone, originalSlides[0]);
+  
+  const slides = originalSlides;
+  
+  function measureImage(slide) {
+    const img = slide.querySelector('img');
+    if (!img || imageData.has(img.src)) return Promise.resolve(null);
+    
+    return new Promise((resolve) => {
+      if (img.complete && img.naturalWidth) {
+        const aspect = img.naturalWidth / img.naturalHeight;
+        imageData.set(img.src, { width: img.naturalWidth, height: img.naturalHeight, aspect });
+        resolve({ aspect });
+      } else {
+        img.onload = () => {
+          const aspect = img.naturalWidth / img.naturalHeight;
+          imageData.set(img.src, { width: img.naturalWidth, height: img.naturalHeight, aspect });
+          resolve({ aspect });
+        };
+        img.onerror = () => resolve(null);
+      }
+    });
+  }
+  
+  function resizeWindowForSlide(slideIndex) {
+    const slide = slides[slideIndex];
+    if (!slide || !windowEl) return;
+    
+    const img = slide.querySelector('img');
+    if (!img) return;
+    
+    const data = imageData.get(img.src);
+    if (!data) return;
+    
+    const maxWidth = Math.min(760, window.innerWidth * 0.9);
+    const maxHeight = window.innerHeight * 0.8;
+    let targetWidth, targetHeight;
+    
+    if (data.aspect > 1) {
+      targetWidth = Math.min(maxWidth, maxHeight * data.aspect);
+      targetHeight = targetWidth / data.aspect;
+    } else if (data.aspect < 1) {
+      targetHeight = Math.min(maxHeight, maxWidth / data.aspect);
+      targetWidth = targetHeight * data.aspect;
+    } else {
+      const size = Math.min(maxWidth, maxHeight);
+      targetWidth = size;
+      targetHeight = size;
+    }
+    
+    windowEl.style.width = `${targetWidth + 24}px`;
+    windowEl.style.height = `${targetHeight + 24}px`;
+  }
+  
+  function updateDots() {
+    slides.forEach((slide, index) => {
+      slide.setAttribute('aria-hidden', index === currentIndex ? 'false' : 'true');
+    });
+    dots.forEach((dot, index) => {
+      dot.setAttribute('aria-selected', index === currentIndex ? 'true' : 'false');
+    });
+  }
+  
+  function goNext() {
+    if (isTransitioning) return;
+    const totalSlides = slides.length;
+    const nextPos = currentIndex + 2;
+    
+    isTransitioning = true;
+    track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0.15, 0.15, 1)';
+    track.style.transform = `translateX(-${nextPos * 100}%)`;
+    
+    currentIndex = (currentIndex + 1) % totalSlides;
+    updateDots();
+    resizeWindowForSlide(currentIndex);
+  }
+  
+  function goPrev() {
+    if (isTransitioning) return;
+    const totalSlides = slides.length;
+    const prevPos = currentIndex;
+    
+    isTransitioning = true;
+    track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0.15, 0.15, 1)';
+    track.style.transform = `translateX(-${prevPos * 100}%)`;
+    
+    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+    updateDots();
+    resizeWindowForSlide(currentIndex);
+  }
+  
+  function goToSlide(index) {
+    if (isTransitioning || index === currentIndex) return;
+    
+    isTransitioning = true;
+    track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0.15, 0.15, 1)';
+    track.style.transform = `translateX(-${(index + 1) * 100}%)`;
+    
+    currentIndex = index;
+    updateDots();
+    resizeWindowForSlide(currentIndex);
+  }
+  
+  // Handle seamless loop after transition
+  track.addEventListener('transitionend', () => {
+    isTransitioning = false;
+    const totalSlides = slides.length;
+    const currentTransform = track.style.transform;
+    const match = currentTransform.match(/translateX\(-?(\d+)%\)/);
+    
+    if (match) {
+      const visualPos = parseInt(match[1]) / 100;
+      
+      if (visualPos === totalSlides + 1) {
+        track.style.transition = 'none';
+        track.style.transform = 'translateX(-100%)';
+      }
+      if (visualPos === 0) {
+        track.style.transition = 'none';
+        track.style.transform = `translateX(-${totalSlides}%)`;
+      }
+    }
+  });
+  
+  prevBtn?.addEventListener('click', goPrev);
+  nextBtn?.addEventListener('click', goNext);
+  dots.forEach((dot, index) => dot.addEventListener('click', () => goToSlide(index)));
+  
+  let carouselTimer = setInterval(goNext, 6000);
+  track?.addEventListener('mouseenter', () => clearInterval(carouselTimer));
+  track?.addEventListener('mouseleave', () => {
+    clearInterval(carouselTimer);
+    carouselTimer = setInterval(goNext, 6000);
+  });
+  
+  // Initialize carousel
+  Promise.all(slides.map((slide) => measureImage(slide))).then(() => {
+    if (track) {
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(-100%)';
+    }
+    resizeWindowForSlide(0);
+    updateDots();
+    
+    setTimeout(() => {
+      if (track) {
+        track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0.15, 0.15, 1)';
+      }
+    }, 50);
+  });
+})();
+
+// =============================================================================
+// Picture of the Week - Floating Letters Animation
+// Follows the rounded rectangle border of the badge
+// =============================================================================
+(function() {
+  'use strict';
+  
+  const badgeWrapper = document.querySelector('.potw-badge-wrapper');
+  const badge = document.querySelector('.potw-badge');
+  const lettersContainer = document.querySelector('.potw-letters');
+  const letters = document.querySelectorAll('.letter-float');
+  
+  if (!badgeWrapper || !badge || !lettersContainer || letters.length === 0) return;
+  
+  const WORD_LETTERS = 8; // D, e, c, e, m, b, e, r
+  const WORD_COUNT = 2; // Two "december" words
+  const LETTER_COUNT = WORD_LETTERS * WORD_COUNT; // 16 total letters
+  const PADDING = 20; // Space between badge border and letters (in pixels)
+  const BORDER_RADIUS = 16; // Match CSS border-radius (var(--radius-md))
+  const WORD_SPACING = 0.05; // Spacing between words (5% of path) - equal gap after each word
+  // Spacing between letters within a word - evenly distribute letters accounting for 2 equal gaps
+  // Total: 16 letters × LETTER_SPACING + 2 gaps × WORD_SPACING = 1.0
+  const LETTER_SPACING = (1 - (WORD_SPACING * 2)) / (WORD_LETTERS * WORD_COUNT);
+  
+  let badgeWidth = 0;
+  let badgeHeight = 0;
+  let pathLength = 0; // Total length of the rounded rectangle path
+  let animationFrameId = null;
+  let offset = 0; // Current offset along the path (0 to 1)
+  const ANIMATION_SPEED = 0.0008; // Speed of movement along path (0-1 per frame)
+  
+  // Get computed style for border radius
+  function getBorderRadius() {
+    const computed = window.getComputedStyle(badge);
+    return parseFloat(computed.borderRadius) || BORDER_RADIUS;
+  }
+  
+  // Calculate distance-based position to ensure constant speed
+  // Uses actual path length, not percentage, for smooth corners
+  function getPointOnPathByDistance(distance, width, height, radius, padding) {
+    const w = width;
+    const h = height;
+    const r = radius + padding;
+    
+    // Calculate actual path segment lengths
+    const straightTop = Math.max(0, w - (radius * 2));
+    const straightRight = Math.max(0, h - (radius * 2));
+    const straightBottom = Math.max(0, w - (radius * 2));
+    const straightLeft = Math.max(0, h - (radius * 2));
+    const cornerArc = (Math.PI * r) / 2; // Quarter circle arc length
+    
+    const totalLength = straightTop + straightRight + straightBottom + straightLeft + (cornerArc * 4);
+    
+    // Normalize distance to loop
+    let normalizedDist = distance % totalLength;
+    if (normalizedDist < 0) normalizedDist += totalLength;
+    
+    let x, y, angle;
+    let currentDist = 0;
+    
+    // Top edge (left to right)
+    if (normalizedDist < straightTop) {
+      const progress = normalizedDist / straightTop;
+      x = -w/2 + radius + (progress * straightTop);
+      y = -h/2 - padding;
+      angle = 0;
+    }
+    // Top-right corner
+    else if (normalizedDist <= straightTop + cornerArc) {
+      currentDist = normalizedDist - straightTop;
+      const arcProgress = Math.min(1, currentDist / cornerArc); // Clamp to prevent overflow
+      // Corner goes from angle -PI/2 (top edge end) to 0 (right edge start)
+      const cornerAngle = (-Math.PI / 2) + (arcProgress * (Math.PI / 2));
+      const cornerCenterX = w/2 - radius;
+      const cornerCenterY = -h/2 + radius;
+      // Arc position - at end (arcProgress=1, angle=0): x = w/2 + padding, y = -h/2 + radius
+      x = cornerCenterX + Math.cos(cornerAngle) * r;
+      y = cornerCenterY + Math.sin(cornerAngle) * r;
+      // Angle smoothly transitions: at start (-90°) → 0°, at end (0°) → 90° for smooth transition
+      angle = (cornerAngle + Math.PI / 2) * (180 / Math.PI);
+    }
+    // Right edge (top to bottom) - starts exactly where corner ends
+    else if (normalizedDist < straightTop + cornerArc + straightRight) {
+      currentDist = normalizedDist - straightTop - cornerArc;
+      const progress = currentDist / straightRight;
+      // Position matches corner end exactly: x = w/2 + padding, y = -h/2 + radius (when progress=0)
+      x = w/2 + padding;
+      y = -h/2 + radius + (progress * straightRight);
+      // Angle is 90 degrees (vertical down) - smooth continuation from corner
+      angle = 90;
+    }
+    // Bottom-right corner
+    else if (normalizedDist <= straightTop + cornerArc + straightRight + cornerArc) {
+      currentDist = normalizedDist - straightTop - cornerArc - straightRight;
+      const arcProgress = Math.min(1, currentDist / cornerArc);
+      // Corner goes from angle 0 (right edge end) to PI/2 (bottom edge start)
+      const cornerAngle = 0 + (arcProgress * (Math.PI / 2));
+      const cornerCenterX = w/2 - radius;
+      const cornerCenterY = h/2 - radius;
+      // Arc position - at end (arcProgress=1, angle=PI/2): x = w/2 - radius, y = h/2 + padding
+      x = cornerCenterX + Math.cos(cornerAngle) * r;
+      y = cornerCenterY + Math.sin(cornerAngle) * r;
+      // Angle smoothly transitions from 90 to 180 degrees
+      angle = (90 + arcProgress * 90);
+    }
+    // Bottom edge (right to left) - starts exactly where corner ends
+    else if (normalizedDist < straightTop + cornerArc + straightRight + cornerArc + straightBottom) {
+      currentDist = normalizedDist - straightTop - cornerArc - straightRight - cornerArc;
+      const progress = currentDist / straightBottom;
+      // Position matches corner end exactly: x = w/2 - radius (when progress=0), y = h/2 + padding
+      x = w/2 - radius - (progress * straightBottom);
+      y = h/2 + padding;
+      // Angle is 180 degrees (horizontal left) - smooth continuation from corner
+      angle = 180;
+    }
+    // Bottom-left corner - exact mirror of bottom-right corner
+    else if (normalizedDist <= straightTop + cornerArc + straightRight + cornerArc + straightBottom + cornerArc) {
+      currentDist = normalizedDist - straightTop - cornerArc - straightRight - cornerArc - straightBottom;
+      const arcProgress = Math.min(1, currentDist / cornerArc);
+      // Mirror of bottom-right: bottom-right uses angle 0 to PI/2
+      // Bottom-left: center (-w/2 + radius, h/2 - radius), angle PI to 3*PI/2
+      // Start: bottom edge end (-w/2 + radius, h/2 + padding) at angle PI/2 (relative to center)
+      // End: left edge start (-w/2 - padding, h/2 - radius) at angle PI (relative to center)
+      // Actually, let's work backwards: we need to go from bottom edge end to left edge start
+      // Bottom edge end: (-w/2 + radius, h/2 + padding)
+      // Left edge start: (-w/2 - padding, h/2 - radius)
+      // With center at (-w/2 + radius, h/2 - radius) and radius r:
+      // To get (-w/2 + radius, h/2 + padding): need angle PI/2 (pointing up from center)
+      // To get (-w/2 - padding, h/2 - radius): need angle PI (pointing left from center)
+      // So angle range: PI/2 to PI (going counter-clockwise)
+      const cornerCenterX = -w/2 + radius;
+      const cornerCenterY = h/2 - radius;
+      const cornerAngle = (Math.PI / 2) + (arcProgress * (Math.PI / 2));
+      // Calculate position
+      x = cornerCenterX + Math.cos(cornerAngle) * r;
+      y = cornerCenterY + Math.sin(cornerAngle) * r;
+      // Angle smoothly transitions from 180 to 270 degrees (mirror of 90 to 180)
+      angle = (180 + arcProgress * 90);
+    }
+    // Left edge (bottom to top) - starts exactly where corner ends
+    // Mirrored from right edge (top to bottom) - same pattern, just reversed direction
+    else if (normalizedDist < straightTop + cornerArc + straightRight + cornerArc + straightBottom + cornerArc + straightLeft) {
+      currentDist = normalizedDist - straightTop - cornerArc - straightRight - cornerArc - straightBottom - cornerArc;
+      const progress = currentDist / straightLeft;
+      // Position matches corner end exactly: x = -w/2 - padding, y = h/2 - radius (when progress=0)
+      // Exact mirror of right edge: right edge: y = -h/2 + radius + (progress * straightRight)
+      // Left edge: y = h/2 - radius - (progress * straightLeft) - goes from bottom to top
+      x = -w/2 - padding;
+      y = h/2 - radius - (progress * straightLeft);
+      // Angle is 270 degrees (vertical up) - smooth continuation from corner
+      angle = 270;
+    }
+    // Top-left corner - exact mirror of top-right corner
+    else {
+      currentDist = normalizedDist - straightTop - cornerArc - straightRight - cornerArc - straightBottom - cornerArc - straightLeft;
+      const arcProgress = Math.min(1, currentDist / cornerArc);
+      // Mirror of top-right: top-right uses angle -PI/2 to 0
+      // Top-left: center (-w/2 + radius, -h/2 + radius), angle 3*PI/2 to 2*PI/0
+      // Start: left edge end (-w/2 - padding, -h/2 + radius)
+      // End: top edge start (-w/2 + radius, -h/2 - padding)
+      // With center at (-w/2 + radius, -h/2 + radius) and radius r:
+      // To get (-w/2 - padding, -h/2 + radius): need angle PI (pointing left from center)
+      // To get (-w/2 + radius, -h/2 - padding): need angle -PI/2 or 3*PI/2 (pointing up from center)
+      // So angle range: PI to 3*PI/2 (going counter-clockwise)
+      const cornerCenterX = -w/2 + radius;
+      const cornerCenterY = -h/2 + radius;
+      const cornerAngle = Math.PI + (arcProgress * (Math.PI / 2));
+      // Calculate position
+      x = cornerCenterX + Math.cos(cornerAngle) * r;
+      y = cornerCenterY + Math.sin(cornerAngle) * r;
+      // Angle smoothly transitions from 270 to 360/0 degrees (mirror of 0 to 90)
+      angle = (cornerAngle + Math.PI / 2) * (180 / Math.PI);
+      // Ensure angle wraps correctly (0-360 range)
+      if (angle >= 360) angle = angle - 360;
+      if (angle < 0) angle = angle + 360;
+    }
+    
+    return { x, y, angle };
+  }
+  
+  
+  function calculatePathLength(width, height, radius, padding) {
+    const w = width;
+    const h = height;
+    const r = radius + padding;
+    
+    const straightTop = Math.max(0, w - (radius * 2));
+    const straightRight = Math.max(0, h - (radius * 2));
+    const straightBottom = Math.max(0, w - (radius * 2));
+    const straightLeft = Math.max(0, h - (radius * 2));
+    const cornerArc = (Math.PI * r) / 2;
+    
+    return straightTop + straightRight + straightBottom + straightLeft + (cornerArc * 4);
+  }
+  
+  function updateBadgeDimensions() {
+    const badgeRect = badge.getBoundingClientRect();
+    badgeWidth = badgeRect.width;
+    badgeHeight = badgeRect.height;
+    
+    const radius = getBorderRadius();
+    pathLength = calculatePathLength(badgeWidth, badgeHeight, radius, PADDING);
+    
+    // Set container size to accommodate the path
+    const containerSize = Math.max(badgeWidth, badgeHeight) + (PADDING * 4);
+    lettersContainer.style.width = `${containerSize}px`;
+    lettersContainer.style.height = `${containerSize}px`;
+  }
+  
+  function positionLetters() {
+    const radius = getBorderRadius();
+    
+    letters.forEach((letter, index) => {
+      // Calculate position: each letter follows the previous one in order
+      // Letters should be positioned ahead of the lead letter (currentDistance)
+      let letterDistance = currentDistance;
+      
+      if (index < WORD_LETTERS) {
+        // First word: letters 0-7 (D, e, c, e, m, b, e, r)
+        // Each letter follows the previous one, so add spacing
+        letterDistance += index * (pathLength * LETTER_SPACING);
+      } else {
+        // Second word: letters 8-15, add word spacing gap after first word
+        const firstWordLength = WORD_LETTERS * (pathLength * LETTER_SPACING);
+        const gap = pathLength * WORD_SPACING;
+        const secondWordIndex = index - WORD_LETTERS;
+        letterDistance += firstWordLength + gap + (secondWordIndex * (pathLength * LETTER_SPACING));
+      }
+      
+      // Wrap around if exceeds path length
+      while (letterDistance >= pathLength) {
+        letterDistance -= pathLength;
+      }
+      while (letterDistance < 0) {
+        letterDistance += pathLength;
+      }
+      
+      const point = getPointOnPathByDistance(letterDistance, badgeWidth, badgeHeight, radius, PADDING);
+      
+      // Position letter and rotate to follow the path direction
+      letter.style.transform = `translate(calc(-50% + ${point.x}px), calc(-50% + ${point.y}px)) rotate(${point.angle}deg)`;
+    });
+  }
+  
+  let currentDistance = 0; // Distance along path in pixels
+  const DISTANCE_PER_FRAME = 0.5; // Pixels to move per frame (constant speed)
+  
+  function animate() {
+    // Move forward by constant distance (ensures constant speed on curves too)
+    currentDistance += DISTANCE_PER_FRAME;
+    
+    // Wrap around when completing full loop
+    if (currentDistance >= pathLength) {
+      currentDistance = currentDistance - pathLength;
+    }
+    
+    positionLetters();
+    animationFrameId = requestAnimationFrame(animate);
+  }
+  
+  function init() {
+    updateBadgeDimensions();
+    
+    // Ensure pathLength is calculated before starting animation
+    if (pathLength > 0) {
+      positionLetters();
+      
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      animate();
+    } else {
+      // Retry if dimensions not ready
+      setTimeout(init, 50);
+    }
+  }
+  
+  // Initialize on load
+  function startInit() {
+    setTimeout(() => {
+      init();
+    }, 100);
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startInit);
+  } else {
+    startInit();
+  }
+  
+  // Update on resize
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      updateBadgeDimensions();
+      // Recalculate pathLength after resize
+      const radius = getBorderRadius();
+      pathLength = calculatePathLength(badgeWidth, badgeHeight, radius, PADDING);
+      positionLetters();
+    }, 150);
+  });
+})();
+
+// =============================================================================
+// Picture of the Week - Image Orientation Detection
+// Automatically detects landscape vs portrait and applies appropriate styling
+// =============================================================================
+(function() {
+  'use strict';
+  
+  function detectPotwImageOrientation() {
+    const potwImageFrame = document.querySelector('.potw-image .image-frame');
+    if (!potwImageFrame) return;
+    
+    // Find img element (could be inside picture element or direct)
+    const potwImage = potwImageFrame.querySelector('picture img') || potwImageFrame.querySelector('img');
+    
+    if (!potwImage) return;
+    
+    // Remove existing orientation classes
+    potwImageFrame.classList.remove('potw-landscape', 'potw-portrait');
+    
+    // Wait for image to load to get actual dimensions
+    if (potwImage.complete && potwImage.naturalWidth > 0) {
+      applyOrientationClass(potwImage, potwImageFrame);
+    } else {
+      // Image not loaded yet, wait for load event
+      potwImage.addEventListener('load', function() {
+        applyOrientationClass(potwImage, potwImageFrame);
+      }, { once: true });
+      
+      // Also handle error case (fallback to default)
+      potwImage.addEventListener('error', function() {
+        potwImageFrame.classList.add('potw-landscape'); // Default to landscape
+      }, { once: true });
+    }
+  }
+  
+  function applyOrientationClass(img, frame) {
+    const aspectRatio = img.naturalWidth / img.naturalHeight;
+    
+    // Landscape: width > height (aspect ratio > 1)
+    // Apply 16:9 aspect ratio container
+    if (aspectRatio > 1) {
+      frame.classList.add('potw-landscape');
+    } 
+    // Portrait: height > width (aspect ratio < 1)
+    // Maintain natural aspect ratio, don't force square
+    else {
+      frame.classList.add('potw-portrait');
+    }
+  }
+  
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', detectPotwImageOrientation);
+  } else {
+    detectPotwImageOrientation();
+  }
+  
+  // Re-check on window resize (in case image changes)
+  window.addEventListener('resize', detectPotwImageOrientation);
 })();
 
 // =============================================================================

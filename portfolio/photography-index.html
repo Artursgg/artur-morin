@@ -68,6 +68,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <!-- reCAPTCHA v3 -->
   <script src="https://www.google.com/recaptcha/api.js?render=6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK"></script>
   
+  <!-- Start cookieyes banner -->
+  <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/0cc137e141492894816e3e85bd125764/script.js"></script>
+  <!-- End cookieyes banner -->
+  
   <!-- Styles -->
   <link rel="stylesheet" href="css/photography-index.css">
   
@@ -110,7 +114,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     "image": "https://arturmorin.com/assets/artur-morin.jpg",
     "sameAs": [
       "https://x.com/_smilexfd_",
-      "https://www.threads.net/@morinartur"
+      "https://www.threads.net/@morinartur",
+      "https://t.me/SmileXFD"
     ],
     "address": {
       "@type": "PostalAddress",
@@ -278,6 +283,56 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </section>
 
+    <!-- Picture of the Week -->
+    <section class="picture-of-week parallax" data-speed="0.2" aria-labelledby="potw-heading">
+      <div class="potw-container">
+        <div class="potw-header">
+          <div class="potw-badge-wrapper">
+            <span class="potw-badge">Picture of the Week</span>
+            <div class="potw-letters" aria-hidden="true">
+              <!-- First "december" -->
+              <span class="letter-float" style="--index: 0">D</span>
+              <span class="letter-float" style="--index: 1">e</span>
+              <span class="letter-float" style="--index: 2">c</span>
+              <span class="letter-float" style="--index: 3">e</span>
+              <span class="letter-float" style="--index: 4">m</span>
+              <span class="letter-float" style="--index: 5">b</span>
+              <span class="letter-float" style="--index: 6">e</span>
+              <span class="letter-float" style="--index: 7">r</span>
+              <!-- Second "december" with spacing -->
+              <span class="letter-float" style="--index: 8">D</span>
+              <span class="letter-float" style="--index: 9">e</span>
+              <span class="letter-float" style="--index: 10">c</span>
+              <span class="letter-float" style="--index: 11">e</span>
+              <span class="letter-float" style="--index: 12">m</span>
+              <span class="letter-float" style="--index: 13">b</span>
+              <span class="letter-float" style="--index: 14">e</span>
+              <span class="letter-float" style="--index: 15">r</span>
+            </div>
+          </div>
+        </div>
+        <div class="potw-content reveal">
+          <div class="potw-image">
+            <div class="image-frame">
+              <picture>
+                <source srcset="assets/images/portfolio/potw/Kasela-yellow-neon-logo.webp" type="image/webp">
+                <img src="assets/images/portfolio/potw/Kasela-yellow-neon-logo.jpg" alt="Picture of the Week - Kasela yellow neon logo">
+              </picture>
+              <div class="frame-corner tl"></div>
+              <div class="frame-corner tr"></div>
+              <div class="frame-corner bl"></div>
+              <div class="frame-corner br"></div>
+            </div>
+          </div>
+          <div class="potw-caption">
+            <h3 id="potw-heading">Dawn at Sunrise Peak</h3>
+            <p>A moment of tranquility captured at the break of dawn, where light meets landscape in perfect harmony.</p>
+            <span class="potw-location">📍 Tallinn, Estonia</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Featured Work -->
     <section class="work parallax" id="work" data-speed="0.15" aria-labelledby="work-heading">
       <header class="section-header">
@@ -420,14 +475,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </ul>
         </article>
       </div>
-    </section>
-
-    <!-- Quote Section -->
-    <section class="quote parallax" data-speed="0.2">
-      <blockquote class="reveal">
-        <p>"A photograph is a secret about a secret. The more it tells you, the less you know."</p>
-        <cite>— Diane Arbus</cite>
-      </blockquote>
     </section>
 
     <!-- About Preview -->

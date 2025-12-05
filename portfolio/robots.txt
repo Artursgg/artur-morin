@@ -1,0 +1,11 @@
+# robots.txt for arturmorin.com
+# This file tells search engines which pages they can and cannot access
+
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /404.html
+
+# Sitemap location
+Sitemap: https://arturmorin.com/sitemap.xml
+

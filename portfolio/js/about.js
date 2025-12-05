@@ -28,9 +28,16 @@
   });
 
   // Strategy 3: Also try on DOMContentLoaded
+  // Check if DOMContentLoaded has already fired
+  if (document.readyState === "loading") {
+    // DOMContentLoaded hasn't fired yet, add listener
   document.addEventListener("DOMContentLoaded", function() {
     setTimeout(hideLoader, 500);
   });
+  } else {
+    // DOMContentLoaded has already fired, call hideLoader directly
+    setTimeout(hideLoader, 500);
+  }
 
   // Strategy 4: Aggressive fallback - force hide after 1 second
   setTimeout(hideLoader, 1000);
