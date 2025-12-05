@@ -1,5 +1,6 @@
 # Jekyll configuration for GitHub Pages
 # This enables clean URLs (removes .html extension)
+# Updated: 2025-12-06
 
 # Permalink structure - removes .html extension
 permalink: /:title/
