@@ -918,6 +918,7 @@ window.addEventListener('scroll', () => {
       const urlObj = new URL(url, window.location.origin);
       // Allow same origin or trusted external domains
       const allowedDomains = [
+        'arturmorin.page',
         'arturmorin.com',
         'arturmorin.netlify.app',
         'x.com',

@@ -1,4 +1,4 @@
-# robots.txt for arturmorin.com
+# robots.txt for arturmorin.page
 # This file tells search engines which pages they can and cannot access
 
 User-agent: *
@@ -7,5 +7,5 @@ Disallow: /img-mgr-ref-2024.html
 Disallow: /404.html
 
 # Sitemap location
-Sitemap: https://arturmorin.com/sitemap.xml
+Sitemap: https://arturmorin.page/sitemap.xml
 
