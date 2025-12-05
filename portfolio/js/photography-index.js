@@ -780,12 +780,23 @@ if (contactForm) {
     }
     
     if (isNameValid && isEmailValid && isMessageValid && isChallengeValid) {
-      // Get reCAPTCHA token
+      // Get reCAPTCHA token with timeout
       let recaptchaToken = '';
       try {
-        recaptchaToken = await grecaptcha.execute('6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK', { action: 'submit' });
+        // Check if grecaptcha is loaded
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.execute) {
+          // Add timeout to prevent hanging
+          const recaptchaPromise = grecaptcha.execute('6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK', { action: 'submit' });
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('reCAPTCHA timeout')), 5000)
+          );
+          recaptchaToken = await Promise.race([recaptchaPromise, timeoutPromise]);
+        }
       } catch (error) {
-        console.error('reCAPTCHA error:', error);
+        // Silently handle timeout/errors - form can still submit
+        if (error.message !== 'reCAPTCHA timeout') {
+          console.error('reCAPTCHA error:', error);
+        }
         // Continue with form submission even if reCAPTCHA fails (graceful degradation)
       }
 
