@@ -11,8 +11,12 @@
       'use strict';
       
       let bannerFound = false;
+      let isUpdating = false; // Prevent infinite loops
       
       function forceBannerVisible() {
+        // Prevent recursive calls
+        if (isUpdating) return;
+        isUpdating = true;
         // Find all possible CookieYes banner selectors
         const selectors = [
           '#cookieyes-banner',
@@ -30,20 +34,19 @@
             elements.forEach(el => {
               if (el && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.textContent.trim().length > 0)) {
                 bannerFound = true;
-                el.style.setProperty('display', 'block', 'important');
-                el.style.setProperty('visibility', 'visible', 'important');
-                el.style.setProperty('opacity', '1', 'important');
-                el.style.setProperty('z-index', '99999', 'important');
-                el.style.setProperty('position', 'fixed', 'important');
-                el.style.setProperty('bottom', '0', 'important');
-                el.style.setProperty('left', '0', 'important');
-                el.style.setProperty('right', '0', 'important');
+                // Only update if actually needed to prevent infinite loops
+                if (el.style.display === 'none' || el.style.visibility === 'hidden' || el.style.opacity === '0') {
+                  el.style.display = 'block';
+                  el.style.visibility = 'visible';
+                  el.style.opacity = '1';
+                  el.style.zIndex = '99999';
+                  el.style.position = 'fixed';
+                  el.style.bottom = '0';
+                  el.style.left = '0';
+                  el.style.right = '0';
+                }
                 // Remove any hidden classes
                 el.classList.remove('hidden', 'cky-hidden', 'cookieyes-hidden', 'cky-notice-box-hidden');
-                // Force remove display:none
-                if (el.style.display === 'none') {
-                  el.style.display = 'block';
-                }
               }
             });
           } catch(e) {
@@ -60,6 +63,8 @@
             iframe.style.setProperty('z-index', '99999', 'important');
           });
         } catch(e) {}
+        
+        isUpdating = false;
       }
       
       // Run immediately
@@ -85,28 +90,24 @@
         setTimeout(forceBannerVisible, 1500);
       });
       
-      // Monitor for changes and force visibility
+      // Monitor for DOM additions only (not style changes) to prevent infinite loops
       const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          if (mutation.type === 'childList' || mutation.type === 'attributes') {
-            forceBannerVisible();
-          }
-        });
+        // Only react to new nodes being added, not style/attribute changes
+        const hasNewNodes = mutations.some(mutation => 
+          mutation.type === 'childList' && mutation.addedNodes.length > 0
+        );
+        if (hasNewNodes) {
+          forceBannerVisible();
+        }
       });
       
-      // Start observing when body is available
+      // Start observing when body is available - only watch for new nodes
       function startObserving() {
         if (document.body) {
           observer.observe(document.body, {
             childList: true,
             subtree: true,
-            attributes: true,
-            attributeFilter: ['style', 'class', 'id', 'hidden']
-          });
-          observer.observe(document.documentElement, {
-            childList: true,
-            subtree: false,
-            attributes: true
+            attributes: false // Don't watch attributes to prevent loops
           });
         } else {
           setTimeout(startObserving, 100);
@@ -125,8 +126,8 @@
         }
       }, 300);
       
-      // Also check every 1 second indefinitely
-      setInterval(forceBannerVisible, 1000);
+      // Also check every 2 seconds (less frequent to reduce load)
+      setInterval(forceBannerVisible, 2000);
       
       // Debug: Log after 3 seconds
       setTimeout(function() {
