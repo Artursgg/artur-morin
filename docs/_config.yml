@@ -2,8 +2,9 @@
 # This enables clean URLs (removes .html extension)
 # Updated: 2025-12-06
 
-# Permalink structure - removes .html extension
-permalink: /:title/
+# Enable redirect plugin to handle .html to clean URL redirects
+plugins:
+  - jekyll-redirect-from
 
 # Exclude files from processing (keep as-is)
 exclude:
