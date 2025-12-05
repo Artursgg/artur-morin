@@ -171,6 +171,33 @@
       'ad_storage': 'denied',
       'wait_for_update': 500
     });
+    
+    // Listen for CookieYes consent updates and update Google Consent Mode
+    window.addEventListener('CookieYes', function(e) {
+      if (e.detail && e.detail.action === 'accept' || e.detail === 'accept') {
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted',
+          'ad_storage': 'granted'
+        });
+      } else if (e.detail && e.detail.action === 'reject' || e.detail === 'reject') {
+        gtag('consent', 'update', {
+          'analytics_storage': 'denied',
+          'ad_storage': 'denied'
+        });
+      }
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof window.CookieYes !== 'undefined' && window.CookieYes.getConsent) {
+        const consent = window.CookieYes.getConsent();
+        if (consent && consent.analytics) {
+          gtag('consent', 'update', {
+            'analytics_storage': 'granted',
+            'ad_storage': 'granted'
+          });
+        }
+      }
+    });
   </script>
   
   <!-- Google Tag Manager - Blocked until consent -->
