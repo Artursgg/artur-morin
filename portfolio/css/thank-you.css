@@ -413,3 +413,16 @@ body {
   }
 }
 
+
+/* --------------------------------------------------------------------------
+   CookieYes Banner - Ensure Visibility
+   -------------------------------------------------------------------------- */
+#cookieyes-banner,
+.cky-banner,
+[class*="cky-banner"] {
+  z-index: 99999 !important;
+  position: fixed !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
