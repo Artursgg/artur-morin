@@ -8,8 +8,9 @@
   # Publish directory - relative to base directory (current directory after setting base)
   publish = "."
   
-  # Build command (optional - only needed if you have a build process)
-  # command = "npm run build"
+  # Build command - empty command to prevent Netlify from trying to install Node.js
+  # Static site doesn't need a build process
+  command = "echo 'Static site - no build needed'"
   
   # Note: No Node.js version specified - static site doesn't need it
   # If you add Netlify Functions later, uncomment and set NODE_VERSION below:
