@@ -178,11 +178,11 @@ Copy this template when adding new images:
 ## 📝 Quick Reference
 
 - **JSON File:** `portfolio/data/images.json`
-- **Admin Page:** `portfolio/admin.html` (reference guide)
+- **Admin Page:** `portfolio/img-mgr-ref-2024.html` (reference guide - renamed for security)
 - **Image Loader:** `portfolio/js/imageLoader.js` (automatically loads images)
 - **Main HTML:** `portfolio/photography-index.html` (displays images)
 
 ---
 
-**Need help?** Check the admin page at `portfolio/admin.html` for a visual guide!
+**Need help?** Check the admin page at `portfolio/img-mgr-ref-2024.html` for a visual guide!
 

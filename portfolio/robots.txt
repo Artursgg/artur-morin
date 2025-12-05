@@ -3,7 +3,7 @@
 
 User-agent: *
 Allow: /
-Disallow: /admin.html
+Disallow: /img-mgr-ref-2024.html
 Disallow: /404.html
 
 # Sitemap location

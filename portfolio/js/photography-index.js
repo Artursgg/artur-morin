@@ -1587,6 +1587,47 @@ if (document.readyState === 'loading') {
   }
   
   // Handle link click/touch (mobile/tablet only - desktop grid animation removed)
+  // Validate navigation URL to prevent open redirect attacks
+  function isValidNavigationUrl(url) {
+    if (!url) return false;
+    
+    // Allow relative paths
+    if (url.startsWith('/') || url.startsWith('./') || url.startsWith('../')) {
+      return true;
+    }
+    
+    // Allow hash fragments
+    if (url.startsWith('#')) {
+      return true;
+    }
+    
+    // Block dangerous protocols
+    if (url.startsWith('javascript:') || url.startsWith('data:') || url.startsWith('vbscript:')) {
+      return false;
+    }
+    
+    // For absolute URLs, check if same origin
+    try {
+      const urlObj = new URL(url, window.location.origin);
+      // Allow same origin or trusted external domains
+      const allowedDomains = [
+        'arturmorin.com',
+        'arturmorin.netlify.app',
+        'x.com',
+        'twitter.com',
+        'threads.net',
+        't.me',
+        'telegram.org'
+      ];
+      const hostname = urlObj.hostname.replace('www.', '');
+      return urlObj.origin === window.location.origin || 
+             allowedDomains.some(domain => hostname === domain || hostname.endsWith('.' + domain));
+    } catch (e) {
+      // Invalid URL format
+      return false;
+    }
+  }
+  
   navLinks.forEach(link => {
     // Mobile/Tablet: simple navigation without animation
     link.addEventListener('click', (e) => {
@@ -1652,8 +1693,13 @@ if (document.readyState === 'loading') {
                 }, 100);
               }
             } else {
-              // External link
-              window.location.href = href;
+              // External link - validate to prevent open redirect
+              if (href && isValidNavigationUrl(href)) {
+                window.location.href = href;
+              } else {
+                // Invalid URL - default to home
+                window.location.href = 'photography-index.html';
+              }
             }
           }
         }

@@ -51,12 +51,13 @@
 
 ---
 
-### 6. admin.html
+### 6. img-mgr-ref-2024.html (Admin Reference)
 - **CSS Files:**
   - Inline styles only (admin tool)
 - **JS Files:**
   - None (static admin reference page)
 - **Status:** ✅ Complete - Self-contained (no external assets needed)
+- **Note:** Renamed from admin.html for security (not publicly linked)
 
 ---
 
@@ -111,5 +112,5 @@
 
 **Self-Contained Pages:**
 - `404.html` - No external assets (inline only)
-- `admin.html` - No external assets (inline only)
+- `img-mgr-ref-2024.html` - No external assets (inline only)
 
