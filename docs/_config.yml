@@ -15,7 +15,7 @@ exclude:
   - nginx.conf
   - apache.conf
   - QUICK_SETUP.sh
-  - *.md
+  - "*.md"
 
 # Include all necessary files
 include:
