@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Image Manager - Portfolio Admin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      margin-bottom: 10px;
+      color: #c9a66b;
+      font-size: 2rem;
+    }
+    
+    .subtitle {
+      margin-bottom: 40px;
+      color: #999;
+      font-size: 1rem;
+    }
+    
+    .category-section {
+      margin-bottom: 40px;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(201, 166, 107, 0.2);
+    }
+    
+    .category-section h2 {
+      margin-bottom: 20px;
+      color: #c9a66b;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .category-section h2::before {
+      content: "📁";
+      font-size: 1.2rem;
+    }
+    
+    .image-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 4px;
+      border-left: 3px solid #c9a66b;
+    }
+    
+    .image-item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 0.75rem;
+    }
+    
+    .image-info {
+      flex: 1;
+    }
+    
+    .image-info h3 {
+      margin-bottom: 5px;
+      color: #fff;
+    }
+    
+    .image-info p {
+      color: #999;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    
+    .image-path {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 5px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px;
+      border-radius: 4px;
+      display: block;
+    }
+    
+    .image-path code {
+      color: #c9a66b;
+    }
+    
+    .instructions {
+      margin-top: 40px;
+      padding: 25px;
+      background: rgba(201, 166, 107, 0.1);
+      border-radius: 8px;
+      border: 1px solid rgba(201, 166, 107, 0.3);
+    }
+    
+    .instructions h3 {
+      margin-bottom: 15px;
+      color: #c9a66b;
+      font-size: 1.2rem;
+    }
+    
+    .instructions ol {
+      margin-left: 20px;
+      color: #ccc;
+    }
+    
+    .instructions li {
+      margin-bottom: 12px;
+      line-height: 1.8;
+    }
+    
+    .instructions code {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #c9a66b;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9em;
+    }
+    
+    .folder-structure {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 15px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: #999;
+      line-height: 1.8;
+    }
+    
+    .folder-structure .folder {
+      color: #c9a66b;
+    }
+    
+    .folder-structure .file {
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📸 Portfolio Image Manager</h1>
+    <p class="subtitle">Manage your portfolio images. Add images to folders, then update the JSON file.</p>
+    
+    <div class="category-section">
+      <h2>Editorial</h2>
+      <div class="image-item">
+        <div style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.75rem;">No Image</div>
+        <div class="image-info">
+          <h3>Add Editorial Images</h3>
+          <p>Place your editorial photography images in the following folders:</p>
+          <div class="image-path">
+            <strong>Thumbnail:</strong> <code>assets/images/portfolio/editorial/thumbnails/[filename].jpg</code><br>
+            <strong>Full Size:</strong> <code>assets/images/portfolio/editorial/full/[filename].jpg</code>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="category-section">
+      <h2>Fashion</h2>
+      <div class="image-item">
+        <div style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.75rem;">No Image</div>
+        <div class="image-info">
+          <h3>Add Fashion Images</h3>
+          <p>Place your fashion photography images in the following folders:</p>
+          <div class="image-path">
+            <strong>Thumbnail:</strong> <code>assets/images/portfolio/fashion/thumbnails/[filename].jpg</code><br>
+            <strong>Full Size:</strong> <code>assets/images/portfolio/fashion/full/[filename].jpg</code>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="category-section">
+      <h2>Landscape</h2>
+      <div class="image-item">
+        <div style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.75rem;">No Image</div>
+        <div class="image-info">
+          <h3>Add Landscape Images</h3>
+          <p>Place your landscape photography images in the following folders:</p>
+          <div class="image-path">
+            <strong>Thumbnail:</strong> <code>assets/images/portfolio/landscape/thumbnails/[filename].jpg</code><br>
+            <strong>Full Size:</strong> <code>assets/images/portfolio/landscape/full/[filename].jpg</code>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="category-section">
+      <h2>Portrait</h2>
+      <div class="image-item">
+        <div style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.75rem;">No Image</div>
+        <div class="image-info">
+          <h3>Add Portrait Images</h3>
+          <p>Place your portrait photography images in the following folders:</p>
+          <div class="image-path">
+            <strong>Thumbnail:</strong> <code>assets/images/portfolio/portrait/thumbnails/[filename].jpg</code><br>
+            <strong>Full Size:</strong> <code>assets/images/portfolio/portrait/full/[filename].jpg</code>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="category-section">
+      <h2>Commercial</h2>
+      <div class="image-item">
+        <div style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.75rem;">No Image</div>
+        <div class="image-info">
+          <h3>Add Commercial Images</h3>
+          <p>Place your commercial photography images in the following folders:</p>
+          <div class="image-path">
+            <strong>Thumbnail:</strong> <code>assets/images/portfolio/commercial/thumbnails/[filename].jpg</code><br>
+            <strong>Full Size:</strong> <code>assets/images/portfolio/commercial/full/[filename].jpg</code>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="category-section">
+      <h2>Documentary</h2>
+      <div class="image-item">
+        <div style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.75rem;">No Image</div>
+        <div class="image-info">
+          <h3>Add Documentary Images</h3>
+          <p>Place your documentary photography images in the following folders:</p>
+          <div class="image-path">
+            <strong>Thumbnail:</strong> <code>assets/images/portfolio/documentary/thumbnails/[filename].jpg</code><br>
+            <strong>Full Size:</strong> <code>assets/images/portfolio/documentary/full/[filename].jpg</code>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="instructions">
+      <h3>📝 How to Add Images:</h3>
+      <ol>
+        <li><strong>Prepare your images:</strong> Create two versions of each image:
+          <ul style="margin-left: 20px; margin-top: 8px; color: #999;">
+            <li>Thumbnail: 400x400px (square) or 400x600px (portrait) - JPG quality 85%</li>
+            <li>Full size: 1200-2000px width (maintain aspect ratio) - JPG quality 90%</li>
+          </ul>
+        </li>
+        <li><strong>Add files to folders:</strong> Place thumbnail in <code>thumbnails/</code> folder and full image in <code>full/</code> folder of the appropriate category</li>
+        <li><strong>Update JSON file:</strong> Open <code>portfolio/data/images.json</code> and add a new entry with image details:
+          <div class="folder-structure" style="margin-top: 10px;">
+{<br>
+&nbsp;&nbsp;"id": "category-002",<br>
+&nbsp;&nbsp;"title": "Your Project Title",<br>
+&nbsp;&nbsp;"description": "Project description",<br>
+&nbsp;&nbsp;"thumbnail": "../assets/images/portfolio/category/thumbnails/filename.jpg",<br>
+&nbsp;&nbsp;"full": "../assets/images/portfolio/category/full/filename.jpg",<br>
+&nbsp;&nbsp;"category": "Category Name",<br>
+&nbsp;&nbsp;"year": "2024",<br>
+&nbsp;&nbsp;"client": "Client Name"<br>
+}
+          </div>
+        </li>
+        <li><strong>Save and test:</strong> Save the JSON file and refresh your website - images will automatically appear!</li>
+      </ol>
+      
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(201, 166, 107, 0.2);">
+        <h3 style="margin-bottom: 10px;">📂 Folder Structure:</h3>
+        <div class="folder-structure">
+<span class="folder">assets/images/portfolio/</span><br>
+├── <span class="folder">editorial/</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="folder">thumbnails/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="folder">full/</span><br>
+├── <span class="folder">fashion/</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="folder">thumbnails/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="folder">full/</span><br>
+├── <span class="folder">landscape/</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="folder">thumbnails/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="folder">full/</span><br>
+├── <span class="folder">portrait/</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="folder">thumbnails/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="folder">full/</span><br>
+├── <span class="folder">commercial/</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="folder">thumbnails/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="folder">full/</span><br>
+├── <span class="folder">documentary/</span><br>
+│&nbsp;&nbsp;&nbsp;├── <span class="folder">thumbnails/</span><br>
+│&nbsp;&nbsp;&nbsp;└── <span class="folder">full/</span><br>
+├── <span class="folder">hero/</span><br>
+├── <span class="folder">about/</span><br>
+└── <span class="folder">gallery/</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

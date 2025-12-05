@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Start cookieyes banner - Only load on production domain -->
+  <script>
+    // Only load CookieYes on production domain, not localhost
+    if (window.location.hostname !== 'localhost' && 
+        window.location.hostname !== '127.0.0.1' && 
+        !window.location.hostname.startsWith('192.168.') &&
+        !window.location.hostname.startsWith('10.') &&
+        window.location.hostname !== '') {
+      var script = document.createElement('script');
+      script.id = 'cookieyes';
+      script.type = 'text/javascript';
+      script.src = 'https://cdn-cookieyes.com/client_data/0cc137e141492894816e3e85bd125764/script.js';
+      document.head.appendChild(script);
+    }
+  </script>
+  <!-- End cookieyes banner -->
+  
+  <!-- Force CookieYes banner to stay visible -->
+  <script>
+    (function() {
+      'use strict';
+      
+      // Skip on localhost - CookieYes doesn't load there
+      if (window.location.hostname === 'localhost' || 
+          window.location.hostname === '127.0.0.1' || 
+          window.location.hostname.startsWith('192.168.') ||
+          window.location.hostname.startsWith('10.') ||
+          window.location.hostname === '') {
+        return;
+      }
+      
+      let bannerFound = false;
+      let isUpdating = false; // Prevent infinite loops
+      
+      function forceBannerVisible() {
+        // Prevent recursive calls
+        if (isUpdating) return;
+        isUpdating = true;
+        
+        // Find all possible CookieYes banner selectors
+        const selectors = [
+          '#cookieyes-banner',
+          '.cky-banner',
+          '[id*="cookieyes"]',
+          '[class*="cky-banner"]',
+          '[class*="cookieyes"]',
+          '[id*="cky"]',
+          'div[class*="cookie"]'
+        ];
+        
+        selectors.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+              if (el && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.textContent.trim().length > 0)) {
+                bannerFound = true;
+                // Only update if actually needed to prevent infinite loops
+                if (el.style.display === 'none' || el.style.visibility === 'hidden' || el.style.opacity === '0') {
+                  el.style.display = 'block';
+                  el.style.visibility = 'visible';
+                  el.style.opacity = '1';
+                  el.style.zIndex = '99999';
+                  el.style.position = 'fixed';
+                  el.style.bottom = '0';
+                  el.style.left = '0';
+                  el.style.right = '0';
+                }
+                // Remove any hidden classes
+                el.classList.remove('hidden', 'cky-hidden', 'cookieyes-hidden', 'cky-notice-box-hidden');
+              }
+            });
+          } catch(e) {
+            console.error('CookieYes selector error:', e);
+          }
+        });
+        
+        isUpdating = false;
+      }
+      
+      // Run immediately
+      forceBannerVisible();
+      
+      // Run on DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          forceBannerVisible();
+          setTimeout(forceBannerVisible, 1000);
+          setTimeout(forceBannerVisible, 2000);
+        });
+      } else {
+        forceBannerVisible();
+        setTimeout(forceBannerVisible, 1000);
+        setTimeout(forceBannerVisible, 2000);
+      }
+      
+      // Run on window load
+      window.addEventListener('load', function() {
+        forceBannerVisible();
+        setTimeout(forceBannerVisible, 500);
+        setTimeout(forceBannerVisible, 1500);
+      });
+      
+      // Monitor for DOM additions only (not style changes) to prevent infinite loops
+      const observer = new MutationObserver(function(mutations) {
+        // Only react to new nodes being added, not style/attribute changes
+        const hasNewNodes = mutations.some(mutation => 
+          mutation.type === 'childList' && mutation.addedNodes.length > 0
+        );
+        if (hasNewNodes) {
+          forceBannerVisible();
+        }
+      });
+      
+      // Start observing when body is available - only watch for new nodes
+      function startObserving() {
+        if (document.body) {
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: false // Don't watch attributes to prevent loops
+          });
+        } else {
+          setTimeout(startObserving, 100);
+        }
+      }
+      
+      startObserving();
+      
+      // Continuously check every 300ms for first 10 seconds, then every 1 second
+      let checkCount = 0;
+      const fastInterval = setInterval(function() {
+        forceBannerVisible();
+        checkCount++;
+        if (checkCount >= 33) { // ~10 seconds
+          clearInterval(fastInterval);
+        }
+      }, 300);
+      
+      // Also check every 2 seconds (less frequent to reduce load)
+      setInterval(forceBannerVisible, 2000);
+      
+      // Debug: Log after 3 seconds
+      setTimeout(function() {
+        if (!bannerFound) {
+          console.warn('CookieYes banner not found in DOM. Check CookieYes dashboard settings and domain configuration.');
+        }
+      }, 3000);
+    })();
+  </script>
+  
+  <!-- Google Consent Mode - Must load BEFORE GTM/GA -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    
+    // Set default consent state to 'denied' - no cookies until consent
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied',
+      'ad_storage': 'denied',
+      'wait_for_update': 500
+    });
+  </script>
+  
+  <!-- Google Tag Manager - Blocked until consent -->
+  <script data-cookieyes="cookieyes-analytics">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-K97CNH32');</script>
+<!-- End Google Tag Manager -->
+  <!-- Google tag (gtag.js) - Blocked until consent -->
+  <script async data-cookieyes="cookieyes-analytics" src="https://www.googletagmanager.com/gtag/js?id=G-X89C2WMLSL"></script>
+  <script data-cookieyes="cookieyes-analytics">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-X89C2WMLSL');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Artur Morin · Visual Storyteller & Photographer | Tallinn</title>
+  <meta name="title" content="Artur Morin · Visual Storyteller & Photographer | Tallinn">
+  <meta name="description" content="Tallinn-based photographer specializing in editorial, fashion, and documentary photography. 8+ years capturing moments that speak louder than words. View portfolio of 150+ projects.">
+  <meta name="keywords" content="photographer, Tallinn, editorial photography, fashion photographer, portrait photography, documentary, visual storyteller, commercial photography, brand photography">
+  <meta name="author" content="Artur Morin">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://arturmorin.com/">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://arturmorin.com/">
+  <meta property="og:title" content="Artur Morin · Visual Storyteller & Photographer">
+  <meta property="og:description" content="Tallinn-based photographer specializing in editorial, fashion, and documentary photography. Capturing moments that speak louder than words.">
+  <meta property="og:image" content="https://arturmorin.com/assets/social-preview.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Artur Morin Photography">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://arturmorin.com/">
+  <meta name="twitter:title" content="Artur Morin · Visual Storyteller & Photographer">
+  <meta name="twitter:description" content="Tallinn-based photographer. Editorial, fashion, and documentary photography.">
+  <meta name="twitter:image" content="https://arturmorin.com/assets/social-preview.jpg">
+  <meta name="twitter:creator" content="@morinartur">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#0f0f0f">
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Science+Gothic:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- reCAPTCHA v3 - Load async to prevent blocking -->
+  <script async defer src="https://www.google.com/recaptcha/api.js?render=6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK"></script>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/photography-index.css">
+  
+  <!-- 
+  ╔═══════════════════════════════════════════════════════════════╗
+  ║                                                               ║
+  ║     █████╗ ██████╗ ████████╗██╗   ██╗██████╗                 ║
+  ║    ██╔══██╗██╔══██╗╚══██╔══╝██║   ██║██╔══██╗                ║
+  ║    ███████║██████╔╝   ██║   ██║   ██║██████╔╝                ║
+  ║    ██╔══██║██╔══██╗   ██║   ██║   ██║██╔══██╗                ║
+  ║    ██║  ██║██║  ██║   ██║   ╚██████╔╝██║  ██║                ║
+  ║    ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝                ║
+  ║                                                               ║
+  ║    ███╗   ███╗ ██████╗ ██████╗ ██╗███╗   ██╗                 ║
+  ║    ████╗ ████║██╔═══██╗██╔══██╗██║████╗  ██║                 ║
+  ║    ██╔████╔██║██║   ██║██████╔╝██║██╔██╗ ██║                 ║
+  ║    ██║╚██╔╝██║██║   ██║██╔══██╗██║██║╚██╗██║                 ║
+  ║    ██║ ╚═╝ ██║╚██████╔╝██║  ██║██║██║ ╚████║                 ║
+  ║    ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝                 ║
+  ║                                                               ║
+  ║         📸 Visual Storyteller & Photographer 📸              ║
+  ║              Based in Tallinn, Estonia 🇪🇪                    ║
+  ║                                                               ║
+  ║  👋 Hey there! Thanks for checking out the code.              ║
+  ║  📸 Portfolio: https://arturmorin.com                        ║
+  ║  💼 Let's create something amazing together!                  ║
+  ║                                                               ║
+  ╚═══════════════════════════════════════════════════════════════╝
+  -->
+  
+  <!-- Structured Data (JSON-LD) for Rich Results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Artur Morin",
+    "jobTitle": "Photographer & Visual Storyteller",
+    "description": "Tallinn-based photographer specializing in editorial, fashion, and documentary photography",
+    "url": "https://arturmorin.com",
+    "image": "https://arturmorin.com/assets/artur-morin.jpg",
+    "sameAs": [
+      "https://x.com/_smilexfd_",
+      "https://www.threads.net/@morinartur",
+      "https://t.me/SmileXFD"
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Tallinn",
+      "addressCountry": "Estonia"
+    },
+    "knowsAbout": ["Photography", "Editorial Photography", "Fashion Photography", "Documentary Photography", "Portrait Photography", "Commercial Photography"]
+  }
+  </script>
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K97CNH32"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+  <!-- Skip to main content link for keyboard users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <!-- Loading Screen - Camera Aperture Iris -->
+  <div class="loader" id="page-loader" aria-label="Loading page" role="status" aria-live="polite">
+    <div class="loader-aperture">
+      <!-- Outer ring with camera details -->
+      <div class="aperture-ring">
+        <!-- Aperture blades - 6 curved blades forming iris diaphragm -->
+        <svg class="aperture-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bladeGradient">
+              <stop offset="0%" stop-color="#1a1a1a" />
+              <stop offset="100%" stop-color="#000" />
+            </radialGradient>
+            <filter id="bladeShadow">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+              <feOffset dx="0" dy="2" result="offsetblur"/>
+              <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3"/>
+              </feComponentTransfer>
+              <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <!-- Each blade is a curved petal shape with inner and outer arcs -->
+          <!-- Proper curved blade: inner arc (30px radius) and outer arc (100px radius) forming a petal -->
+          <!-- Blade 1: starts at 0° (top), covers 60° -->
+          <path class="blade blade-1" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 2: rotated 60° -->
+          <path class="blade blade-2" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 3: rotated 120° -->
+          <path class="blade blade-3" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 4: rotated 180° -->
+          <path class="blade blade-4" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 5: rotated 240° -->
+          <path class="blade blade-5" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 6: rotated 300° -->
+          <path class="blade blade-6" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+        </svg>
+        <!-- Central opening that pulses -->
+        <div class="aperture-center"></div>
+        <!-- Inner focus ring -->
+        <div class="focus-indicator"></div>
+      </div>
+      <!-- Camera metadata display -->
+      <div class="camera-info">
+        <span class="info-item">f/<span class="f-number">2.8</span></span>
+        <span class="info-separator">·</span>
+        <span class="info-item">ISO <span class="iso-value">400</span></span>
+        <span class="info-separator">·</span>
+        <span class="info-item">1/<span class="shutter-value">60</span>s</span>
+      </div>
+    </div>
+    <p class="loader-text">LOADING FRAME...</p>
+    <!-- Film grain overlay for authenticity -->
+    <div class="loader-grain"></div>
+  </div>
+
+  <!-- Film grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+    <header class="nav" id="home" role="banner">
+    <a class="logo" href="#hero-heading" aria-label="Artur Morin home">
+      <span class="logo-name-first">Artur</span>
+      <span class="logo-mark" aria-hidden="true">AM</span>
+      <span class="logo-name-last">Morin</span>
+    </a>
+    <nav id="primary-nav" aria-label="Primary navigation">
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+      </ul>
+      <!-- Mobile/Tablet CTA Button -->
+      <a href="#contact" class="nav-cta-mobile" aria-label="Contact - Let's Talk">Let's Talk</a>
+    </nav>
+    <!-- Interactive Grid Overlay for Navigation - Outside nav for proper positioning -->
+    <svg class="nav-grid-overlay" aria-hidden="true">
+      <defs>
+        <linearGradient id="gridGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="rgba(255, 255, 255, 0.8)" stop-opacity="1"/>
+          <stop offset="50%" stop-color="rgba(255, 255, 255, 0.4)" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="rgba(255, 255, 255, 0.1)" stop-opacity="0.2"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <!-- Portfolio Button - Desktop only, positioned between nav and Let's Talk -->
+    <a href="portfolio.html" class="nav-portfolio" aria-label="View Portfolio">Portfolio</a>
+    <a href="#contact" class="nav-cta" aria-label="Contact - Let's Talk">Let's Talk</a>
+    <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav" type="button">
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="sr-only">Menu</span>
+    </button>
+    <div class="nav-overlay" aria-hidden="true" role="presentation"></div>
+  </header>
+
+  <!-- Growing Grid Lines Animation -->
+  <div class="grid-lines-container" aria-hidden="true"></div>
+
+  <main id="main-content">
+    <!-- Hero Section -->
+    <section class="hero parallax" data-speed="0.3" aria-labelledby="hero-heading">
+      <div class="hero-content">
+        <p class="hero-eyebrow">Visual Storyteller & Creative Director</p>
+        <h1 class="hero-title" id="hero-heading">
+          I capture moments<br>
+          <span class="italic">that speak louder</span><br>
+          than words.
+        </h1>
+        <p class="hero-lead">Based in Tallinn, working worldwide. Specializing in editorial photography, brand campaigns, and visual narratives that leave lasting impressions.</p>
+        <div class="hero-cta">
+          <a href="#work" class="btn btn-primary">View Portfolio</a>
+          <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Projects</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-target="1">0</span>
+            <span class="stat-label">Years</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-target="5">0</span>
+            <span class="stat-label">Clients</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="hero-carousel" role="region" aria-label="Hero image carousel" aria-live="polite">
+          <button class="carousel-btn prev" aria-label="Previous slide">←</button>
+          <div class="carousel-window">
+            <div class="carousel-track">
+              <!-- Carousel slides - Images from assets/images/portfolio/hero/ with WebP and JPG fallback -->
+              <!-- Order matches Selected Work section: Other, Street, Landscape, Cars, Products -->
+              <!-- Slide 1: Other folder - Blackrock in the sea -->
+              <div class="carousel-slide" data-category="other" aria-label="Other photography">
+                <div class="image-frame">
+                  <picture>
+                    <source srcset="assets/images/portfolio/hero/other/Blackrock-in-the-sea.webp" type="image/webp">
+                    <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Blackrock in the sea" fetchpriority="high" decoding="async">
+                  </picture>
+                  <div class="frame-corner tl"></div>
+                  <div class="frame-corner tr"></div>
+                  <div class="frame-corner bl"></div>
+                  <div class="frame-corner br"></div>
+                </div>
+                <div class="image-caption">
+                  <span class="caption-number">001</span>
+                  <span class="caption-text">&ldquo;Other&rdquo;</span>
+                </div>
+              </div>
+              <!-- Slide 2: Street folder - Three flags on sunrise -->
+              <div class="carousel-slide" data-category="street" aria-label="Street photography">
+                <div class="image-frame">
+                  <picture>
+                    <source srcset="assets/images/portfolio/hero/street/three-flags-on-sunrise.webp" type="image/webp">
+                    <img src="assets/images/portfolio/hero/street/three-flags-on-sunrise.jpg" alt="Three flags on sunrise" decoding="async">
+                  </picture>
+                  <div class="frame-corner tl"></div>
+                  <div class="frame-corner tr"></div>
+                  <div class="frame-corner bl"></div>
+                  <div class="frame-corner br"></div>
+                </div>
+                <div class="image-caption">
+                  <span class="caption-number">002</span>
+                  <span class="caption-text">&ldquo;Street&rdquo;</span>
+                </div>
+              </div>
+              <!-- Slide 3: Landscape folder - Rummu quarry B&W -->
+              <div class="carousel-slide" data-category="landscape" aria-label="Landscape photography">
+                <div class="image-frame">
+                  <picture>
+                    <source srcset="assets/images/portfolio/hero/landscape/Rummu-quarry-b&w.webp" type="image/webp">
+                    <img src="assets/images/portfolio/hero/landscape/Rummu-quarry-b&w.jpg" alt="Rummu quarry black and white" decoding="async">
+                  </picture>
+                  <div class="frame-corner tl"></div>
+                  <div class="frame-corner tr"></div>
+                  <div class="frame-corner bl"></div>
+                  <div class="frame-corner br"></div>
+                </div>
+                <div class="image-caption">
+                  <span class="caption-number">003</span>
+                  <span class="caption-text">&ldquo;Landscape&rdquo;</span>
+                </div>
+              </div>
+              <!-- Slide 4: Cars folder - Audi Q5 panning shot -->
+              <div class="carousel-slide" data-category="cars" aria-label="Cars photography">
+                <div class="image-frame">
+                  <picture>
+                    <source srcset="assets/images/portfolio/hero/cars/Audi-q5-panning-shot.webp" type="image/webp">
+                    <img src="assets/images/portfolio/hero/cars/Audi-q5-panning-shot.jpg" alt="Audi Q5 panning shot" decoding="async">
+                  </picture>
+                  <div class="frame-corner tl"></div>
+                  <div class="frame-corner tr"></div>
+                  <div class="frame-corner bl"></div>
+                  <div class="frame-corner br"></div>
+                </div>
+                <div class="image-caption">
+                  <span class="caption-number">004</span>
+                  <span class="caption-text">&ldquo;Cars&rdquo;</span>
+                </div>
+              </div>
+              <!-- Slide 5: Products folder - Addiesdive watch showcase -->
+              <div class="carousel-slide" data-category="products" aria-label="Products photography">
+                <div class="image-frame">
+                  <picture>
+                    <source srcset="assets/images/portfolio/hero/products/Addiesdive-watch-showcase.webp" type="image/webp">
+                    <img src="assets/images/portfolio/hero/products/Addiesdive-watch-showcase.jpg" alt="Addiesdive watch showcase" decoding="async">
+                  </picture>
+                  <div class="frame-corner tl"></div>
+                  <div class="frame-corner tr"></div>
+                  <div class="frame-corner bl"></div>
+                  <div class="frame-corner br"></div>
+                </div>
+                <div class="image-caption">
+                  <span class="caption-number">005</span>
+                  <span class="caption-text">&ldquo;Products&rdquo;</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="carousel-btn next" aria-label="Next slide">→</button>
+        </div>
+        <div class="carousel-dots" role="tablist" aria-label="Carousel slides">
+          <button aria-label="Slide 1 - Other" aria-selected="true"></button>
+          <button aria-label="Slide 2 - Street" aria-selected="false"></button>
+          <button aria-label="Slide 3 - Landscape" aria-selected="false"></button>
+          <button aria-label="Slide 4 - Cars" aria-selected="false"></button>
+          <button aria-label="Slide 5 - Products" aria-selected="false"></button>
+        </div>
+      </div>
+      <div class="scroll-hint" aria-hidden="true">
+        <span>Scroll to explore</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- Picture of the Week -->
+    <section class="picture-of-week parallax" data-speed="0.2" aria-labelledby="potw-heading">
+      <div class="potw-container">
+        <div class="potw-header">
+          <div class="potw-badge-wrapper">
+            <span class="potw-badge">Picture of the Week</span>
+            <div class="potw-letters" aria-hidden="true">
+              <!-- First "december" -->
+              <span class="letter-float" style="--index: 0">D</span>
+              <span class="letter-float" style="--index: 1">e</span>
+              <span class="letter-float" style="--index: 2">c</span>
+              <span class="letter-float" style="--index: 3">e</span>
+              <span class="letter-float" style="--index: 4">m</span>
+              <span class="letter-float" style="--index: 5">b</span>
+              <span class="letter-float" style="--index: 6">e</span>
+              <span class="letter-float" style="--index: 7">r</span>
+              <!-- Second "december" with spacing -->
+              <span class="letter-float" style="--index: 8">D</span>
+              <span class="letter-float" style="--index: 9">e</span>
+              <span class="letter-float" style="--index: 10">c</span>
+              <span class="letter-float" style="--index: 11">e</span>
+              <span class="letter-float" style="--index: 12">m</span>
+              <span class="letter-float" style="--index: 13">b</span>
+              <span class="letter-float" style="--index: 14">e</span>
+              <span class="letter-float" style="--index: 15">r</span>
+            </div>
+          </div>
+        </div>
+        <div class="potw-content reveal">
+          <div class="potw-image">
+            <div class="image-frame">
+              <picture>
+                <source srcset="assets/images/portfolio/potw/Kasela-yellow-neon-logo.webp" type="image/webp">
+                <img src="assets/images/portfolio/potw/Kasela-yellow-neon-logo.jpg" alt="Picture of the Week - Kasela yellow neon logo">
+              </picture>
+              <div class="frame-corner tl"></div>
+              <div class="frame-corner tr"></div>
+              <div class="frame-corner bl"></div>
+              <div class="frame-corner br"></div>
+            </div>
+          </div>
+          <div class="potw-caption">
+            <h3 id="potw-heading">Dawn at Sunrise Peak</h3>
+            <p>A moment of tranquility captured at the break of dawn, where light meets landscape in perfect harmony.</p>
+            <span class="potw-location">📍 Tallinn, Estonia</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Work -->
+    <section class="work parallax" id="work" data-speed="0.15" aria-labelledby="work-heading">
+      <header class="section-header">
+        <p class="eyebrow">Selected Work</p>
+        <h2 id="work-heading">Stories told through<br><span class="italic">light & shadow</span></h2>
+      </header>
+
+      <div class="work-grid">
+        <!-- Work Card 1: Other - Blackrock in the sea -->
+        <article class="work-card work-card--large reveal">
+          <a href="portfolio.html" class="work-card-link">
+            <div class="work-card-image">
+              <picture>
+                <source srcset="assets/images/portfolio/hero/other/Blackrock-in-the-sea.webp" type="image/webp">
+                <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Blackrock in the sea - Other photography">
+              </picture>
+              <div class="work-card-overlay">
+                <span class="view-project">View Portfolio →</span>
+              </div>
+            </div>
+            <div class="work-card-info">
+              <span class="work-category">Other</span>
+              <h3>Coastal Formations</h3>
+              <p>Capturing the raw beauty of nature's formations</p>
+            </div>
+          </a>
+        </article>
+
+        <!-- Work Card 2: Street - Three flags on sunrise -->
+        <article class="work-card reveal">
+          <a href="portfolio.html" class="work-card-link">
+            <div class="work-card-image">
+              <picture>
+                <source srcset="assets/images/portfolio/hero/street/three-flags-on-sunrise.webp" type="image/webp">
+                <img src="assets/images/portfolio/hero/street/three-flags-on-sunrise.jpg" alt="Three flags on sunrise - Street photography">
+              </picture>
+              <div class="work-card-overlay">
+                <span class="view-project">View Portfolio →</span>
+              </div>
+            </div>
+            <div class="work-card-info">
+              <span class="work-category">Street</span>
+              <h3>Dawn Moments</h3>
+              <p>Urban moments captured at dawn</p>
+            </div>
+          </a>
+        </article>
+
+        <!-- Work Card 3: Landscape - Rummu quarry B&W -->
+        <article class="work-card reveal">
+          <a href="portfolio.html" class="work-card-link">
+            <div class="work-card-image">
+              <picture>
+                <source srcset="assets/images/portfolio/hero/landscape/Rummu-quarry-b&w.webp" type="image/webp">
+                <img src="assets/images/portfolio/hero/landscape/Rummu-quarry-b&w.jpg" alt="Rummu quarry black and white - Landscape photography">
+              </picture>
+              <div class="work-card-overlay">
+                <span class="view-project">View Portfolio →</span>
+              </div>
+            </div>
+            <div class="work-card-info">
+              <span class="work-category">Landscape</span>
+              <h3>Rummu Quarry</h3>
+              <p>Monochrome exploration of abandoned beauty</p>
+            </div>
+          </a>
+        </article>
+
+        <!-- Work Card 4: Cars - Audi Q5 panning shot -->
+        <article class="work-card reveal">
+          <a href="portfolio.html" class="work-card-link">
+            <div class="work-card-image">
+              <picture>
+                <source srcset="assets/images/portfolio/hero/cars/Audi-q5-panning-shot.webp" type="image/webp">
+                <img src="assets/images/portfolio/hero/cars/Audi-q5-panning-shot.jpg" alt="Audi Q5 panning shot - Cars photography">
+              </picture>
+              <div class="work-card-overlay">
+                <span class="view-project">View Portfolio →</span>
+              </div>
+            </div>
+            <div class="work-card-info">
+              <span class="work-category">Cars</span>
+              <h3>Motion & Speed</h3>
+              <p>Motion and speed in perfect harmony</p>
+            </div>
+          </a>
+        </article>
+
+        <!-- Work Card 5: Products - Addiesdive watch showcase -->
+        <article class="work-card reveal">
+          <a href="portfolio.html" class="work-card-link">
+            <div class="work-card-image">
+              <picture>
+                <source srcset="assets/images/portfolio/hero/products/Addiesdive-watch-showcase.webp" type="image/webp">
+                <img src="assets/images/portfolio/hero/products/Addiesdive-watch-showcase.jpg" alt="Addiesdive watch showcase - Products photography">
+              </picture>
+              <div class="work-card-overlay">
+                <span class="view-project">View Portfolio →</span>
+              </div>
+            </div>
+            <div class="work-card-info">
+              <span class="work-category">Products</span>
+              <h3>Precision Details</h3>
+              <p>Precision and elegance in product photography</p>
+            </div>
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="services" id="services" aria-labelledby="services-heading">
+      <header class="section-header reveal">
+        <p class="eyebrow">What I Do</p>
+        <h2 id="services-heading">Crafting visuals that<br><span class="italic">resonate & inspire</span></h2>
+      </header>
+
+      <div class="services-grid">
+        <article class="service-card reveal">
+          <div class="service-number">01</div>
+          <h3>Editorial & Fashion</h3>
+          <p>Magazine spreads, lookbooks, and campaign imagery that tells your brand's story with sophistication and edge.</p>
+          <ul class="service-tags">
+            <li>Vogue</li>
+            <li>Harper's Bazaar</li>
+            <li>GQ</li>
+          </ul>
+        </article>
+
+        <article class="service-card reveal">
+          <div class="service-number">02</div>
+          <h3>Commercial & Brands</h3>
+          <p>Product photography and brand campaigns that elevate your visual identity and connect with your audience.</p>
+          <ul class="service-tags">
+            <li>Product</li>
+            <li>Lifestyle</li>
+            <li>Campaign</li>
+          </ul>
+        </article>
+
+        <article class="service-card reveal">
+          <div class="service-number">03</div>
+          <h3>Documentary & Travel</h3>
+          <p>Authentic storytelling through lens. Capturing cultures, landscapes, and human experiences around the globe.</p>
+          <ul class="service-tags">
+            <li>Nat Geo</li>
+            <li>Travel + Leisure</li>
+            <li>Condé Nast</li>
+          </ul>
+        </article>
+
+        <article class="service-card reveal">
+          <div class="service-number">04</div>
+          <h3>Creative Direction</h3>
+          <p>From concept to final delivery. Art direction, mood boards, location scouting, and full production management.</p>
+          <ul class="service-tags">
+            <li>Concept</li>
+            <li>Art Direction</li>
+            <li>Production</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- About Preview -->
+    <section class="about-preview" id="about" aria-labelledby="about-heading">
+      <div class="about-image reveal">
+        <img src="assets/images/portfolio/about/me.jpg" alt="Artur Morin - Photographer">
+        <div class="about-image-frame"></div>
+      </div>
+      <div class="about-content reveal">
+        <p class="eyebrow">About Me</p>
+        <h2 id="about-heading">The eye behind<br><span class="italic">the lens</span></h2>
+        <p class="about-text">I'm Artur — a visual storyteller based in Tallinn with a passion for capturing the extraordinary in the ordinary.</p>
+        <p class="about-text">My approach blends technical precision with emotional intuition. Every frame I capture is a conversation between light, subject, and the story waiting to be told.</p>
+        <div class="about-signature">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Cpath d='M10 45 Q30 10, 60 40 T110 35 Q130 30, 150 40 Q170 50, 190 30' fill='none' stroke='%23c9a66b' stroke-width='2'/%3E%3C/svg%3E" alt="Signature" class="signature">
+        </div>
+        <a href="about.html" class="btn btn-outline">Full Bio →</a>
+      </div>
+    </section>
+
+    <!-- Clients -->
+    <section class="clients reveal">
+      <p class="clients-label">Trusted by</p>
+      <div class="clients-logos">
+        <span>🇪🇪 Estonia</span>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact" aria-labelledby="contact-heading">
+      <div class="contact-content reveal">
+        <p class="eyebrow">Get in Touch</p>
+        <h2 id="contact-heading">Let's create<br><span class="italic">something beautiful</span></h2>
+        <p class="contact-lead">Have a project in mind? I'd love to hear about it. Whether it's a brand campaign, editorial shoot, or creative collaboration — let's make it happen.</p>
+        
+        <div class="contact-methods">
+          <a href="mailto:standoffgamr@gmail.com" class="contact-email">standoffgamr@gmail.com</a>
+        </div>
+      </div>
+
+      <form class="contact-form reveal" aria-label="Contact form" action="https://formsubmit.co/standoffgamr@gmail.com" method="POST" novalidate>
+        <div class="form-group">
+          <label for="name">Name <span class="required" aria-label="required">*</span></label>
+          <input type="text" id="name" name="name" placeholder="Your name" required aria-required="true" aria-invalid="false" minlength="6" autocomplete="name">
+          <span class="error-message" id="name-error" role="alert" aria-live="polite"></span>
+        </div>
+        <div class="form-group">
+          <label for="email">Email <span class="required" aria-label="required">*</span></label>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required aria-required="true" aria-invalid="false" autocomplete="email">
+          <span class="error-message" id="email-error" role="alert" aria-live="polite"></span>
+        </div>
+        <div class="form-group">
+          <label for="project">Project Type</label>
+          <select id="project" name="project" aria-label="Project type" autocomplete="off">
+            <option value="">Select a service</option>
+            <option value="editorial">Editorial & Fashion</option>
+            <option value="commercial">Commercial & Brands</option>
+            <option value="documentary">Documentary & Travel</option>
+            <option value="creative">Creative Direction</option>
+            <option value="other">Something Else</option>
+          </select>
+        </div>
+        <div class="form-group form-group--full">
+          <label for="message">Message <span class="required" aria-label="required">*</span></label>
+          <textarea id="message" name="message" rows="4" placeholder="Tell me about your project..." aria-label="Message" required aria-required="true" aria-invalid="false" minlength="3" autocomplete="off" draggable="false"></textarea>
+          <span class="error-message" id="message-error" role="alert" aria-live="polite"></span>
+        </div>
+        <!-- Honeypot field - hidden from users but visible to bots -->
+        <div class="form-group form-group--honeypot" aria-hidden="true">
+          <label for="website">Website (leave blank)</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        </div>
+        <div class="form-group form-group--full challenge-label">
+          <label for="challenge-input">Human check <span class="required" aria-label="required">*</span></label>
+          <div class="challenge-row">
+            <span id="challenge-text" aria-live="polite">Loading challenge…</span>
+            <input type="text" id="challenge-input" name="challenge" placeholder="Answer" autocomplete="off" required aria-required="true">
+          </div>
+          <small id="challenge-hint" class="challenge-hint">Enter the answer exactly as shown.</small>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+        <div class="form-status" role="status" aria-live="polite" aria-atomic="true"></div>
+        <p class="form-privacy-note">By submitting this form, you agree that your information will be processed by FormSubmit to deliver your message. <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy & Terms</a></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="logo-mark">AM</span>
+        <div class="footer-brand-text">
+          <p class="footer-tagline-mobile">Opening new experiences</p>
+          <p class="footer-tagline-desktop-inline">Opening new experiences</p>
+        </div>
+      </div>
+      <nav class="footer-nav">
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="about.html">About</a>
+        <a href="#contact">Contact</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="privacy-policy.html">Privacy & Terms</a>
+      </nav>
+      <div class="footer-social" aria-label="Social links">
+        <!-- X (formerly Twitter) - Official logo -->
+        <a href="https://x.com/_smilexfd_" target="_blank" rel="noopener noreferrer" class="social-x" aria-label="Artur Morin on X">
+          <img src="assets/icons/twitter-x.svg" alt="X" class="social-icon icon-x" width="16" height="16">
+        </a>
+        <!-- Telegram -->
+        <a href="https://t.me/SmileXFD" target="_blank" rel="noopener noreferrer" class="social-telegram" aria-label="Artur Morin on Telegram">
+          <img src="assets/icons/telegram.svg" alt="Telegram" class="social-icon icon-telegram" width="16" height="16">
+        </a>
+        <!-- Threads by Meta - Official logo -->
+        <a href="https://www.threads.net/@morinartur" target="_blank" rel="noopener noreferrer" class="social-threads" aria-label="Artur Morin on Threads">
+          <img src="assets/icons/threads.svg" alt="Threads" class="social-icon icon-threads" width="16" height="16">
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Artur Morin. All rights reserved. Images protected by copyright.</p>
+    </div>
+  </footer>
+
+  <script src="js/imageLoader.js"></script>
+  <script src="js/photography-index.js"></script>
+</body>
+</html>
+

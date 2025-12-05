@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Start cookieyes banner - Only load on production domain -->
+  <script>
+    // Only load CookieYes on production domain, not localhost
+    if (window.location.hostname !== 'localhost' && 
+        window.location.hostname !== '127.0.0.1' && 
+        !window.location.hostname.startsWith('192.168.') &&
+        !window.location.hostname.startsWith('10.') &&
+        window.location.hostname !== '') {
+      var script = document.createElement('script');
+      script.id = 'cookieyes';
+      script.type = 'text/javascript';
+      script.src = 'https://cdn-cookieyes.com/client_data/0cc137e141492894816e3e85bd125764/script.js';
+      document.head.appendChild(script);
+    }
+  </script>
+  <!-- End cookieyes banner -->
+  
+  <!-- Force CookieYes banner to stay visible -->
+  <script>
+    (function() {
+      'use strict';
+      
+      // Skip on localhost - CookieYes doesn't load there
+      if (window.location.hostname === 'localhost' || 
+          window.location.hostname === '127.0.0.1' || 
+          window.location.hostname.startsWith('192.168.') ||
+          window.location.hostname.startsWith('10.') ||
+          window.location.hostname === '') {
+        return;
+      }
+      
+      let bannerFound = false;
+      let isUpdating = false; // Prevent infinite loops
+      
+      function forceBannerVisible() {
+        // Prevent recursive calls
+        if (isUpdating) return;
+        isUpdating = true;
+        // Find all possible CookieYes banner selectors
+        const selectors = [
+          '#cookieyes-banner',
+          '.cky-banner',
+          '[id*="cookieyes"]',
+          '[class*="cky-banner"]',
+          '[class*="cookieyes"]',
+          '[id*="cky"]',
+          'div[class*="cookie"]'
+        ];
+        
+        selectors.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+              if (el && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.textContent.trim().length > 0)) {
+                bannerFound = true;
+                // Only update if actually needed to prevent infinite loops
+                if (el.style.display === 'none' || el.style.visibility === 'hidden' || el.style.opacity === '0') {
+                  el.style.display = 'block';
+                  el.style.visibility = 'visible';
+                  el.style.opacity = '1';
+                  el.style.zIndex = '99999';
+                  el.style.position = 'fixed';
+                  el.style.bottom = '0';
+                  el.style.left = '0';
+                  el.style.right = '0';
+                }
+                // Remove any hidden classes
+                el.classList.remove('hidden', 'cky-hidden', 'cookieyes-hidden', 'cky-notice-box-hidden');
+              }
+            });
+          } catch(e) {
+            console.error('CookieYes selector error:', e);
+          }
+        });
+        
+        // Also check for iframes that might contain the banner
+        try {
+          const iframes = document.querySelectorAll('iframe[src*="cookieyes"], iframe[src*="cky"]');
+          iframes.forEach(iframe => {
+            iframe.style.setProperty('display', 'block', 'important');
+            iframe.style.setProperty('visibility', 'visible', 'important');
+            iframe.style.setProperty('z-index', '99999', 'important');
+          });
+        } catch(e) {}
+        
+        isUpdating = false;
+      }
+      
+      // Run immediately
+      forceBannerVisible();
+      
+      // Run on DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          forceBannerVisible();
+          setTimeout(forceBannerVisible, 1000);
+          setTimeout(forceBannerVisible, 2000);
+        });
+      } else {
+        forceBannerVisible();
+        setTimeout(forceBannerVisible, 1000);
+        setTimeout(forceBannerVisible, 2000);
+      }
+      
+      // Run on window load
+      window.addEventListener('load', function() {
+        forceBannerVisible();
+        setTimeout(forceBannerVisible, 500);
+        setTimeout(forceBannerVisible, 1500);
+      });
+      
+      // Monitor for DOM additions only (not style changes) to prevent infinite loops
+      const observer = new MutationObserver(function(mutations) {
+        // Only react to new nodes being added, not style/attribute changes
+        const hasNewNodes = mutations.some(mutation => 
+          mutation.type === 'childList' && mutation.addedNodes.length > 0
+        );
+        if (hasNewNodes) {
+          forceBannerVisible();
+        }
+      });
+      
+      // Start observing when body is available - only watch for new nodes
+      function startObserving() {
+        if (document.body) {
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: false // Don't watch attributes to prevent loops
+          });
+        } else {
+          setTimeout(startObserving, 100);
+        }
+      }
+      
+      startObserving();
+      
+      // Continuously check every 300ms for first 10 seconds, then every 1 second
+      let checkCount = 0;
+      const fastInterval = setInterval(function() {
+        forceBannerVisible();
+        checkCount++;
+        if (checkCount >= 33) { // ~10 seconds
+          clearInterval(fastInterval);
+        }
+      }, 300);
+      
+      // Also check every 2 seconds (less frequent to reduce load)
+      setInterval(forceBannerVisible, 2000);
+      
+      // Debug: Log after 3 seconds
+      setTimeout(function() {
+        if (!bannerFound) {
+          console.warn('CookieYes banner not found in DOM. Check CookieYes dashboard settings and domain configuration.');
+        }
+      }, 3000);
+    })();
+  </script>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>404 · Lost Frame | Artur Morin</title>
+  <meta name="title" content="404 · Lost Frame | Artur Morin">
+  <meta name="description" content="Page not found. The frame you're looking for didn't make the final cut.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://arturmorin.com/404.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://arturmorin.com/404.html">
+  <meta property="og:title" content="404 · Lost Frame | Artur Morin">
+  <meta property="og:description" content="Page not found. The frame you're looking for didn't make the final cut.">
+  <meta property="og:site_name" content="Artur Morin Photography">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://arturmorin.com/404.html">
+  <meta name="twitter:title" content="404 · Lost Frame | Artur Morin">
+  <meta name="twitter:description" content="Page not found.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/404.css">
+<body>
+  <!-- Shutter animation -->
+  <div class="shutter"></div>
+
+  <!-- Film sprocket holes -->
+  <div class="sprockets left">
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+  </div>
+  <div class="sprockets right">
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+    <div class="sprocket-hole"></div>
+  </div>
+
+  <!-- Main content -->
+  <div class="container">
+    <div class="viewfinder">
+      <div class="corner-tl"></div>
+      <div class="corner-br"></div>
+      <div class="focus-ring"></div>
+      <div class="error-code">404</div>
+    </div>
+
+    <div class="exposure-bar">
+      <span><div class="dot"></div> REC</span>
+      <span>—</span>
+      <span>FRAME NOT FOUND</span>
+      <span>—</span>
+      <span>OUT OF FOCUS</span>
+    </div>
+
+    <h1 class="message">This frame was never exposed.</h1>
+    <p class="submessage">
+      The shot you're looking for didn't make the final cut.<br>
+      Perhaps it's still in the darkroom, waiting to develop.
+    </p>
+
+    <div class="film-data">
+      <div>
+        <span>FILM</span>
+        <strong>KODAK 404</strong>
+      </div>
+      <div>
+        <span>ISO</span>
+        <strong>∞</strong>
+      </div>
+      <div>
+        <span>APERTURE</span>
+        <strong>f/0.0</strong>
+      </div>
+      <div>
+        <span>SHUTTER</span>
+        <strong>MISSED</strong>
+      </div>
+    </div>
+
+    <a href="photography-index.html" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Return to Gallery
+    </a>
+  </div>
+
+  <!-- Film strip at bottom -->
+  <div class="film-strip">
+    <div class="frame"></div>
+    <div class="frame"></div>
+    <div class="frame"></div>
+    <div class="frame current"></div>
+    <div class="frame"></div>
+    <div class="frame"></div>
+    <div class="frame"></div>
+  </div>
+
+  <!-- Footer tagline -->
+  <div class="footer-tagline">
+    Opening new experiences
+  </div>
+
+  <script src="js/404.js"></script>
+</body>
+</html>
+
+

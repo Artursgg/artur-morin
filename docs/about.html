@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Start cookieyes banner - Only load on production domain -->
+  <script>
+    // Only load CookieYes on production domain, not localhost
+    if (window.location.hostname !== 'localhost' && 
+        window.location.hostname !== '127.0.0.1' && 
+        !window.location.hostname.startsWith('192.168.') &&
+        !window.location.hostname.startsWith('10.') &&
+        window.location.hostname !== '') {
+      var script = document.createElement('script');
+      script.id = 'cookieyes';
+      script.type = 'text/javascript';
+      script.src = 'https://cdn-cookieyes.com/client_data/0cc137e141492894816e3e85bd125764/script.js';
+      document.head.appendChild(script);
+    }
+  </script>
+  <!-- End cookieyes banner -->
+  
+  <!-- Force CookieYes banner to stay visible -->
+  <script>
+    (function() {
+      'use strict';
+      
+      // Skip on localhost - CookieYes doesn't load there
+      if (window.location.hostname === 'localhost' || 
+          window.location.hostname === '127.0.0.1' || 
+          window.location.hostname.startsWith('192.168.') ||
+          window.location.hostname.startsWith('10.') ||
+          window.location.hostname === '') {
+        return;
+      }
+      
+      let bannerFound = false;
+      let isUpdating = false; // Prevent infinite loops
+      
+      function forceBannerVisible() {
+        // Prevent recursive calls
+        if (isUpdating) return;
+        isUpdating = true;
+        
+        // Find all possible CookieYes banner selectors
+        const selectors = [
+          '#cookieyes-banner',
+          '.cky-banner',
+          '[id*="cookieyes"]',
+          '[class*="cky-banner"]',
+          '[class*="cookieyes"]',
+          '[id*="cky"]',
+          'div[class*="cookie"]'
+        ];
+        
+        selectors.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+              if (el && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.textContent.trim().length > 0)) {
+                bannerFound = true;
+                // Only update if actually needed to prevent infinite loops
+                if (el.style.display === 'none' || el.style.visibility === 'hidden' || el.style.opacity === '0') {
+                  el.style.display = 'block';
+                  el.style.visibility = 'visible';
+                  el.style.opacity = '1';
+                  el.style.zIndex = '99999';
+                  el.style.position = 'fixed';
+                  el.style.bottom = '0';
+                  el.style.left = '0';
+                  el.style.right = '0';
+                }
+                // Remove any hidden classes
+                el.classList.remove('hidden', 'cky-hidden', 'cookieyes-hidden', 'cky-notice-box-hidden');
+              }
+            });
+          } catch(e) {
+            console.error('CookieYes selector error:', e);
+          }
+        });
+        
+        isUpdating = false;
+      }
+      
+      // Run immediately
+      forceBannerVisible();
+      
+      // Run on DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          forceBannerVisible();
+          setTimeout(forceBannerVisible, 1000);
+          setTimeout(forceBannerVisible, 2000);
+        });
+      } else {
+        forceBannerVisible();
+        setTimeout(forceBannerVisible, 1000);
+        setTimeout(forceBannerVisible, 2000);
+      }
+      
+      // Run on window load
+      window.addEventListener('load', function() {
+        forceBannerVisible();
+        setTimeout(forceBannerVisible, 500);
+        setTimeout(forceBannerVisible, 1500);
+      });
+      
+      // Monitor for DOM additions only (not style changes) to prevent infinite loops
+      const observer = new MutationObserver(function(mutations) {
+        // Only react to new nodes being added, not style/attribute changes
+        const hasNewNodes = mutations.some(mutation => 
+          mutation.type === 'childList' && mutation.addedNodes.length > 0
+        );
+        if (hasNewNodes) {
+          forceBannerVisible();
+        }
+      });
+      
+      // Start observing when body is available - only watch for new nodes
+      function startObserving() {
+        if (document.body) {
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: false // Don't watch attributes to prevent loops
+          });
+        } else {
+          setTimeout(startObserving, 100);
+        }
+      }
+      
+      startObserving();
+      
+      // Continuously check every 300ms for first 10 seconds, then every 1 second
+      let checkCount = 0;
+      const fastInterval = setInterval(function() {
+        forceBannerVisible();
+        checkCount++;
+        if (checkCount >= 33) { // ~10 seconds
+          clearInterval(fastInterval);
+        }
+      }, 300);
+      
+      // Also check every 2 seconds (less frequent to reduce load)
+      setInterval(forceBannerVisible, 2000);
+      
+      // Debug: Log after 3 seconds
+      setTimeout(function() {
+        if (!bannerFound) {
+          console.warn('CookieYes banner not found in DOM. Check CookieYes dashboard settings and domain configuration.');
+        }
+      }, 3000);
+    })();
+  </script>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>About · Artur Morin | Visual Storyteller & Photographer</title>
+  <meta name="title" content="About · Artur Morin | Visual Storyteller & Photographer">
+  <meta name="description" content="Learn about Artur Morin, a Tallinn-based photographer. From street photography in Tallinn to the hills of Zakopane, discover the journey behind the lens.">
+  <meta name="keywords" content="Artur Morin, photographer biography, Tallinn photographer, photography journey, visual storyteller, photographer about">
+  <meta name="author" content="Artur Morin">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://arturmorin.com/about.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://arturmorin.com/about.html">
+  <meta property="og:title" content="About · Artur Morin | Visual Storyteller & Photographer">
+  <meta property="og:description" content="Learn about Artur Morin, a Tallinn-based photographer. From street photography in Tallinn to the hills of Zakopane.">
+  <meta property="og:image" content="https://arturmorin.com/assets/images/portfolio/about/me.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Artur Morin Photography">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://arturmorin.com/about.html">
+  <meta name="twitter:title" content="About · Artur Morin | Visual Storyteller & Photographer">
+  <meta name="twitter:description" content="Learn about Artur Morin, a Tallinn-based photographer capturing moments from Tallinn to Zakopane.">
+  <meta name="twitter:image" content="https://arturmorin.com/assets/images/portfolio/about/me.jpg">
+  <meta name="twitter:creator" content="@morinartur">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#0f0f0f">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <!-- Preload LCP image for faster loading -->
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Science+Gothic:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/about.css">
+  
+  <!-- Structured Data (JSON-LD) for Rich Results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "Artur Morin",
+      "jobTitle": "Photographer & Visual Storyteller",
+      "description": "Tallinn-based photographer specializing in editorial, fashion, and documentary photography",
+      "url": "https://arturmorin.com",
+      "image": "https://arturmorin.com/assets/images/portfolio/about/me.jpg",
+      "sameAs": [
+        "https://x.com/_smilexfd_",
+        "https://www.threads.net/@morinartur",
+        "https://t.me/SmileXFD"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Tallinn",
+        "addressCountry": "Estonia"
+      },
+      "knowsAbout": ["Photography", "Editorial Photography", "Fashion Photography", "Documentary Photography", "Portrait Photography", "Commercial Photography"],
+      "award": [
+        "IPA Award - Gold Documentary Series (2024)",
+        "Sony World Photography - Shortlist Landscape (2023)",
+        "PDN Photo Annual - Winner Portrait Category (2022)",
+        "Communication Arts - Excellence Commercial (2021)"
+      ]
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- Loading Screen - Camera Aperture Iris -->
+  <div class="loader" id="page-loader" aria-label="Loading page" role="status" aria-live="polite">
+    <div class="loader-aperture">
+      <!-- Outer ring with camera details -->
+      <div class="aperture-ring">
+        <!-- Aperture blades - 6 curved blades forming iris diaphragm -->
+        <svg class="aperture-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bladeGradient">
+              <stop offset="0%" stop-color="#1a1a1a" />
+              <stop offset="100%" stop-color="#000" />
+            </radialGradient>
+            <filter id="bladeShadow">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+              <feOffset dx="0" dy="2" result="offsetblur"/>
+              <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3"/>
+              </feComponentTransfer>
+              <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <!-- Each blade is a curved petal shape with inner and outer arcs -->
+          <!-- Proper curved blade: inner arc (30px radius) and outer arc (100px radius) forming a petal -->
+          <!-- Blade 1: starts at 0° (top), covers 60° -->
+          <path class="blade blade-1" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 2: rotated 60° -->
+          <path class="blade blade-2" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 3: rotated 120° -->
+          <path class="blade blade-3" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 4: rotated 180° -->
+          <path class="blade blade-4" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 5: rotated 240° -->
+          <path class="blade blade-5" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 6: rotated 300° -->
+          <path class="blade blade-6" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+        </svg>
+        <!-- Central opening that pulses -->
+        <div class="aperture-center"></div>
+        <!-- Inner focus ring -->
+        <div class="focus-indicator"></div>
+      </div>
+      <!-- Camera metadata display -->
+      <div class="camera-info">
+        <span class="info-item">f/<span class="f-number">2.8</span></span>
+        <span class="info-separator">·</span>
+        <span class="info-item">ISO <span class="iso-value">400</span></span>
+        <span class="info-separator">·</span>
+        <span class="info-item">1/<span class="shutter-value">60</span>s</span>
+      </div>
+    </div>
+    <p class="loader-text">LOADING FRAME...</p>
+    <!-- Film grain overlay for authenticity -->
+    <div class="loader-grain"></div>
+  </div>
+
+  <!-- Skip to main content link for keyboard users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <!-- Film grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="nav" id="home" role="banner">
+    <a class="logo" href="photography-index.html" aria-label="Artur Morin home">
+      <span class="logo-name-first">Artur</span>
+      <span class="logo-mark" aria-hidden="true">AM</span>
+      <span class="logo-name-last">Morin</span>
+    </a>
+    <nav id="primary-nav" aria-label="Primary navigation">
+      <ul>
+        <li><a href="photography-index.html#work">Work</a></li>
+        <li><a href="photography-index.html#services">Services</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="photography-index.html#contact">Contact</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+      </ul>
+      <!-- Mobile/Tablet CTA Button -->
+      <a href="photography-index.html#contact" class="nav-cta-mobile" aria-label="Contact - Let's Talk">Let's Talk</a>
+    </nav>
+    <!-- Interactive Grid Overlay for Navigation - Outside nav for proper positioning -->
+    <svg class="nav-grid-overlay" aria-hidden="true">
+      <defs>
+        <linearGradient id="gridGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="rgba(255, 255, 255, 0.8)" stop-opacity="1"/>
+          <stop offset="50%" stop-color="rgba(255, 255, 255, 0.4)" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="rgba(255, 255, 255, 0.1)" stop-opacity="0.2"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <!-- Portfolio Button - Desktop only, styled as separate box next to Contact -->
+    <a href="portfolio.html" class="nav-portfolio" aria-label="View Portfolio">Portfolio</a>
+    <a href="photography-index.html#contact" class="nav-cta" aria-label="Contact - Let's Talk">Let's Talk</a>
+    <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav" type="button">
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="sr-only">Menu</span>
+    </button>
+    <div class="nav-overlay" aria-hidden="true" role="presentation"></div>
+  </header>
+
+  <main id="main-content">
+    <!-- About Hero -->
+    <section class="about-hero parallax" data-speed="0.25">
+      <!-- Breadcrumbs - Desktop position -->
+      <nav class="breadcrumbs breadcrumbs-desktop" aria-label="Breadcrumb">
+        <a href="photography-index.html">Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">About</span>
+      </nav>
+      <div class="about-hero-content reveal">
+        <p class="eyebrow">About Me</p>
+        <h1>I see the world in<br><span class="italic">frames & light</span></h1>
+        <div class="about-hero-lead-row">
+          <p class="about-hero-lead">For the past year, I've been capturing moments that matter. From the streets of Tallinn to the hills of Zakopane, my camera has been my companion in telling stories that words alone cannot express.</p>
+          <!-- Breadcrumbs - Tablet position (same line as lead text) -->
+          <nav class="breadcrumbs breadcrumbs-tablet" aria-label="Breadcrumb">
+            <a href="photography-index.html">Home</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">About</span>
+          </nav>
+        </div>
+      </div>
+      <div class="about-hero-image reveal">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" alt="Artur Morin - Photographer portrait" fetchpriority="high" decoding="async">
+        <div class="image-decoration"></div>
+      </div>
+    </section>
+
+    <!-- Philosophy -->
+    <section class="philosophy">
+      <div class="philosophy-content reveal">
+        <h2>My <span class="italic">philosophy</span></h2>
+        <p class="philosophy-text">Photography is more than pressing a button. It's about patience, presence, and the ability to see beauty in the mundane. Every person has a story written in the lines of their face. Every landscape holds a secret in its shadows.</p>
+        <p class="philosophy-text">I believe in authentic moments over posed perfection. In natural light over artificial. In connection over direction. My role isn't to create—it's to witness and preserve.</p>
+      </div>
+      <div class="philosophy-values">
+        <div class="value reveal">
+          <span class="value-number">01</span>
+          <h3>Authenticity</h3>
+          <p>Real moments, real emotions, real stories.</p>
+        </div>
+        <div class="value reveal">
+          <span class="value-number">02</span>
+          <h3>Patience</h3>
+          <p>The best shots are worth waiting for.</p>
+        </div>
+        <div class="value reveal">
+          <span class="value-number">03</span>
+          <h3>Connection</h3>
+          <p>Understanding my subjects before capturing them.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Journey Timeline -->
+    <section class="journey parallax" data-speed="0.15">
+      <header class="section-header reveal">
+        <p class="eyebrow">The Journey</p>
+        <h2>From curious kid <br>to <span class="italic">visual storyteller</span></h2>
+      </header>
+
+      <div class="timeline">
+        <article class="timeline-item reveal">
+          <span class="timeline-year">2016</span>
+          <div class="timeline-content">
+            <h3>The Beginning</h3>
+            <p>Started with a borrowed Nikon. Enjoyed photographing my grandma, and shooting our class on old town visit.</p>
+          </div>
+        </article>
+
+        <article class="timeline-item reveal">
+          <span class="timeline-year">2024</span>
+          <div class="timeline-content">
+            <h3>Realization</h3>
+            <p>Started realising that phone becoming not enough to shoot, thinked to buy Sony A6600 but thankfully it gone by the wayside.</p>
+          </div>
+        </article>
+
+        <article class="timeline-item reveal">
+          <span class="timeline-year">2025</span>
+          <div class="timeline-content">
+            <h3>Upgrade</h3>
+            <p>Bought very good cameraphone and started to realise how much better to previous phone it really it, but as we understand that humanity always wanted more so I really started to think about getting a camera...</p>
+          </div>
+        </article>
+
+        <article class="timeline-item reveal">
+          <span class="timeline-year">What's Next</span>
+          <div class="timeline-content">
+            <h3>What's Next</h3>
+            <p>Shooting what I enjoy and getting a clear mind from capturing images and edit them</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Equipment -->
+    <section class="equipment">
+      <header class="section-header reveal">
+        <p class="eyebrow">The Tools</p>
+        <h2>Gear I <span class="italic">trust</span></h2>
+      </header>
+
+      <div class="equipment-grid">
+        <article class="equipment-card reveal">
+          <div class="equipment-icon">📷</div>
+          <h3>Camera Bodies</h3>
+          <ul>
+            <li>Panasonic S5</li>
+            <li>Canon 750D</li>
+            <li>Vivo X200 Ultra</li>
+          </ul>
+        </article>
+
+        <article class="equipment-card reveal">
+          <div class="equipment-icon">🔭</div>
+          <h3>Lenses</h3>
+          <ul>
+            <li>Canon EF 50mm f1.8</li>
+            <li>Tamron 70-300mm Di Vc USM</li>
+          </ul>
+        </article>
+
+        <article class="equipment-card reveal">
+          <div class="equipment-icon">💡</div>
+          <h3>Lighting</h3>
+          <ul>
+            <li>Bike flashes</li>
+            <li>Ingenuity 😄</li>
+            <li>Natural light (favorite)</li>
+          </ul>
+        </article>
+
+        <article class="equipment-card reveal">
+          <div class="equipment-icon">🖥️</div>
+          <h3>Post-Production</h3>
+          <ul>
+            <li>Lightroom Classic</li>
+            <li>Premiere Pro</li>
+            <li>Davinci Resolve (grading)</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- Awards -->
+    <section class="awards parallax" data-speed="0.1">
+      <header class="section-header reveal">
+        <p class="eyebrow">Recognition</p>
+        <h2>Moments that were <span class="italic">noticed</span></h2>
+      </header>
+
+      <div class="awards-grid">
+        <article class="award-card reveal" data-year="2023">
+          <span class="award-year">TBC...</span>
+        </article>
+        <article class="award-card reveal" data-year="2024">
+          <span class="award-year">2024</span>
+          <h3>Family Recognition</h3>
+          <p>Wow Effect</p>
+        </article>
+        <article class="award-card reveal" data-year="2025">
+          <span class="award-year">2025</span>
+          <h3>Myself Photo Award</h3>
+          <p>All Categories</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="about-cta reveal">
+      <h2>Ready to create<br><span class="italic">something together?</span></h2>
+      <p>I'm always excited to take on new projects and collaborations. Whether you have a clear vision or just a spark of an idea, let's talk.</p>
+      <a href="photography-index.html#contact" class="btn btn-primary">Get in Touch</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="logo-mark">AM</span>
+        <div class="footer-brand-text">
+          <p class="footer-tagline-mobile">Opening new experiences</p>
+          <p class="footer-tagline-desktop-inline">Opening new experiences</p>
+        </div>
+      </div>
+      <nav class="footer-nav">
+        <a href="photography-index.html#work">Work</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="photography-index.html#services">Services</a>
+        <a href="about.html">About</a>
+        <a href="photography-index.html#contact">Contact</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+      </nav>
+      <div class="footer-social" aria-label="Social links">
+        <!-- X (formerly Twitter) - Official logo -->
+        <a href="https://x.com/_smilexfd_" target="_blank" rel="noopener noreferrer" class="social-x" aria-label="Artur Morin on X">
+          <img src="assets/icons/twitter-x.svg" alt="X" class="social-icon icon-x" width="16" height="16">
+        </a>
+        <!-- Telegram -->
+        <a href="https://t.me/SmileXFD" target="_blank" rel="noopener noreferrer" class="social-telegram" aria-label="Artur Morin on Telegram">
+          <img src="assets/icons/telegram.svg" alt="Telegram" class="social-icon icon-telegram" width="16" height="16">
+        </a>
+        <!-- Threads by Meta - Official logo -->
+        <a href="https://www.threads.net/@morinartur" target="_blank" rel="noopener noreferrer" class="social-threads" aria-label="Artur Morin on Threads">
+          <img src="assets/icons/threads.svg" alt="Threads" class="social-icon icon-threads" width="16" height="16">
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Artur Morin. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/imageLoader.js"></script>
+  <script src="js/about.js"></script>
+</body>
+</html>
+

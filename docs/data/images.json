@@ -1,0 +1,16 @@
+{
+  "portfolio": {
+    "other": [],
+    "street": [],
+    "landscape": [],
+    "cars": [],
+    "products": []
+  },
+  "hero": {
+    "featured": null
+  },
+  "about": {
+    "portrait": "assets/images/portfolio/about/me.jpg"
+  }
+}
+

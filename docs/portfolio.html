@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Start cookieyes banner - Only load on production domain -->
+  <script>
+    // Only load CookieYes on production domain, not localhost
+    if (window.location.hostname !== 'localhost' && 
+        window.location.hostname !== '127.0.0.1' && 
+        !window.location.hostname.startsWith('192.168.') &&
+        !window.location.hostname.startsWith('10.') &&
+        window.location.hostname !== '') {
+      var script = document.createElement('script');
+      script.id = 'cookieyes';
+      script.type = 'text/javascript';
+      script.src = 'https://cdn-cookieyes.com/client_data/0cc137e141492894816e3e85bd125764/script.js';
+      document.head.appendChild(script);
+    }
+  </script>
+  <!-- End cookieyes banner -->
+  
+  <!-- Force CookieYes banner to stay visible -->
+  <script>
+    (function() {
+      'use strict';
+      
+      // Skip on localhost - CookieYes doesn't load there
+      if (window.location.hostname === 'localhost' || 
+          window.location.hostname === '127.0.0.1' || 
+          window.location.hostname.startsWith('192.168.') ||
+          window.location.hostname.startsWith('10.') ||
+          window.location.hostname === '') {
+        return;
+      }
+      
+      let bannerFound = false;
+      let isUpdating = false; // Prevent infinite loops
+      
+      function forceBannerVisible() {
+        // Prevent recursive calls
+        if (isUpdating) return;
+        isUpdating = true;
+        
+        // Find all possible CookieYes banner selectors
+        const selectors = [
+          '#cookieyes-banner',
+          '.cky-banner',
+          '[id*="cookieyes"]',
+          '[class*="cky-banner"]',
+          '[class*="cookieyes"]',
+          '[id*="cky"]',
+          'div[class*="cookie"]'
+        ];
+        
+        selectors.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+              if (el && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.textContent.trim().length > 0)) {
+                bannerFound = true;
+                // Only update if actually needed to prevent infinite loops
+                if (el.style.display === 'none' || el.style.visibility === 'hidden' || el.style.opacity === '0') {
+                  el.style.display = 'block';
+                  el.style.visibility = 'visible';
+                  el.style.opacity = '1';
+                  el.style.zIndex = '99999';
+                  el.style.position = 'fixed';
+                  el.style.bottom = '0';
+                  el.style.left = '0';
+                  el.style.right = '0';
+                }
+                // Remove any hidden classes
+                el.classList.remove('hidden', 'cky-hidden', 'cookieyes-hidden', 'cky-notice-box-hidden');
+              }
+            });
+          } catch(e) {
+            console.error('CookieYes selector error:', e);
+          }
+        });
+        
+        isUpdating = false;
+      }
+      
+      // Run immediately
+      forceBannerVisible();
+      
+      // Run on DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          forceBannerVisible();
+          setTimeout(forceBannerVisible, 1000);
+          setTimeout(forceBannerVisible, 2000);
+        });
+      } else {
+        forceBannerVisible();
+        setTimeout(forceBannerVisible, 1000);
+        setTimeout(forceBannerVisible, 2000);
+      }
+      
+      // Run on window load
+      window.addEventListener('load', function() {
+        forceBannerVisible();
+        setTimeout(forceBannerVisible, 500);
+        setTimeout(forceBannerVisible, 1500);
+      });
+      
+      // Monitor for DOM additions only (not style changes) to prevent infinite loops
+      const observer = new MutationObserver(function(mutations) {
+        // Only react to new nodes being added, not style/attribute changes
+        const hasNewNodes = mutations.some(mutation => 
+          mutation.type === 'childList' && mutation.addedNodes.length > 0
+        );
+        if (hasNewNodes) {
+          forceBannerVisible();
+        }
+      });
+      
+      // Start observing when body is available - only watch for new nodes
+      function startObserving() {
+        if (document.body) {
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: false // Don't watch attributes to prevent loops
+          });
+        } else {
+          setTimeout(startObserving, 100);
+        }
+      }
+      
+      startObserving();
+      
+      // Continuously check every 300ms for first 10 seconds, then every 1 second
+      let checkCount = 0;
+      const fastInterval = setInterval(function() {
+        forceBannerVisible();
+        checkCount++;
+        if (checkCount >= 33) { // ~10 seconds
+          clearInterval(fastInterval);
+        }
+      }, 300);
+      
+      // Also check every 2 seconds (less frequent to reduce load)
+      setInterval(forceBannerVisible, 2000);
+      
+      // Debug: Log after 3 seconds
+      setTimeout(function() {
+        if (!bannerFound) {
+          console.warn('CookieYes banner not found in DOM. Check CookieYes dashboard settings and domain configuration.');
+        }
+      }, 3000);
+    })();
+  </script>
+  
+  <!-- Google Consent Mode - Must load BEFORE GTM/GA -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    
+    // Set default consent state to 'denied' - no cookies until consent
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied',
+      'ad_storage': 'denied',
+      'wait_for_update': 500
+    });
+  </script>
+  
+  <!-- Google Tag Manager - Blocked until consent -->
+  <script data-cookieyes="cookieyes-analytics">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-K97CNH32');</script>
+  <!-- End Google Tag Manager -->
+  <!-- Google tag (gtag.js) - Blocked until consent -->
+  <script async data-cookieyes="cookieyes-analytics" src="https://www.googletagmanager.com/gtag/js?id=G-X89C2WMLSL"></script>
+  <script data-cookieyes="cookieyes-analytics">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-X89C2WMLSL');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Portfolio · Artur Morin Photography</title>
+  <meta name="title" content="Portfolio · Artur Morin Photography">
+  <meta name="description" content="View the complete portfolio of Artur Morin - Tallinn-based photographer specializing in editorial, fashion, landscape, automotive, and product photography.">
+  <meta name="keywords" content="photography portfolio, Tallinn photographer, editorial photography, fashion photography, landscape photography, automotive photography, product photography">
+  <meta name="author" content="Artur Morin">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://arturmorin.com/portfolio.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://arturmorin.com/portfolio.html">
+  <meta property="og:title" content="Portfolio · Artur Morin Photography">
+  <meta property="og:description" content="View the complete portfolio of Artur Morin - Tallinn-based photographer.">
+  <meta property="og:image" content="https://arturmorin.com/assets/social-preview.jpg">
+  <meta property="og:site_name" content="Artur Morin Photography">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://arturmorin.com/portfolio.html">
+  <meta name="twitter:title" content="Portfolio · Artur Morin Photography">
+  <meta name="twitter:description" content="View the complete portfolio of Artur Morin - Tallinn-based photographer.">
+  <meta name="twitter:image" content="https://arturmorin.com/assets/social-preview.jpg">
+  <meta name="twitter:creator" content="@morinartur">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#0f0f0f">
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Science+Gothic:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/photography-index.css">
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K97CNH32"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <!-- Skip to main content link for keyboard users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <!-- Loading Screen - Camera Aperture Iris -->
+  <div class="loader" id="page-loader" aria-label="Loading page" role="status" aria-live="polite">
+    <div class="loader-aperture">
+      <!-- Outer ring with camera details -->
+      <div class="aperture-ring">
+        <!-- Aperture blades - 6 curved blades forming iris diaphragm -->
+        <svg class="aperture-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bladeGradient">
+              <stop offset="0%" stop-color="#1a1a1a" />
+              <stop offset="100%" stop-color="#000" />
+            </radialGradient>
+            <filter id="bladeShadow">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+              <feOffset dx="0" dy="2" result="offsetblur"/>
+              <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3"/>
+              </feComponentTransfer>
+              <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <!-- Each blade is a curved petal shape with inner and outer arcs -->
+          <!-- Proper curved blade: inner arc (30px radius) and outer arc (100px radius) forming a petal -->
+          <!-- Blade 1: starts at 0° (top), covers 60° -->
+          <path class="blade blade-1" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 2: rotated 60° -->
+          <path class="blade blade-2" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 3: rotated 120° -->
+          <path class="blade blade-3" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 4: rotated 180° -->
+          <path class="blade blade-4" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 5: rotated 240° -->
+          <path class="blade blade-5" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+          <!-- Blade 6: rotated 300° -->
+          <path class="blade blade-6" d="M 100 100 L 126 85 A 30 30 0 0 1 126 115 L 173.2 150 A 100 100 0 0 0 173.2 50 Z" fill="url(#bladeGradient)" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" filter="url(#bladeShadow)"/>
+        </svg>
+        <!-- Central opening that pulses -->
+        <div class="aperture-center"></div>
+        <!-- Inner focus ring -->
+        <div class="focus-indicator"></div>
+      </div>
+      <!-- Camera metadata display -->
+      <div class="camera-info">
+        <span class="info-item">f/<span class="f-number">2.8</span></span>
+        <span class="info-separator">·</span>
+        <span class="info-item">ISO <span class="iso-value">400</span></span>
+        <span class="info-separator">·</span>
+        <span class="info-item">1/<span class="shutter-value">60</span>s</span>
+      </div>
+    </div>
+    <p class="loader-text">LOADING FRAME...</p>
+    <!-- Film grain overlay for authenticity -->
+    <div class="loader-grain"></div>
+  </div>
+
+  <!-- Film grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="nav" id="home" role="banner">
+    <a class="logo" href="photography-index.html" aria-label="Artur Morin home">
+      <span class="logo-name-first">Artur</span>
+      <span class="logo-mark" aria-hidden="true">AM</span>
+      <span class="logo-name-last">Morin</span>
+    </a>
+    <nav id="primary-nav" aria-label="Primary navigation">
+      <ul>
+        <li><a href="photography-index.html#work">Work</a></li>
+        <li><a href="photography-index.html#services">Services</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="photography-index.html#contact">Contact</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+      </ul>
+      <!-- Mobile/Tablet CTA Button -->
+      <a href="photography-index.html#contact" class="nav-cta-mobile" aria-label="Contact - Let's Talk">Let's Talk</a>
+    </nav>
+    <!-- Interactive Grid Overlay for Navigation - Outside nav for proper positioning -->
+    <svg class="nav-grid-overlay" aria-hidden="true">
+      <defs>
+        <linearGradient id="gridGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="rgba(255, 255, 255, 0.8)" stop-opacity="1"/>
+          <stop offset="50%" stop-color="rgba(255, 255, 255, 0.4)" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="rgba(255, 255, 255, 0.1)" stop-opacity="0.2"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <!-- Portfolio Button - Desktop only, styled as separate box -->
+    <a href="portfolio.html" class="nav-portfolio" aria-label="View Portfolio">Portfolio</a>
+    <a href="photography-index.html#contact" class="nav-cta" aria-label="Contact - Let's Talk">Let's Talk</a>
+    <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav" type="button">
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="sr-only">Menu</span>
+    </button>
+    <div class="nav-overlay" aria-hidden="true" role="presentation"></div>
+  </header>
+
+  <!-- Growing Grid Lines Animation -->
+  <div class="grid-lines-container" aria-hidden="true"></div>
+
+  <main id="main-content">
+    <!-- Portfolio Section - Blank for now -->
+    <section class="work parallax" id="portfolio" data-speed="0.15" aria-labelledby="portfolio-heading">
+      <!-- Breadcrumbs - Desktop position -->
+      <nav class="breadcrumbs breadcrumbs-desktop" aria-label="Breadcrumb">
+        <a href="photography-index.html">Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Portfolio</span>
+      </nav>
+      <header class="section-header">
+        <!-- Breadcrumbs - Tablet position (replaces eyebrow) -->
+        <nav class="breadcrumbs breadcrumbs-tablet" aria-label="Breadcrumb">
+          <a href="photography-index.html">Home</a>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-current">Portfolio</span>
+        </nav>
+        <h2 id="portfolio-heading">My <span class="italic">complete collection</span></h2>
+      </header>
+      
+      <!-- 6x6 Grid Layout Test -->
+      <div class="portfolio-grid-6x6">
+        <div class="grid-item" data-lightbox="portfolio-image-1">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image" data-src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" aria-hidden="true">
+    <button class="lightbox-close" aria-label="Close lightbox">×</button>
+    <button class="lightbox-prev" aria-label="Previous image">←</button>
+    <button class="lightbox-next" aria-label="Next image">→</button>
+    <div class="lightbox-content">
+      <img class="lightbox-image" src="" alt="">
+    </div>
+  </div>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <a href="photography-index.html" class="footer-logo-link" aria-label="Artur Morin home">
+          <span class="logo-mark">AM</span>
+        </a>
+        <div class="footer-brand-text">
+          <p class="footer-tagline-mobile">Opening new experiences</p>
+          <p class="footer-tagline-desktop-inline">Opening new experiences</p>
+        </div>
+      </div>
+      <nav class="footer-nav">
+        <a href="photography-index.html#work">Work</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="photography-index.html#services">Services</a>
+        <a href="about.html">About</a>
+        <a href="photography-index.html#contact">Contact</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+      </nav>
+      <div class="footer-social" aria-label="Social links">
+        <!-- X (formerly Twitter) - Official logo -->
+        <a href="https://x.com/_smilexfd_" target="_blank" rel="noopener noreferrer" class="social-x" aria-label="Artur Morin on X">
+          <img src="assets/icons/twitter-x.svg" alt="X" class="social-icon icon-x" width="16" height="16">
+        </a>
+        <!-- Telegram -->
+        <a href="https://t.me/SmileXFD" target="_blank" rel="noopener noreferrer" class="social-telegram" aria-label="Artur Morin on Telegram">
+          <img src="assets/icons/telegram.svg" alt="Telegram" class="social-icon icon-telegram" width="16" height="16">
+        </a>
+        <!-- Threads by Meta - Official logo -->
+        <a href="https://www.threads.net/@morinartur" target="_blank" rel="noopener noreferrer" class="social-threads" aria-label="Artur Morin on Threads">
+          <img src="assets/icons/threads.svg" alt="Threads" class="social-icon icon-threads" width="16" height="16">
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Artur Morin. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/imageLoader.js"></script>
+  <script src="js/photography-index.js"></script>
+  <script src="js/portfolio-lightbox.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,85 @@
+# Netlify Configuration File
+# This file configures how Netlify builds and deploys your portfolio site
+
+[build]
+  # Publish directory - where your built site files are located
+  publish = "."
+  
+  # Build command (optional - only needed if you have a build process)
+  # command = "npm run build"
+  
+  # Note: No Node.js version specified - static site doesn't need it
+  # If you add Netlify Functions later, uncomment and set NODE_VERSION below:
+  # [build.environment]
+  #   NODE_VERSION = "18"
+
+# Redirect rules - handle routing for your site
+[[redirects]]
+  # Redirect root to main portfolio page
+  from = "/"
+  to = "/photography-index.html"
+  status = 200
+
+# Additional redirect for clean URLs (optional)
+[[redirects]]
+  from = "/home"
+  to = "/photography-index.html"
+  status = 200
+
+# Note: Netlify automatically uses 404.html for 404 errors
+# The 404.html file in the publish directory will be used automatically
+# No redirect needed - Netlify handles 404s natively
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://www.gstatic.com https://cdn-cookieyes.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://www.google.com https://www.recaptcha.net https://cdn-cookieyes.com https://log.cookieyes.com; frame-src 'self' https://www.google.com https://www.recaptcha.net; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests;"
+
+# Cache static assets (images, CSS, JS) for better performance
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Don't cache HTML files - always get fresh content
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Netlify Functions configuration (if you add serverless functions later)
+# [functions]
+#   directory = "netlify/functions"
+#   node_bundler = "esbuild"
+
