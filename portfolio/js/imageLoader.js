@@ -90,7 +90,7 @@ function populatePortfolioGrid() {
         };
         testImg.onerror = () => {
           // Keep existing image if new one doesn't exist
-          console.log(`Image not found: ${firstImage.thumbnail}`);
+          // Silently fail - image not found
         };
         testImg.src = firstImage.thumbnail;
       }
@@ -128,7 +128,7 @@ function updateHeroImage() {
           heroImg.src = heroImage;
         };
         testImg.onerror = () => {
-          console.log(`Hero image not found: ${heroImage}`);
+          // Silently fail - hero image not found
         };
         testImg.src = heroImage;
       }
@@ -148,7 +148,7 @@ function updateAboutImage() {
           aboutImg.src = aboutImage;
         };
         testImg.onerror = () => {
-          console.log(`About image not found: ${aboutImage}`);
+          // Silently fail - about image not found
         };
         testImg.src = aboutImage;
       }
