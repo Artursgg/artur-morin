@@ -166,11 +166,11 @@
   
   <!-- Google Tag Manager - Blocked until consent -->
   <script data-cookieyes="cookieyes-analytics">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-K97CNH32');</script>
-  <!-- End Google Tag Manager -->
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-K97CNH32');</script>
+<!-- End Google Tag Manager -->
   <!-- Google tag (gtag.js) - Blocked until consent -->
   <script async data-cookieyes="cookieyes-analytics" src="https://www.googletagmanager.com/gtag/js?id=G-X89C2WMLSL"></script>
   <script data-cookieyes="cookieyes-analytics">
@@ -220,10 +220,6 @@
   <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://images.unsplash.com">
-  
-  <!-- Preload LCP image for faster loading -->
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" fetchpriority="high">
   
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Science+Gothic:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -364,8 +360,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <ul>
         <li><a href="#work">Work</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#about">About</a></li>
+        <li><a href="about.html">About</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
       </ul>
       <!-- Mobile/Tablet CTA Button -->
       <a href="#contact" class="nav-cta-mobile" aria-label="Contact - Let's Talk">Let's Talk</a>
@@ -380,6 +377,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </linearGradient>
       </defs>
     </svg>
+    <!-- Portfolio Button - Desktop only, positioned between nav and Let's Talk -->
+    <a href="portfolio.html" class="nav-portfolio" aria-label="View Portfolio">Portfolio</a>
     <a href="#contact" class="nav-cta" aria-label="Contact - Let's Talk">Let's Talk</a>
     <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav" type="button">
       <span class="hamburger-line" aria-hidden="true"></span>
@@ -424,16 +423,107 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </div>
       <div class="hero-image">
-        <div class="image-frame reveal">
-          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" alt="Featured photograph - Mountain landscape" fetchpriority="high" decoding="async">
-          <div class="frame-corner tl"></div>
-          <div class="frame-corner tr"></div>
-          <div class="frame-corner bl"></div>
-          <div class="frame-corner br"></div>
+        <div class="hero-carousel" role="region" aria-label="Hero image carousel" aria-live="polite">
+          <button class="carousel-btn prev" aria-label="Previous slide">←</button>
+          <div class="carousel-window">
+            <div class="carousel-track">
+              <!-- Carousel slides - Images from assets/images/portfolio/hero/ with WebP and JPG fallback -->
+              <!-- Order matches Selected Work section: Other, Street, Landscape, Cars, Products -->
+              <!-- Slide 1: Other folder - Blackrock in the sea -->
+              <div class="carousel-slide" data-category="other" aria-label="Other photography">
+                <div class="image-frame">
+                  <picture>
+                    <source srcset="assets/images/portfolio/hero/other/Blackrock-in-the-sea.webp" type="image/webp">
+                    <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Blackrock in the sea" fetchpriority="high" decoding="async">
+                  </picture>
+                  <div class="frame-corner tl"></div>
+                  <div class="frame-corner tr"></div>
+                  <div class="frame-corner bl"></div>
+                  <div class="frame-corner br"></div>
+                </div>
+                <div class="image-caption">
+                  <span class="caption-number">001</span>
+                  <span class="caption-text">&ldquo;Other&rdquo;</span>
+                </div>
+              </div>
+              <!-- Slide 2: Street folder - Three flags on sunrise -->
+              <div class="carousel-slide" data-category="street" aria-label="Street photography">
+                <div class="image-frame">
+                  <picture>
+                    <source srcset="assets/images/portfolio/hero/street/three-flags-on-sunrise.webp" type="image/webp">
+                    <img src="assets/images/portfolio/hero/street/three-flags-on-sunrise.jpg" alt="Three flags on sunrise" decoding="async">
+                  </picture>
+                  <div class="frame-corner tl"></div>
+                  <div class="frame-corner tr"></div>
+                  <div class="frame-corner bl"></div>
+                  <div class="frame-corner br"></div>
+                </div>
+                <div class="image-caption">
+                  <span class="caption-number">002</span>
+                  <span class="caption-text">&ldquo;Street&rdquo;</span>
+                </div>
+              </div>
+              <!-- Slide 3: Landscape folder - Rummu quarry B&W -->
+              <div class="carousel-slide" data-category="landscape" aria-label="Landscape photography">
+                <div class="image-frame">
+                  <picture>
+                    <source srcset="assets/images/portfolio/hero/landscape/Rummu-quarry-b&w.webp" type="image/webp">
+                    <img src="assets/images/portfolio/hero/landscape/Rummu-quarry-b&w.jpg" alt="Rummu quarry black and white" decoding="async">
+                  </picture>
+                  <div class="frame-corner tl"></div>
+                  <div class="frame-corner tr"></div>
+                  <div class="frame-corner bl"></div>
+                  <div class="frame-corner br"></div>
+                </div>
+                <div class="image-caption">
+                  <span class="caption-number">003</span>
+                  <span class="caption-text">&ldquo;Landscape&rdquo;</span>
+                </div>
+              </div>
+              <!-- Slide 4: Cars folder - Audi Q5 panning shot -->
+              <div class="carousel-slide" data-category="cars" aria-label="Cars photography">
+                <div class="image-frame">
+                  <picture>
+                    <source srcset="assets/images/portfolio/hero/cars/Audi-q5-panning-shot.webp" type="image/webp">
+                    <img src="assets/images/portfolio/hero/cars/Audi-q5-panning-shot.jpg" alt="Audi Q5 panning shot" decoding="async">
+                  </picture>
+                  <div class="frame-corner tl"></div>
+                  <div class="frame-corner tr"></div>
+                  <div class="frame-corner bl"></div>
+                  <div class="frame-corner br"></div>
+                </div>
+                <div class="image-caption">
+                  <span class="caption-number">004</span>
+                  <span class="caption-text">&ldquo;Cars&rdquo;</span>
+                </div>
+              </div>
+              <!-- Slide 5: Products folder - Addiesdive watch showcase -->
+              <div class="carousel-slide" data-category="products" aria-label="Products photography">
+                <div class="image-frame">
+                  <picture>
+                    <source srcset="assets/images/portfolio/hero/products/Addiesdive-watch-showcase.webp" type="image/webp">
+                    <img src="assets/images/portfolio/hero/products/Addiesdive-watch-showcase.jpg" alt="Addiesdive watch showcase" decoding="async">
+                  </picture>
+                  <div class="frame-corner tl"></div>
+                  <div class="frame-corner tr"></div>
+                  <div class="frame-corner bl"></div>
+                  <div class="frame-corner br"></div>
+                </div>
+                <div class="image-caption">
+                  <span class="caption-number">005</span>
+                  <span class="caption-text">&ldquo;Products&rdquo;</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="carousel-btn next" aria-label="Next slide">→</button>
         </div>
-        <div class="image-caption">
-          <span class="caption-number">001</span>
-          <span class="caption-text">Dawn at Sunrise Peak, 2024</span>
+        <div class="carousel-dots" role="tablist" aria-label="Carousel slides">
+          <button aria-label="Slide 1 - Other" aria-selected="true"></button>
+          <button aria-label="Slide 2 - Street" aria-selected="false"></button>
+          <button aria-label="Slide 3 - Landscape" aria-selected="false"></button>
+          <button aria-label="Slide 4 - Cars" aria-selected="false"></button>
+          <button aria-label="Slide 5 - Products" aria-selected="false"></button>
         </div>
       </div>
       <div class="scroll-hint" aria-hidden="true">
@@ -500,82 +590,102 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </header>
 
       <div class="work-grid">
+        <!-- Work Card 1: Other - Blackrock in the sea -->
         <article class="work-card work-card--large reveal">
-          <a href="#" class="work-card-link">
+          <a href="portfolio.html" class="work-card-link">
             <div class="work-card-image">
-              <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80" alt="Editorial photography - Concert and music scene documentation">
+              <picture>
+                <source srcset="assets/images/portfolio/hero/other/Blackrock-in-the-sea.webp" type="image/webp">
+                <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Blackrock in the sea - Other photography">
+              </picture>
               <div class="work-card-overlay">
-                <span class="view-project">View Project →</span>
+                <span class="view-project">View Portfolio →</span>
               </div>
             </div>
             <div class="work-card-info">
-              <span class="work-category">Editorial</span>
-              <h3>Echoes of Sound</h3>
-              <p>A visual journey through Tallinn's underground music scene</p>
+              <span class="work-category">Other</span>
+              <h3>Coastal Formations</h3>
+              <p>Capturing the raw beauty of nature's formations</p>
             </div>
           </a>
         </article>
 
+        <!-- Work Card 2: Street - Three flags on sunrise -->
         <article class="work-card reveal">
-          <a href="#" class="work-card-link">
+          <a href="portfolio.html" class="work-card-link">
             <div class="work-card-image">
-              <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80" alt="Landscape photography - Wilderness and nature scenes">
+              <picture>
+                <source srcset="assets/images/portfolio/hero/street/three-flags-on-sunrise.webp" type="image/webp">
+                <img src="assets/images/portfolio/hero/street/three-flags-on-sunrise.jpg" alt="Three flags on sunrise - Street photography">
+              </picture>
               <div class="work-card-overlay">
-                <span class="view-project">View Project →</span>
+                <span class="view-project">View Portfolio →</span>
+              </div>
+            </div>
+            <div class="work-card-info">
+              <span class="work-category">Street</span>
+              <h3>Dawn Moments</h3>
+              <p>Urban moments captured at dawn</p>
+            </div>
+          </a>
+        </article>
+
+        <!-- Work Card 3: Landscape - Rummu quarry B&W -->
+        <article class="work-card reveal">
+          <a href="portfolio.html" class="work-card-link">
+            <div class="work-card-image">
+              <picture>
+                <source srcset="assets/images/portfolio/hero/landscape/Rummu-quarry-b&w.webp" type="image/webp">
+                <img src="assets/images/portfolio/hero/landscape/Rummu-quarry-b&w.jpg" alt="Rummu quarry black and white - Landscape photography">
+              </picture>
+              <div class="work-card-overlay">
+                <span class="view-project">View Portfolio →</span>
               </div>
             </div>
             <div class="work-card-info">
               <span class="work-category">Landscape</span>
-              <h3>Wilderness Untold</h3>
-              <p>National Geographic feature</p>
+              <h3>Rummu Quarry</h3>
+              <p>Monochrome exploration of abandoned beauty</p>
             </div>
           </a>
         </article>
 
+        <!-- Work Card 4: Cars - Audi Q5 panning shot -->
         <article class="work-card reveal">
-          <a href="#" class="work-card-link">
+          <a href="portfolio.html" class="work-card-link">
             <div class="work-card-image">
-              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80" alt="Fashion photography - Editorial fashion and style photography">
+              <picture>
+                <source srcset="assets/images/portfolio/hero/cars/Audi-q5-panning-shot.webp" type="image/webp">
+                <img src="assets/images/portfolio/hero/cars/Audi-q5-panning-shot.jpg" alt="Audi Q5 panning shot - Cars photography">
+              </picture>
               <div class="work-card-overlay">
-                <span class="view-project">View Project →</span>
+                <span class="view-project">View Portfolio →</span>
               </div>
             </div>
             <div class="work-card-info">
-              <span class="work-category">Fashion</span>
-              <h3>Velvet Dreams</h3>
-              <p>Vogue Italia SS24</p>
+              <span class="work-category">Cars</span>
+              <h3>Motion & Speed</h3>
+              <p>Motion and speed in perfect harmony</p>
             </div>
           </a>
         </article>
 
+        <!-- Work Card 5: Products - Addiesdive watch showcase -->
         <article class="work-card reveal">
-          <a href="#" class="work-card-link">
+          <a href="portfolio.html" class="work-card-link">
             <div class="work-card-image">
-              <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800&q=80" alt="Portrait photography - Professional portrait and documentary photography">
+              <picture>
+                <source srcset="assets/images/portfolio/hero/products/Addiesdive-watch-showcase.webp" type="image/webp">
+                <img src="assets/images/portfolio/hero/products/Addiesdive-watch-showcase.jpg" alt="Addiesdive watch showcase - Products photography">
+              </picture>
               <div class="work-card-overlay">
-                <span class="view-project">View Project →</span>
+                <span class="view-project">View Portfolio →</span>
               </div>
             </div>
             <div class="work-card-info">
-              <span class="work-category">Portrait</span>
-              <h3>Faces of Resilience</h3>
-              <p>Documentary series</p>
-            </div>
-          </a>
-        </article>
-
-        <article class="work-card reveal">
-          <a href="#" class="work-card-link">
-            <div class="work-card-image">
-              <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80" alt="Commercial photography - Brand and product photography">
-              <div class="work-card-overlay">
-                <span class="view-project">View Project →</span>
-              </div>
-            </div>
-            <div class="work-card-info">
-              <span class="work-category">Commercial</span>
-              <h3>Nordic Essence</h3>
-              <p>Brand campaign for Lumina</p>
+              <span class="work-category">Products</span>
+              <h3>Precision Details</h3>
+              <p>Precision and elegance in product photography</p>
             </div>
           </a>
         </article>
@@ -645,7 +755,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="about-content reveal">
         <p class="eyebrow">About Me</p>
         <h2 id="about-heading">The eye behind<br><span class="italic">the lens</span></h2>
-        <p class="about-text">I'm Artur — a visual storyteller based in Tallinn with a passion for capturing the extraordinary in the ordinary. With over 8 years of experience, I've had the privilege of working with brands like National Geographic, Vogue, and countless independent artists.</p>
+        <p class="about-text">I'm Artur — a visual storyteller based in Tallinn with a passion for capturing the extraordinary in the ordinary.</p>
         <p class="about-text">My approach blends technical precision with emotional intuition. Every frame I capture is a conversation between light, subject, and the story waiting to be told.</p>
         <div class="about-signature">
           <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Cpath d='M10 45 Q30 10, 60 40 T110 35 Q130 30, 150 40 Q170 50, 190 30' fill='none' stroke='%23c9a66b' stroke-width='2'/%3E%3C/svg%3E" alt="Signature" class="signature">
@@ -658,12 +768,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <section class="clients reveal">
       <p class="clients-label">Trusted by</p>
       <div class="clients-logos">
-        <span>National Geographic</span>
-        <span>Vogue</span>
-        <span>Apple</span>
-        <span>Nike</span>
-        <span>Condé Nast</span>
-        <span>Leica</span>
+        <span>🇪🇪 Estonia</span>
       </div>
     </section>
 
@@ -675,11 +780,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p class="contact-lead">Have a project in mind? I'd love to hear about it. Whether it's a brand campaign, editorial shoot, or creative collaboration — let's make it happen.</p>
         
         <div class="contact-methods">
-          <a href="mailto:hello@arturmorin.com" class="contact-email">hello@arturmorin.com</a>
+          <a href="mailto:standoffgamr@gmail.com" class="contact-email">standoffgamr@gmail.com</a>
         </div>
       </div>
 
-      <form class="contact-form reveal" aria-label="Contact form" novalidate>
+      <form class="contact-form reveal" aria-label="Contact form" action="https://formsubmit.co/standoffgamr@gmail.com" method="POST" novalidate>
         <div class="form-group">
           <label for="name">Name <span class="required" aria-label="required">*</span></label>
           <input type="text" id="name" name="name" placeholder="Your name" required aria-required="true" aria-invalid="false" minlength="6" autocomplete="name">
@@ -706,6 +811,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <textarea id="message" name="message" rows="4" placeholder="Tell me about your project..." aria-label="Message" required aria-required="true" aria-invalid="false" minlength="3" autocomplete="off" draggable="false"></textarea>
           <span class="error-message" id="message-error" role="alert" aria-live="polite"></span>
         </div>
+        <!-- Honeypot field - hidden from users but visible to bots -->
+        <div class="form-group form-group--honeypot" aria-hidden="true">
+          <label for="website">Website (leave blank)</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        </div>
         <div class="form-group form-group--full challenge-label">
           <label for="challenge-input">Human check <span class="required" aria-label="required">*</span></label>
           <div class="challenge-row">
@@ -716,6 +826,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <button type="submit" class="btn btn-primary btn-full">Send Message</button>
         <div class="form-status" role="status" aria-live="polite" aria-atomic="true"></div>
+        <p class="form-privacy-note">By submitting this form, you agree that your information will be processed by FormSubmit to deliver your message. <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy & Terms</a></p>
       </form>
     </section>
   </main>
@@ -732,9 +843,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <nav class="footer-nav">
         <a href="#work">Work</a>
         <a href="#services">Services</a>
-        <a href="#about">About</a>
+        <a href="about.html">About</a>
         <a href="#contact">Contact</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="privacy-policy.html">Privacy & Terms</a>
       </nav>
       <div class="footer-social" aria-label="Social links">
         <!-- X (formerly Twitter) - Official logo -->
@@ -752,7 +864,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2025 Artur Morin. All rights reserved.</p>
+      <p>&copy; 2025 Artur Morin. All rights reserved. Images protected by copyright.</p>
     </div>
   </footer>
 

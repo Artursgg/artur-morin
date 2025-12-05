@@ -223,10 +223,18 @@ const revealObserver = new IntersectionObserver(
 );
 
 revealElements.forEach((el, index) => {
-  // Reduced stagger delays for philosophy, equipment, and awards grids
+  // Stagger delays for philosophy, equipment, and awards grids
   if (el.closest('.philosophy-values') || el.closest('.equipment-grid') || el.closest('.awards-grid')) {
     el.dataset.delay = index * 50; // Reduced from 100ms to 50ms
   }
+  
+  // Sequential downward animation for timeline items
+  if (el.closest('.timeline')) {
+    const timelineItems = Array.from(el.closest('.timeline').querySelectorAll('.timeline-item'));
+    const itemIndex = timelineItems.indexOf(el);
+    el.dataset.delay = itemIndex * 350; // 350ms delay between each timeline item for slower sequential reveal
+  }
+  
   revealObserver.observe(el);
 });
 
@@ -398,7 +406,14 @@ if (mobileMenuToggle && primaryNav) {
     
     primaryNav.setAttribute('aria-hidden', 'true');
     if (navOverlay) navOverlay.setAttribute('aria-hidden', 'true');
+    
+    // Ensure body can scroll on mobile - remove inline style and restore CSS
     document.body.style.overflow = '';
+    document.body.style.overflowY = '';
+    document.body.style.overflowX = '';
+    
+    // Force reflow to ensure styles apply
+    void document.body.offsetHeight;
   }
   
   function openMenu() {
@@ -920,86 +935,55 @@ window.addEventListener('scroll', () => {
     }
   }
   
-  // Handle link click/touch (mobile/tablet only)
+  // Handle link click/touch (mobile/tablet only) - DISABLED: No grid effect
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
-      // Only trigger on mobile/tablet when menu is open
+      // Disable grid effect on mobile/tablet - just close menu and navigate normally
       if (isMobileOrTablet()) {
         const primaryNav = document.querySelector('#primary-nav');
         if (primaryNav && primaryNav.getAttribute('aria-hidden') === 'false') {
           // Store href for navigation
           const href = link.getAttribute('href');
           
-          // Prevent default to handle navigation manually
-          e.preventDefault();
-          e.stopPropagation();
+          // Close menu immediately without grid animation
+          const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+          const navOverlay = document.querySelector('.nav-overlay');
           
-          // Animate grid box, then close menu and navigate
-          animateMobileGrid(link, () => {
-            // Close menu after animation
-            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-            const navOverlay = document.querySelector('.nav-overlay');
+          if (mobileMenuToggle) {
+            mobileMenuToggle.setAttribute('aria-expanded', 'false');
+          }
+          if (primaryNav) {
+            // Remove focus BEFORE setting aria-hidden (accessibility fix)
+            const activeElement = document.activeElement;
+            if (activeElement && primaryNav.contains(activeElement)) {
+              activeElement.blur();
+            }
             
-            if (mobileMenuToggle) {
-              mobileMenuToggle.setAttribute('aria-expanded', 'false');
-            }
-            if (primaryNav) {
-              // Remove focus BEFORE setting aria-hidden (accessibility fix)
-              const activeElement = document.activeElement;
-              if (activeElement && primaryNav.contains(activeElement)) {
-                activeElement.blur();
-              }
-              
-              // Make links non-focusable when hidden (accessibility fix)
-              const navLinks = primaryNav.querySelectorAll('a, button');
-              navLinks.forEach(link => {
-                link.setAttribute('tabindex', '-1');
-              });
-              
-              primaryNav.setAttribute('aria-hidden', 'true');
-            }
-            if (navOverlay) {
-              navOverlay.setAttribute('aria-hidden', 'true');
-            }
-            document.body.style.overflow = '';
+            // Make links non-focusable when hidden (accessibility fix)
+            const navLinks = primaryNav.querySelectorAll('a, button');
+            navLinks.forEach(link => {
+              link.setAttribute('tabindex', '-1');
+            });
             
-            // Clear grid
-            clearGrid();
-            
-            // Navigate
-            if (href) {
-              if (href.startsWith('#')) {
-                const targetId = href.substring(1);
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                  // Small delay to let menu close, then scroll with proper header offset
-                  setTimeout(() => {
-                    const headerOffset = 80;
-                    const elementPosition = targetElement.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.scrollY - headerOffset;
-                    
-                    window.scrollTo({
-                      top: Math.max(0, offsetPosition),
-                      behavior: 'smooth'
-                    });
-                  }, 100);
-                } else {
-                  // Fallback: use hash navigation
-                  setTimeout(() => {
-                    window.location.hash = targetId;
-                  }, 100);
-                }
-              } else {
-                // External link - validate to prevent open redirect
-                if (href && isValidNavigationUrl(href)) {
-                  window.location.href = href;
-                } else {
-                  // Invalid URL - default to home
-                  window.location.href = 'photography-index.html';
-                }
-              }
-            }
-          });
+            primaryNav.setAttribute('aria-hidden', 'true');
+          }
+          if (navOverlay) {
+            navOverlay.setAttribute('aria-hidden', 'true');
+          }
+          
+          // Ensure body can scroll on mobile - remove all overflow restrictions
+          document.body.style.overflow = '';
+          document.body.style.overflowY = '';
+          document.body.style.overflowX = '';
+          
+          // Force reflow to ensure styles apply
+          void document.body.offsetHeight;
+          
+          // Clear grid
+          clearGrid();
+          
+          // Don't prevent default - let the browser handle navigation naturally
+          // The link will navigate normally after menu closes
         }
       }
     });
@@ -1249,6 +1233,135 @@ window.addEventListener('scroll', () => {
       }, { passive: true });
     }
   }
+})();
+
+// =============================================================================
+// Award Cards Stacked Progressive Reveal Animation
+// =============================================================================
+(function() {
+  'use strict';
+  
+  function initAwardCards() {
+    const awardsGrid = document.querySelector('.awards-grid');
+    if (!awardsGrid) return;
+
+    // Disable all card interactions on mobile and tablet
+    if (window.innerWidth <= 1024) {
+      return;
+    }
+
+    const card2023 = awardsGrid.querySelector('.award-card[data-year="2023"]');
+    const card2024 = awardsGrid.querySelector('.award-card[data-year="2024"]');
+    const card2025 = awardsGrid.querySelector('.award-card[data-year="2025"]');
+
+    if (!card2023 || !card2024 || !card2025) return;
+    
+    let visibleCards = 1; // Start with only 2023 visible
+    
+    function handleCardClick(e) {
+      const clickedCard = e.target.closest('.award-card');
+      if (!clickedCard) return;
+      
+      // Add resonate animation
+      clickedCard.classList.add('resonating');
+      setTimeout(() => {
+        clickedCard.classList.remove('resonating');
+      }, 400);
+      
+      const clickedYear = clickedCard.getAttribute('data-year');
+      
+      if (visibleCards === 1) {
+        // Only 2023 visible - clicking 2023 reveals 2024
+        if (clickedYear === '2023') {
+          card2024.classList.add('expanded');
+          visibleCards = 2;
+        }
+      } else if (visibleCards === 2) {
+        // 2023 and 2024 visible
+        if (clickedYear === '2023') {
+          // Clicking 2023 closes 2024
+          card2024.classList.remove('expanded');
+          visibleCards = 1;
+        } else if (clickedYear === '2024') {
+          // Clicking 2024 reveals 2025
+          card2025.classList.add('expanded');
+          visibleCards = 3;
+          awardsGrid.classList.add('all-expanded');
+        }
+      } else if (visibleCards === 3) {
+        // All 3 cards visible - back and forth toggle behavior
+        if (clickedYear === '2025') {
+          // Clicking 2025 closes both 2024 and 2025 smoothly in sync
+          card2024.classList.add('sliding-back');
+          card2025.classList.add('sliding-back');
+          
+          // Force reflow for smooth animation
+          void card2024.offsetWidth;
+          void card2025.offsetWidth;
+          
+          requestAnimationFrame(() => {
+            card2025.classList.remove('expanded');
+            card2024.classList.remove('expanded');
+            awardsGrid.classList.remove('all-expanded');
+            visibleCards = 1;
+            
+            // Clean up sliding class after animation
+            setTimeout(() => {
+              card2024.classList.remove('sliding-back');
+              card2025.classList.remove('sliding-back');
+            }, 600);
+          });
+        } else if (clickedYear === '2023') {
+          // Clicking 2023 closes only 2025 (first click), then closes 2024 (second click)
+          if (card2025.classList.contains('expanded')) {
+            // First click: close 2025
+            card2025.classList.add('sliding-back');
+            void card2025.offsetWidth;
+            
+            requestAnimationFrame(() => {
+              card2025.classList.remove('expanded');
+              awardsGrid.classList.remove('all-expanded');
+              visibleCards = 2;
+              
+              setTimeout(() => {
+                card2025.classList.remove('sliding-back');
+              }, 600);
+            });
+          } else {
+            // Second click: close 2024
+            card2024.classList.add('sliding-back');
+            void card2024.offsetWidth;
+            
+            requestAnimationFrame(() => {
+              card2024.classList.remove('expanded');
+              visibleCards = 1;
+              
+              setTimeout(() => {
+                card2024.classList.remove('sliding-back');
+              }, 600);
+            });
+          }
+        }
+      }
+    }
+    
+    // Add click handler to all cards
+    card2023.addEventListener('click', handleCardClick, false);
+    card2024.addEventListener('click', handleCardClick, false);
+    card2025.addEventListener('click', handleCardClick, false);
+  }
+  
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAwardCards);
+  } else {
+    setTimeout(initAwardCards, 50);
+  }
+  
+  window.addEventListener('load', function() {
+    setTimeout(initAwardCards, 100);
+  });
 })();
 
 // =============================================================================

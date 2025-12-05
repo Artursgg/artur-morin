@@ -711,10 +711,12 @@ h1, h2, h3, h4 {
   flex: 1;
   display: flex;
   justify-content: center;
+  margin-right: -250px; /* Compensate for Portfolio button margin to keep nav centered - moved 50px right */
 }
 
-/* CTA button on the right */
-.nav .nav-cta {
+/* CTA button and Portfolio button on the right */
+.nav .nav-cta,
+.nav .nav-portfolio {
   flex-shrink: 0;
 }
 
@@ -1201,6 +1203,11 @@ h1, h2, h3, h4 {
     backdrop-filter: blur(25px) saturate(200%);
     -webkit-backdrop-filter: blur(25px) saturate(200%);
   }
+  
+  /* Hide Portfolio from desktop nav menu (it's a separate button) */
+  .nav ul li a[href*="portfolio.html"] {
+    display: none;
+  }
 }
 
 .nav ul li {
@@ -1339,6 +1346,7 @@ h1, h2, h3, h4 {
   transition: all 0.3s ease;
   height: 60px; /* Match nav ul total height (44px link + 8px top + 8px bottom padding) */
   box-sizing: border-box;
+  margin-left: -24px; /* Bring Contact button closer to Portfolio button */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1411,6 +1419,75 @@ h1, h2, h3, h4 {
   .nav-cta:hover::after {
     background: var(--gold);
     border-color: var(--gold);
+  }
+}
+
+/* Portfolio Button - Styled as separate box next to Contact, similar to Let's Talk */
+/* Portfolio Button - Styled same as main nav links with two-layer background */
+.nav-portfolio {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 8px 16px; /* Outer container padding - increased horizontal padding for wider area */
+  border-radius: var(--radius-lg); /* Outer container border radius */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+  height: 60px; /* Match nav ul total height (44px link + 8px top + 8px bottom padding) */
+  box-sizing: border-box;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  margin-right: 300px; /* Portfolio button position */
+  margin-left: 195px; /* Portfolio button position - moved 10px left */
+  background: rgba(255, 255, 255, 0.02); /* Outer container background */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Outer container border */
+}
+
+/* Desktop only - Apply backdrop-filter to outer container matching nav ul */
+@media (min-width: 1025px) {
+  .nav-portfolio {
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+  }
+  
+  /* Inner background that wraps the text - matches nav ul a::after */
+  .nav-portfolio::after {
+    content: '';
+    position: absolute;
+    inset: 8px; /* Match outer padding to create inner box */
+    z-index: -1;
+    border-radius: var(--radius-sm); /* Inner border radius matching nav links */
+    pointer-events: none;
+    backdrop-filter: blur(100px) saturate(200%);
+    -webkit-backdrop-filter: blur(100px) saturate(200%);
+    background: transparent;
+    transition: background 0.3s ease, backdrop-filter 0.3s ease;
+  }
+  
+  /* Enhanced hover effect matching main nav links */
+  .nav-portfolio:hover {
+    color: var(--gold);
+    z-index: 10;
+  }
+  
+  /* Yellow background on hover - inner box becomes yellow */
+  .nav-portfolio:hover::after {
+    background: rgba(201, 166, 107, 0.15);
+    backdrop-filter: blur(100px) saturate(250%);
+    -webkit-backdrop-filter: blur(100px) saturate(250%);
+    border: 1px solid rgba(201, 166, 107, 0.3);
+  }
+}
+
+/* Hide Portfolio in nav menu on desktop - show as separate button instead */
+@media (min-width: 1025px) {
+  .nav-portfolio-mobile {
+    display: none;
   }
 }
 
@@ -2720,6 +2797,19 @@ h1, h2, h3, h4 {
   transform: translateY(0);
 }
 
+/* Enhanced timeline animation - sequential downward reveal */
+.timeline-item.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timeline-item.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* --------------------------------------------------------------------------
    Responsive - Large Tablet & Small Desktop
    -------------------------------------------------------------------------- */
@@ -2781,8 +2871,9 @@ h1, h2, h3, h4 {
     z-index: 101;
   }
 
-  /* Hide desktop CTA on tablet */
-  .nav-cta {
+  /* Hide desktop CTA and Portfolio button on tablet */
+  .nav-cta,
+  .nav-portfolio {
     display: none;
   }
 
@@ -3124,6 +3215,133 @@ h1, h2, h3, h4 {
 }
 
 /* --------------------------------------------------------------------------
+   Responsive - Tablet & Mobile - Disable Card Interactions
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  /* Ensure scrolling works on mobile */
+  html {
+    overflow-y: auto !important;
+    height: auto !important;
+    -webkit-overflow-scrolling: touch;
+    position: relative !important;
+  }
+  
+  body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    position: relative !important;
+    touch-action: pan-y !important; /* Allow vertical scrolling on touch */
+  }
+  
+  /* Ensure main content can scroll */
+  main,
+  #main-content {
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    position: relative !important;
+  }
+  
+  /* Simple static layout for mobile and tablet - no interactions */
+  .awards-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+    min-height: auto;
+    padding: 0;
+  }
+
+  /* Remove cutout/notch on first card completely */
+  .award-card[data-year="2023"]:not(.expanded) {
+    clip-path: none !important;
+    border-top-right-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+    border-top-left-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+  }
+
+  /* Simple card styles - no positioning, no interactions */
+  .award-card {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    transform: none !important;
+    opacity: 1 !important;
+    z-index: auto !important;
+    cursor: default !important;
+    pointer-events: auto !important;
+    margin: 0 auto;
+  }
+
+  /* Reset all card positioning for mobile/tablet */
+  .award-card[data-year="2023"],
+  .award-card[data-year="2024"],
+  .award-card[data-year="2025"] {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    transform: none !important;
+    opacity: 1 !important;
+    z-index: auto !important;
+  }
+
+  /* Remove all interactive states */
+  .award-card.active,
+  .award-card.position-left,
+  .award-card.position-right,
+  .award-card.position-center {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    transform: none !important;
+    opacity: 1 !important;
+    z-index: auto !important;
+  }
+
+  /* Reset stacked card styles - make them normal flow */
+  .award-card[data-year="2024"]:not(.expanded),
+  .award-card[data-year="2024"].sliding-back,
+  .award-card[data-year="2025"]:not(.expanded),
+  .award-card[data-year="2025"].sliding-back {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    transform: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
+  }
+
+  /* Remove all hover effects and animations */
+  .award-card:hover {
+    transform: none !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* Disable all animations */
+  .award-card.resonating {
+    animation: none !important;
+  }
+
+  /* Remove all transitions for static display */
+  .award-card {
+    transition: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Responsive - Mobile (Portrait)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
@@ -3182,6 +3400,7 @@ h1, h2, h3, h4 {
     position: relative;
   }
 
+  /* Hide nav menu completely when closed on mobile */
   .nav #primary-nav ul {
     position: fixed;
     top: 50%;
@@ -3206,17 +3425,45 @@ h1, h2, h3, h4 {
     border-radius: 0 !important;
     overflow: visible;
     display: flex !important;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
     list-style: none;
+  }
+  
+  /* Ensure all nav menu items are hidden when menu is closed */
+  .nav #primary-nav ul li {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  
+  .nav #primary-nav ul li a {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 
   .nav #primary-nav ul[aria-hidden="false"],
   .nav #primary-nav[aria-hidden="false"] ul {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: all;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: all !important;
+  }
+  
+  /* Show nav menu items when menu is open on mobile */
+  .nav #primary-nav[aria-hidden="false"] ul li,
+  .nav #primary-nav ul[aria-hidden="false"] li {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: all !important;
+  }
+  
+  .nav #primary-nav[aria-hidden="false"] ul li a,
+  .nav #primary-nav ul[aria-hidden="false"] li a {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: all !important;
   }
   
   /* Overlay when menu is open */
@@ -3369,8 +3616,17 @@ h1, h2, h3, h4 {
     visibility: visible;
   }
 
-  .nav-cta {
+  /* Hide desktop CTA and Portfolio button on mobile */
+  .nav-cta,
+  .nav-portfolio {
     display: none;
+  }
+  
+  /* Ensure Portfolio link only shows in mobile menu when open */
+  .nav-portfolio-mobile {
+    display: block !important;
+    visibility: inherit !important;
+    opacity: inherit !important;
   }
 
   /* Keep logo text visible on mobile but make it smaller */
@@ -3905,6 +4161,60 @@ h1, h2, h3, h4 {
   color: var(--gold);
 }
 
+/* Desktop: Show desktop breadcrumbs, hide tablet breadcrumbs */
+@media (min-width: 1025px) {
+  .about-hero .breadcrumbs-desktop {
+    display: flex;
+  }
+  
+  .about-hero .breadcrumbs-tablet {
+    display: none;
+  }
+}
+
+/* Tablet: Hide desktop breadcrumbs, show tablet breadcrumbs */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .about-hero .breadcrumbs-desktop {
+    display: none;
+  }
+  
+  .about-hero .breadcrumbs-tablet {
+    display: inline-flex;
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 0;
+    font-size: 0.7rem;
+  }
+  
+  /* Ensure hero-lead-row displays breadcrumbs on same line */
+  .about-hero-lead-row {
+    flex-wrap: nowrap;
+    gap: 15px;
+  }
+}
+
+/* Mobile: Show desktop breadcrumbs, hide tablet breadcrumbs */
+@media (max-width: 768px) {
+  .about-hero .breadcrumbs-desktop {
+    display: flex;
+    position: absolute;
+    top: 100px;
+    left: 4vw;
+    right: 4vw;
+    width: auto;
+    margin: 0;
+    justify-content: flex-start;
+    font-size: 0.65rem;
+    gap: 6px;
+  }
+  
+  .about-hero .breadcrumbs-tablet {
+    display: none;
+  }
+}
+
 /* --------------------------------------------------------------------------
    About Hero
    -------------------------------------------------------------------------- */
@@ -3923,11 +4233,19 @@ h1, h2, h3, h4 {
   margin-bottom: 32px;
 }
 
+.about-hero-lead-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
 .about-hero-lead {
   font-size: 1.15rem;
   color: var(--text-muted);
   line-height: 1.8;
   max-width: 500px;
+  margin: 0;
 }
 
 .about-hero-image {
@@ -4143,39 +4461,274 @@ h1, h2, h3, h4 {
 }
 
 .awards-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
   gap: 24px;
+  position: relative;
+  min-height: 300px;
+  padding: 0;
+  width: 100%;
 }
 
 .award-card {
-  padding: 32px;
+  padding: 40px 32px;
   background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   text-align: center;
-  transition: all 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+              left 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+              top 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s ease,
+              clip-path 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-right 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  flex: 0 0 calc(33.333% - 16px);
+  min-width: 0;
+  z-index: 3;
+  overflow: visible;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Cutout on right side for first card - only when collapsed */
+.award-card[data-year="2023"]:not(.expanded) {
+  /* Create cutout with smooth S-curve radius transitions and rounded inner corners */
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 8%,
+    calc(100% - 1px) 8.5%,
+    calc(100% - 3px) 9%,
+    calc(100% - 6px) 9.5%,
+    calc(100% - 10px) 10%,
+    calc(100% - 14px) 10.5%,
+    calc(100% - 17px) 11%,
+    calc(100% - 19px) 11.5%,
+    calc(100% - 20px) 12%,
+    calc(100% - 20px) 88%,
+    calc(100% - 19px) 88.5%,
+    calc(100% - 17px) 89%,
+    calc(100% - 14px) 89.5%,
+    calc(100% - 10px) 90%,
+    calc(100% - 6px) 90.5%,
+    calc(100% - 3px) 91%,
+    calc(100% - 1px) 91.5%,
+    100% 92%,
+    100% 100%,
+    0% 100%
+  );
+  /* Add border radius to right side corners for smooth rounded edges */
+  border-top-right-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.award-card[data-year="2023"].expanded {
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.award-card * {
+  position: relative;
+  z-index: 2;
+  pointer-events: none; /* Make all child elements non-interactive so entire card is clickable */
 }
 
 .award-card:hover {
-  border-color: rgba(201, 166, 107, 0.3);
+  border-color: rgba(212, 177, 122, 0.3);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Resonate/bounce animation on click - side to side horizontal movement */
+@keyframes resonate {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+}
+
+/* For regular cards (2023) */
+.award-card.resonating {
+  animation: resonate 0.35s ease-out;
+}
+
+/* For expanded cards - combine with existing transform */
+.award-card.expanded.resonating {
+  animation: resonate 0.35s ease-out;
+}
+
+/* For stacked cards - use left property for absolute positioned cards */
+@keyframes resonate-stacked {
+  0%, 100% {
+    left: calc(33.333% - 16px + 8px);
+  }
+  25% {
+    left: calc(33.333% - 16px + 5px);
+  }
+  50% {
+    left: calc(33.333% - 16px + 11px);
+  }
+  75% {
+    left: calc(33.333% - 16px + 7px);
+  }
+}
+
+@keyframes resonate-stacked-2025 {
+  0%, 100% {
+    left: calc(66.666% - 32px + 16px);
+  }
+  25% {
+    left: calc(66.666% - 32px + 13px);
+  }
+  50% {
+    left: calc(66.666% - 32px + 19px);
+  }
+  75% {
+    left: calc(66.666% - 32px + 15px);
+  }
+}
+
+/* Stacked 2024 card - use left animation */
+.award-card[data-year="2024"]:not(.expanded).resonating,
+.award-card[data-year="2024"].sliding-back.resonating {
+  animation: resonate-stacked 0.35s ease-out;
+}
+
+/* Expanded 2024 card - use transform animation */
+.award-card[data-year="2024"].expanded.resonating {
+  animation: resonate 0.35s ease-out;
+}
+
+/* Stacked 2025 card - use left animation */
+.award-card[data-year="2025"]:not(.expanded).resonating,
+.award-card[data-year="2025"].sliding-back.resonating {
+  animation: resonate-stacked-2025 0.35s ease-out;
+}
+
+.award-card:hover::after {
+  border-color: rgba(212, 177, 122, 0.2);
+}
+
+/* Stack cards behind the first one - 2024 visible behind 2023 */
+.award-card[data-year="2024"]:not(.expanded),
+.award-card[data-year="2024"].sliding-back {
+  position: absolute;
+  top: 8px;
+  left: calc(33.333% - 16px + 8px);
+  width: calc(33.333% - 16px);
+  transform: scale(0.98);
+  z-index: 2;
+  opacity: 1;
+  pointer-events: none;
+  background: rgba(25, 22, 20, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  visibility: visible;
+  display: block;
+}
+
+/* Stack cards behind - 2025 visible behind 2024 */
+.award-card[data-year="2025"]:not(.expanded),
+.award-card[data-year="2025"].sliding-back {
+  position: absolute;
+  top: 16px;
+  left: calc(66.666% - 32px + 16px);
+  width: calc(33.333% - 16px);
+  transform: scale(0.96);
+  z-index: 1;
+  opacity: 1;
+  pointer-events: none;
+  background: rgba(18, 16, 14, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  visibility: visible;
+  display: block;
+}
+
+/* Expanded state - cards spread horizontally one by one */
+.award-card.expanded {
+  position: relative !important;
+  transform: translateX(0) translateY(0) scale(1) !important;
+  z-index: 3 !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  left: auto !important;
+  top: 0 !important;
+  width: calc(33.333% - 16px) !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2) !important;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+              left 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+              top 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              position 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.award-card.expanded:hover {
+  transform: translateY(-6px) scale(1.03) !important;
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.25) !important;
+}
+
+
+.awards-grid.all-expanded {
+  justify-content: space-between;
 }
 
 .award-year {
   font-family: var(--font-display);
   font-size: 2.5rem;
-  color: rgba(201, 166, 107, 0.3);
+  color: rgba(212, 177, 122, 0.3);
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  line-height: 1.2;
+  font-weight: 600;
+  transition: color 0.4s ease, transform 0.4s ease;
+}
+
+.award-card:hover .award-year {
+  color: rgba(212, 177, 122, 0.5);
+  transform: scale(1.05);
 }
 
 .award-card h3 {
   font-size: 1rem;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--text);
+  transition: color 0.4s ease;
+}
+
+.award-card:hover h3 {
+  color: var(--gold-light);
 }
 
 .award-card p {
   font-size: 0.85rem;
   color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+  transition: color 0.4s ease;
+}
+
+.award-card:hover p {
+  color: var(--text);
 }
 
 /* --------------------------------------------------------------------------
@@ -4291,10 +4844,19 @@ h1, h2, h3, h4 {
   }
 
   .awards-grid {
-    grid-template-columns: 1fr 1fr;
-    overflow-x: visible;
-    width: auto;
-    max-width: none;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .awards-grid .award-card,
+  .awards-grid.expanded .award-card {
+    position: relative;
+    width: 100%;
+    flex: 1 1 auto;
+    transform: translateX(0) translateY(0) scale(1);
+    opacity: 1;
+    left: auto;
+    top: auto;
   }
 
   .about-cta {
@@ -4405,15 +4967,19 @@ h1, h2, h3, h4 {
   }
 
   .awards-grid {
-    grid-template-columns: 1fr;
-    overflow-x: visible;
-    width: auto;
-    max-width: none;
+    flex-direction: column;
+    gap: 16px;
   }
-
-  .award-card {
+  
+  .awards-grid .award-card,
+  .awards-grid.expanded .award-card {
+    position: relative;
     width: 100%;
-    max-width: 100%;
+    flex: 1 1 auto;
+    transform: translateX(0) translateY(0) scale(1);
+    opacity: 1;
+    left: auto;
+    top: auto;
   }
 
   .about-cta {

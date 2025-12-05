@@ -246,21 +246,56 @@ function updateNavBackground() {
 }
 
 // =============================================================================
-// Hero Image Tilt Effect
+// Hero Image Tilt Effect - Applied to all carousel slides
+// Slower and smoother mouse-following 3D tilt effect
 // =============================================================================
-const heroImage = document.querySelector('.image-frame');
+function initImageTiltEffect() {
+  // Apply to all carousel slide image frames
+  const carouselImageFrames = document.querySelectorAll('.carousel-slide .image-frame');
+  
+  carouselImageFrames.forEach((imageFrame) => {
+    imageFrame.addEventListener('mousemove', (e) => {
+      const rect = imageFrame.getBoundingClientRect();
+      // Reduced multiplier from 8 to 4 for slower, less sharp movement
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 4;
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 4;
+      // Add smooth transition for less sharp movement
+      imageFrame.style.transition = 'transform 0.3s ease-out';
+      imageFrame.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
+    });
 
-if (heroImage) {
-  heroImage.addEventListener('mousemove', (e) => {
-    const rect = heroImage.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 8;
-    heroImage.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
+    imageFrame.addEventListener('mouseleave', () => {
+      imageFrame.style.transition = 'transform 0.4s ease-out';
+      imageFrame.style.transform = '';
+    });
   });
+  
+  // Also apply to regular hero image frame if it exists (non-carousel)
+  const heroImage = document.querySelector('.hero-image .image-frame:not(.carousel-slide .image-frame)');
+  if (heroImage) {
+    heroImage.addEventListener('mousemove', (e) => {
+      const rect = heroImage.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 4;
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 4;
+      heroImage.style.transition = 'transform 0.3s ease-out';
+      heroImage.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
+    });
 
-  heroImage.addEventListener('mouseleave', () => {
-    heroImage.style.transform = '';
+    heroImage.addEventListener('mouseleave', () => {
+      heroImage.style.transition = 'transform 0.4s ease-out';
+      heroImage.style.transform = '';
+    });
+  }
+}
+
+// Initialize tilt effect when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    // Wait a bit for carousel to initialize
+    setTimeout(initImageTiltEffect, 100);
   });
+} else {
+  setTimeout(initImageTiltEffect, 100);
 }
 
 // =============================================================================
@@ -697,7 +732,8 @@ if (contactForm) {
 
   function validateEmail() {
     const value = emailInput.value.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    // Basic required check
     if (!value) {
       emailInput.setAttribute('aria-invalid', 'true');
       emailError.textContent = 'This field is required';
@@ -706,20 +742,123 @@ if (contactForm) {
         emailInput.classList.add('text-jiggle');
       }, 10);
       return false;
-    } else if (!emailRegex.test(value)) {
+    }
+    
+    // Length validation (RFC 5321: max 254 chars total, min 5 for basic email)
+    if (value.length < 5) {
       emailInput.setAttribute('aria-invalid', 'true');
-      emailError.textContent = 'Please enter a valid email address (e.g., test@test.ee)';
+      emailError.textContent = 'Email address is too short';
       emailInput.classList.remove('text-jiggle');
       setTimeout(() => {
         emailInput.classList.add('text-jiggle');
       }, 10);
       return false;
-    } else {
-      emailInput.setAttribute('aria-invalid', 'false');
-      emailError.textContent = '';
-      emailInput.classList.remove('text-jiggle');
-      return true;
     }
+    
+    if (value.length > 254) {
+      emailInput.setAttribute('aria-invalid', 'true');
+      emailError.textContent = 'Email address is too long';
+      emailInput.classList.remove('text-jiggle');
+      setTimeout(() => {
+        emailInput.classList.add('text-jiggle');
+      }, 10);
+      return false;
+    }
+    
+    // Stricter email format validation
+    // Rejects: consecutive dots, leading/trailing dots, invalid characters
+    const emailRegex = /^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
+    
+    // Check for common invalid patterns
+    if (value.includes('..') || value.startsWith('.') || value.endsWith('.') || 
+        value.startsWith('@') || value.endsWith('@') || !value.includes('@')) {
+      emailInput.setAttribute('aria-invalid', 'true');
+      emailError.textContent = 'Please enter a valid email address (e.g., name@example.com)';
+      emailInput.classList.remove('text-jiggle');
+      setTimeout(() => {
+        emailInput.classList.add('text-jiggle');
+      }, 10);
+      return false;
+    }
+    
+    if (!emailRegex.test(value)) {
+      emailInput.setAttribute('aria-invalid', 'true');
+      emailError.textContent = 'Please enter a valid email address (e.g., name@example.com)';
+      emailInput.classList.remove('text-jiggle');
+      setTimeout(() => {
+        emailInput.classList.add('text-jiggle');
+      }, 10);
+      return false;
+    }
+    
+    // Extract domain for validation
+    const emailParts = value.split('@');
+    if (emailParts.length !== 2) {
+      emailInput.setAttribute('aria-invalid', 'true');
+      emailError.textContent = 'Please enter a valid email address';
+      emailInput.classList.remove('text-jiggle');
+      setTimeout(() => {
+        emailInput.classList.add('text-jiggle');
+      }, 10);
+      return false;
+    }
+    
+    const domain = emailParts[1].toLowerCase();
+    
+    // Block disposable/temporary email domains
+    const disposableDomains = [
+      'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'guerrillamailblock.com',
+      'mailinator.com', 'throwaway.email', 'temp-mail.org', 'yopmail.com',
+      'getnada.com', 'mohmal.com', 'maildrop.cc', 'trashmail.com', 'tempail.com',
+      'fakeinbox.com', 'mintemail.com', 'sharklasers.com', 'grr.la', 'guerrillamail.info',
+      'dispostable.com', 'emailondeck.com', 'meltmail.com', 'melt.li', '33mail.com',
+      'mailcatch.com', 'spamgourmet.com', 'spamhole.com', 'spam.la', 'spamevader.com',
+      'spamfree24.org', 'spamfree24.de', 'spamfree24.eu',
+      'tempr.email', 'tmpmail.org', 'tmpmail.net', 'tmpmail.io', 'tmpmail.com',
+      'throwawaymail.com', 'throwawaymail.net', 'throwawaymail.org', 'throwawaymail.io',
+      'emailtemp.org', 'emailtemp.net', 'emailtemp.com', 'emailtemp.io',
+      'mytemp.email', 'mailnesia.com', 'mintemail.net', 'mintemail.org',
+      'inboxkitten.com', 'getairmail.com', 'airmail.cc', 'airmail.co',
+      'test.com', 'example.com', 'invalid.com', 'test.test'
+    ];
+    
+    if (disposableDomains.includes(domain)) {
+      emailInput.setAttribute('aria-invalid', 'true');
+      emailError.textContent = 'Please use a permanent email address';
+      emailInput.classList.remove('text-jiggle');
+      setTimeout(() => {
+        emailInput.classList.add('text-jiggle');
+      }, 10);
+      return false;
+    }
+    
+    // Detect suspicious patterns common in spam
+    const suspiciousPatterns = [
+      /^test\d+@/i,           // test123@
+      /^user\d+@/i,           // user456@
+      /^email\d+@/i,          // email789@
+      /^spam/i,               // starts with "spam"
+      /spam@/i,               // contains "spam@"
+      /\d{10,}@/,             // 10+ consecutive digits before @
+      /^[a-z]\d{5,}@/i,       // single letter + 5+ digits
+      /^[a-z]{1,2}\d{6,}@/i   // 1-2 letters + 6+ digits
+    ];
+    
+    if (suspiciousPatterns.some(pattern => pattern.test(value))) {
+      emailInput.setAttribute('aria-invalid', 'true');
+      emailError.textContent = 'Please use a valid email address';
+      emailInput.classList.remove('text-jiggle');
+      setTimeout(() => {
+        emailInput.classList.add('text-jiggle');
+      }, 10);
+      return false;
+    }
+    
+    // All checks passed
+    emailInput.setAttribute('aria-invalid', 'false');
+    emailError.textContent = '';
+    emailInput.classList.remove('text-jiggle');
+    return true;
   }
 
   function validateMessage() {
@@ -752,8 +891,41 @@ if (contactForm) {
   emailInput.addEventListener('blur', validateEmail);
   messageInput.addEventListener('blur', validateMessage);
 
+  // Time-based bot detection - track when form was first interacted with
+  let formStartTime = null;
+  const trackFormStart = () => {
+    if (!formStartTime) {
+      formStartTime = Date.now();
+    }
+  };
+  
+  // Track first interaction with any form field
+  [nameInput, emailInput, messageInput].forEach(field => {
+    if (field) {
+      field.addEventListener('focus', trackFormStart, { once: true });
+      field.addEventListener('input', trackFormStart, { once: true });
+    }
+  });
+
   contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // Honeypot check - if filled, silently reject (likely a bot)
+    const honeypotField = document.getElementById('website');
+    if (honeypotField && honeypotField.value.trim() !== '') {
+      // Silently reject - don't show any error, just prevent submission
+      return;
+    }
+    
+    // Time-based validation - reject if form submitted too quickly (less than 3 seconds)
+    // Bots typically submit forms instantly, humans need at least a few seconds
+    if (formStartTime) {
+      const timeSpent = (Date.now() - formStartTime) / 1000; // in seconds
+      if (timeSpent < 3) {
+        // Silently reject - form filled too quickly (likely a bot)
+        return;
+      }
+    }
     
     const isNameValid = validateName();
     const isEmailValid = validateEmail();
@@ -800,17 +972,66 @@ if (contactForm) {
         // Continue with form submission even if reCAPTCHA fails (graceful degradation)
       }
 
-      // Form is valid - prepare mailto link
+      // Form is valid - prepare form submission
       const formData = new FormData(contactForm);
       const name = formData.get('name') || 'Client';
       const email = formData.get('email');
       const project = formData.get('project');
       const message = formData.get('message');
 
-      const subject = encodeURIComponent(`Portfolio Inquiry - ${project || 'General'}`);
-      const body = encodeURIComponent(
-        `Name: ${name}\nEmail: ${email}\nProject Type: ${project || 'Not specified'}\n\nMessage:\n${message}`
-      );
+      // Add FormSubmit configuration fields
+      const subject = `Portfolio Inquiry - ${project || 'General'}`;
+      
+      // Create hidden input for subject
+      let subjectInput = contactForm.querySelector('input[name="_subject"]');
+      if (!subjectInput) {
+        subjectInput = document.createElement('input');
+        subjectInput.type = 'hidden';
+        subjectInput.name = '_subject';
+        contactForm.appendChild(subjectInput);
+      }
+      subjectInput.value = subject;
+      
+      // Add redirect URL (thank you page)
+      let nextInput = contactForm.querySelector('input[name="_next"]');
+      if (!nextInput) {
+        nextInput = document.createElement('input');
+        nextInput.type = 'hidden';
+        nextInput.name = '_next';
+        contactForm.appendChild(nextInput);
+      }
+      nextInput.value = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'thank-you.html';
+      
+      // Disable FormSubmit's built-in captcha (we have our own)
+      let captchaInput = contactForm.querySelector('input[name="_captcha"]');
+      if (!captchaInput) {
+        captchaInput = document.createElement('input');
+        captchaInput.type = 'hidden';
+        captchaInput.name = '_captcha';
+        contactForm.appendChild(captchaInput);
+      }
+      captchaInput.value = 'false';
+      
+      // Add template for better email formatting
+      let templateInput = contactForm.querySelector('input[name="_template"]');
+      if (!templateInput) {
+        templateInput = document.createElement('input');
+        templateInput.type = 'hidden';
+        templateInput.name = '_template';
+        contactForm.appendChild(templateInput);
+      }
+      templateInput.value = 'table';
+      
+      // Add FormSubmit blacklist to filter common spam keywords
+      let blacklistInput = contactForm.querySelector('input[name="_blacklist"]');
+      if (!blacklistInput) {
+        blacklistInput = document.createElement('input');
+        blacklistInput.type = 'hidden';
+        blacklistInput.name = '_blacklist';
+        contactForm.appendChild(blacklistInput);
+      }
+      // Common spam keywords/phrases - FormSubmit will reject submissions containing these
+      blacklistInput.value = 'viagra,cialis,pharmacy,loan,debt,credit,investment,bitcoin,crypto,casino,gambling,poker,lottery,winner,prize,free money,get rich,work from home,make money fast,click here,limited time offer,act now,urgent,guaranteed,no risk,risk free,weight loss,diet pill,miracle,sexy,adult,xxx,porn,escort,dating,meet singles,enlarge,penis,breast,hot girls,sexy girls';
 
       // Send event to Google Tag Manager
       if (window.dataLayer) {
@@ -822,21 +1043,12 @@ if (contactForm) {
         });
       }
 
-      // Show success message briefly
+      // Show success message
       formStatus.textContent = 'Sending...';
       formStatus.className = 'form-status success';
       
-      // Create and trigger mailto link (opens email client, not a new browser tab)
-      const mailtoLink = `mailto:hello@arturmorin.com?subject=${subject}&body=${body}`;
-      const mailtoAnchor = document.createElement('a');
-      mailtoAnchor.href = mailtoLink;
-      mailtoAnchor.style.display = 'none';
-      document.body.appendChild(mailtoAnchor);
-      mailtoAnchor.click();
-      document.body.removeChild(mailtoAnchor);
-      
-      // Redirect to thank you page immediately
-      window.location.href = 'thank-you.html';
+      // Submit the form to FormSubmit (this will send the email automatically)
+      contactForm.submit();
     } else {
       // Form has errors
       formStatus.textContent = 'Please fix the errors above and try again.';
@@ -1591,8 +1803,10 @@ if (document.readyState === 'loading') {
   function isValidNavigationUrl(url) {
     if (!url) return false;
     
-    // Allow relative paths
-    if (url.startsWith('/') || url.startsWith('./') || url.startsWith('../')) {
+    // Allow relative paths (including simple filenames like portfolio.html)
+    if (url.startsWith('/') || url.startsWith('./') || url.startsWith('../') || 
+        (!url.includes(':') && !url.startsWith('#'))) {
+      // Simple relative path like "portfolio.html" or "about.html"
       return true;
     }
     
@@ -1876,14 +2090,16 @@ window.addEventListener('pagehide', (event) => {
       }
       
       // Unified click handler for all devices
-      // Check if we're on a subpage (about.html or privacy-policy.html)
+      // Check if we're on a subpage (about.html, privacy-policy.html, or portfolio.html)
       function isSubpage() {
         const pathname = window.location.pathname;
         const href = window.location.href;
         return pathname.includes('about.html') || 
                pathname.includes('privacy-policy.html') ||
+               pathname.includes('portfolio.html') ||
                href.includes('about.html') ||
-               href.includes('privacy-policy.html');
+               href.includes('privacy-policy.html') ||
+               href.includes('portfolio.html');
       }
       
       function handleLogoClick(e) {
@@ -1896,37 +2112,27 @@ window.addEventListener('pagehide', (event) => {
         
         if (isMobileTablet()) {
           // Mobile/Tablet behavior
-          if (isOnSubpage && isAtTop) {
-            // On subpage at top - directly navigate to home (no text expansion needed)
+          if (isOnSubpage) {
+            // On subpage - always navigate to home (portfolio, about, privacy-policy)
             window.location.href = 'photography-index.html';
           } else if (isTextVisible) {
-            // Text is visible and scrolled down
-            if (isOnSubpage) {
-              // On subpage - scroll to top and collapse text
-              window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-              });
-              toggleLogoText();
-            } else {
-              // On main page - scroll to top and collapse text
-              window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-              });
-              toggleLogoText();
-            }
+            // Text is visible and scrolled down - scroll to top and collapse text
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+            toggleLogoText();
           } else {
             // Text is hidden - toggle to show text (for interaction)
             toggleLogoText();
           }
         } else {
           // Desktop behavior
-          if (isOnSubpage && isAtTop) {
-            // On subpage at top - navigate to home
+          if (isOnSubpage) {
+            // On subpage - always navigate to home (portfolio, about, privacy-policy)
             window.location.href = 'photography-index.html';
           } else {
-            // Scroll to top (main page) or scroll to top (subpage when scrolled)
+            // On main page - scroll to top
             window.scrollTo({
               top: 0,
               behavior: 'smooth'
@@ -2142,8 +2348,7 @@ window.addEventListener('pagehide', (event) => {
 })();
 
 // =============================================================================
-// Hero Carousel (Threads-styled from main/about.html)
-// Adaptive sizing and infinite loop carousel for hero images
+// Hero Carousel - Simple working version
 // =============================================================================
 (function() {
   'use strict';
@@ -2151,14 +2356,19 @@ window.addEventListener('pagehide', (event) => {
   const heroImage = document.querySelector('.hero-image');
   if (!heroImage) return;
   
-  const originalSlides = Array.from(heroImage.querySelectorAll('.carousel-slide'));
+  const heroCarousel = heroImage.querySelector('.hero-carousel');
   const track = heroImage.querySelector('.carousel-track');
   const windowEl = heroImage.querySelector('.carousel-window');
   const prevBtn = heroImage.querySelector('.carousel-btn.prev');
   const nextBtn = heroImage.querySelector('.carousel-btn.next');
-  const dots = Array.from(heroImage.querySelectorAll('.carousel-dots button'));
+  const dotsContainer = heroImage.querySelector('.carousel-dots');
   
-  if (!track || !windowEl || originalSlides.length === 0) return;
+  if (!track || !windowEl || !heroCarousel) return;
+  
+  const originalSlides = Array.from(track.querySelectorAll('.carousel-slide'));
+  const dots = Array.from(dotsContainer ? dotsContainer.querySelectorAll('button') : []);
+  
+  if (originalSlides.length === 0) return;
   
   let currentIndex = 0;
   let isTransitioning = false;
@@ -2299,8 +2509,8 @@ window.addEventListener('pagehide', (event) => {
   dots.forEach((dot, index) => dot.addEventListener('click', () => goToSlide(index)));
   
   let carouselTimer = setInterval(goNext, 6000);
-  track?.addEventListener('mouseenter', () => clearInterval(carouselTimer));
-  track?.addEventListener('mouseleave', () => {
+  heroCarousel?.addEventListener('mouseenter', () => clearInterval(carouselTimer));
+  heroCarousel?.addEventListener('mouseleave', () => {
     clearInterval(carouselTimer);
     carouselTimer = setInterval(goNext, 6000);
   });

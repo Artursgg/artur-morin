@@ -151,35 +151,61 @@
     })();
   </script>
   
+  <!-- Google Consent Mode - Must load BEFORE GTM/GA -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    
+    // Set default consent state to 'denied' - no cookies until consent
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied',
+      'ad_storage': 'denied',
+      'wait_for_update': 500
+    });
+  </script>
+  
+  <!-- Google Tag Manager - Blocked until consent -->
+  <script data-cookieyes="cookieyes-analytics">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-K97CNH32');</script>
+  <!-- End Google Tag Manager -->
+  <!-- Google tag (gtag.js) - Blocked until consent -->
+  <script async data-cookieyes="cookieyes-analytics" src="https://www.googletagmanager.com/gtag/js?id=G-X89C2WMLSL"></script>
+  <script data-cookieyes="cookieyes-analytics">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-X89C2WMLSL');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- Primary Meta Tags -->
-  <title>About · Artur Morin | Visual Storyteller & Photographer</title>
-  <meta name="title" content="About · Artur Morin | Visual Storyteller & Photographer">
-  <meta name="description" content="Learn about Artur Morin, a Tallinn-based photographer. From street photography in Tallinn to the hills of Zakopane, discover the journey behind the lens.">
-  <meta name="keywords" content="Artur Morin, photographer biography, Tallinn photographer, photography journey, visual storyteller, photographer about">
+  <title>Portfolio · Artur Morin Photography</title>
+  <meta name="title" content="Portfolio · Artur Morin Photography">
+  <meta name="description" content="View the complete portfolio of Artur Morin - Tallinn-based photographer specializing in editorial, fashion, landscape, automotive, and product photography.">
+  <meta name="keywords" content="photography portfolio, Tallinn photographer, editorial photography, fashion photography, landscape photography, automotive photography, product photography">
   <meta name="author" content="Artur Morin">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://arturmorin.com/about.html">
+  <link rel="canonical" href="https://arturmorin.com/portfolio.html">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://arturmorin.com/about.html">
-  <meta property="og:title" content="About · Artur Morin | Visual Storyteller & Photographer">
-  <meta property="og:description" content="Learn about Artur Morin, a Tallinn-based photographer. From street photography in Tallinn to the hills of Zakopane.">
-  <meta property="og:image" content="https://arturmorin.com/assets/images/portfolio/about/me.jpg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://arturmorin.com/portfolio.html">
+  <meta property="og:title" content="Portfolio · Artur Morin Photography">
+  <meta property="og:description" content="View the complete portfolio of Artur Morin - Tallinn-based photographer.">
+  <meta property="og:image" content="https://arturmorin.com/assets/social-preview.jpg">
   <meta property="og:site_name" content="Artur Morin Photography">
   <meta property="og:locale" content="en_US">
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://arturmorin.com/about.html">
-  <meta name="twitter:title" content="About · Artur Morin | Visual Storyteller & Photographer">
-  <meta name="twitter:description" content="Learn about Artur Morin, a Tallinn-based photographer capturing moments from Tallinn to Zakopane.">
-  <meta name="twitter:image" content="https://arturmorin.com/assets/images/portfolio/about/me.jpg">
+  <meta name="twitter:url" content="https://arturmorin.com/portfolio.html">
+  <meta name="twitter:title" content="Portfolio · Artur Morin Photography">
+  <meta name="twitter:description" content="View the complete portfolio of Artur Morin - Tallinn-based photographer.">
+  <meta name="twitter:image" content="https://arturmorin.com/assets/social-preview.jpg">
   <meta name="twitter:creator" content="@morinartur">
   
   <!-- Favicon -->
@@ -188,49 +214,25 @@
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <meta name="theme-color" content="#0f0f0f">
+  
+  <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://images.unsplash.com">
-  <!-- Preload LCP image for faster loading -->
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" fetchpriority="high">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Science+Gothic:wght@400;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="css/about.css">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Science+Gothic:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   
-  <!-- Structured Data (JSON-LD) for Rich Results -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    "mainEntity": {
-      "@type": "Person",
-      "name": "Artur Morin",
-      "jobTitle": "Photographer & Visual Storyteller",
-      "description": "Tallinn-based photographer specializing in editorial, fashion, and documentary photography",
-      "url": "https://arturmorin.com",
-      "image": "https://arturmorin.com/assets/images/portfolio/about/me.jpg",
-      "sameAs": [
-        "https://x.com/_smilexfd_",
-        "https://www.threads.net/@morinartur",
-        "https://t.me/SmileXFD"
-      ],
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Tallinn",
-        "addressCountry": "Estonia"
-      },
-      "knowsAbout": ["Photography", "Editorial Photography", "Fashion Photography", "Documentary Photography", "Portrait Photography", "Commercial Photography"],
-      "award": [
-        "IPA Award - Gold Documentary Series (2024)",
-        "Sony World Photography - Shortlist Landscape (2023)",
-        "PDN Photo Annual - Winner Portrait Category (2022)",
-        "Communication Arts - Excellence Commercial (2021)"
-      ]
-    }
-  }
-  </script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/photography-index.css">
 </head>
 <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K97CNH32"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <!-- Skip to main content link for keyboard users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
   <!-- Loading Screen - Camera Aperture Iris -->
   <div class="loader" id="page-loader" aria-label="Loading page" role="status" aria-live="polite">
     <div class="loader-aperture">
@@ -289,9 +291,6 @@
     <div class="loader-grain"></div>
   </div>
 
-  <!-- Skip to main content link for keyboard users -->
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-  
   <!-- Film grain overlay -->
   <div class="grain" aria-hidden="true"></div>
 
@@ -305,7 +304,7 @@
       <ul>
         <li><a href="photography-index.html#work">Work</a></li>
         <li><a href="photography-index.html#services">Services</a></li>
-        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="about.html">About</a></li>
         <li><a href="photography-index.html#contact">Contact</a></li>
         <li><a href="portfolio.html">Portfolio</a></li>
       </ul>
@@ -322,7 +321,7 @@
         </linearGradient>
       </defs>
     </svg>
-    <!-- Portfolio Button - Desktop only, styled as separate box next to Contact -->
+    <!-- Portfolio Button - Desktop only, styled as separate box -->
     <a href="portfolio.html" class="nav-portfolio" aria-label="View Portfolio">Portfolio</a>
     <a href="photography-index.html#contact" class="nav-cta" aria-label="Contact - Let's Talk">Let's Talk</a>
     <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav" type="button">
@@ -334,187 +333,140 @@
     <div class="nav-overlay" aria-hidden="true" role="presentation"></div>
   </header>
 
+  <!-- Growing Grid Lines Animation -->
+  <div class="grid-lines-container" aria-hidden="true"></div>
+
   <main id="main-content">
-    <!-- About Hero -->
-    <section class="about-hero parallax" data-speed="0.25">
+    <!-- Portfolio Section - Blank for now -->
+    <section class="work parallax" id="portfolio" data-speed="0.15" aria-labelledby="portfolio-heading">
       <!-- Breadcrumbs - Desktop position -->
       <nav class="breadcrumbs breadcrumbs-desktop" aria-label="Breadcrumb">
         <a href="photography-index.html">Home</a>
         <span class="breadcrumb-separator">/</span>
-        <span class="breadcrumb-current">About</span>
+        <span class="breadcrumb-current">Portfolio</span>
       </nav>
-      <div class="about-hero-content reveal">
-        <p class="eyebrow">About Me</p>
-        <h1>I see the world in<br><span class="italic">frames & light</span></h1>
-        <div class="about-hero-lead-row">
-          <p class="about-hero-lead">For the past year, I've been capturing moments that matter. From the streets of Tallinn to the hills of Zakopane, my camera has been my companion in telling stories that words alone cannot express.</p>
-          <!-- Breadcrumbs - Tablet position (same line as lead text) -->
-          <nav class="breadcrumbs breadcrumbs-tablet" aria-label="Breadcrumb">
-            <a href="photography-index.html">Home</a>
-            <span class="breadcrumb-separator">/</span>
-            <span class="breadcrumb-current">About</span>
-          </nav>
-        </div>
-      </div>
-      <div class="about-hero-image reveal">
-        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" alt="Artur Morin - Photographer portrait" fetchpriority="high" decoding="async">
-        <div class="image-decoration"></div>
-      </div>
-    </section>
-
-    <!-- Philosophy -->
-    <section class="philosophy">
-      <div class="philosophy-content reveal">
-        <h2>My <span class="italic">philosophy</span></h2>
-        <p class="philosophy-text">Photography is more than pressing a button. It's about patience, presence, and the ability to see beauty in the mundane. Every person has a story written in the lines of their face. Every landscape holds a secret in its shadows.</p>
-        <p class="philosophy-text">I believe in authentic moments over posed perfection. In natural light over artificial. In connection over direction. My role isn't to create—it's to witness and preserve.</p>
-      </div>
-      <div class="philosophy-values">
-        <div class="value reveal">
-          <span class="value-number">01</span>
-          <h3>Authenticity</h3>
-          <p>Real moments, real emotions, real stories.</p>
-        </div>
-        <div class="value reveal">
-          <span class="value-number">02</span>
-          <h3>Patience</h3>
-          <p>The best shots are worth waiting for.</p>
-        </div>
-        <div class="value reveal">
-          <span class="value-number">03</span>
-          <h3>Connection</h3>
-          <p>Understanding my subjects before capturing them.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Journey Timeline -->
-    <section class="journey parallax" data-speed="0.15">
-      <header class="section-header reveal">
-        <p class="eyebrow">The Journey</p>
-        <h2>From curious kid <br>to <span class="italic">visual storyteller</span></h2>
+      <header class="section-header">
+        <!-- Breadcrumbs - Tablet position (replaces eyebrow) -->
+        <nav class="breadcrumbs breadcrumbs-tablet" aria-label="Breadcrumb">
+          <a href="photography-index.html">Home</a>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-current">Portfolio</span>
+        </nav>
+        <h2 id="portfolio-heading">My <span class="italic">complete collection</span></h2>
       </header>
-
-      <div class="timeline">
-        <article class="timeline-item reveal">
-          <span class="timeline-year">2016</span>
-          <div class="timeline-content">
-            <h3>The Beginning</h3>
-            <p>Started with a borrowed Nikon. Enjoyed photographing my grandma, and shooting our class on old town visit.</p>
-          </div>
-        </article>
-
-        <article class="timeline-item reveal">
-          <span class="timeline-year">2024</span>
-          <div class="timeline-content">
-            <h3>Realization</h3>
-            <p>Started realising that phone becoming not enough to shoot, thinked to buy Sony A6600 but thankfully it gone by the wayside.</p>
-          </div>
-        </article>
-
-        <article class="timeline-item reveal">
-          <span class="timeline-year">2025</span>
-          <div class="timeline-content">
-            <h3>Upgrade</h3>
-            <p>Bought very good cameraphone and started to realise how much better to previous phone it really it, but as we understand that humanity always wanted more so I really started to think about getting a camera...</p>
-          </div>
-        </article>
-
-        <article class="timeline-item reveal">
-          <span class="timeline-year">What's Next</span>
-          <div class="timeline-content">
-            <h3>What's Next</h3>
-            <p>Shooting what I enjoy and getting a clear mind from capturing images and edit them</p>
-          </div>
-        </article>
+      
+      <!-- 6x6 Grid Layout Test -->
+      <div class="portfolio-grid-6x6">
+        <div class="grid-item" data-lightbox="portfolio-image-1">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image" data-src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
+        <div class="grid-item">
+          <img src="assets/images/portfolio/hero/other/Blackrock-in-the-sea.jpg" alt="Portfolio image">
+        </div>
       </div>
-    </section>
-
-    <!-- Equipment -->
-    <section class="equipment">
-      <header class="section-header reveal">
-        <p class="eyebrow">The Tools</p>
-        <h2>Gear I <span class="italic">trust</span></h2>
-      </header>
-
-      <div class="equipment-grid">
-        <article class="equipment-card reveal">
-          <div class="equipment-icon">📷</div>
-          <h3>Camera Bodies</h3>
-          <ul>
-            <li>Panasonic S5</li>
-            <li>Canon 750D</li>
-            <li>Vivo X200 Ultra</li>
-          </ul>
-        </article>
-
-        <article class="equipment-card reveal">
-          <div class="equipment-icon">🔭</div>
-          <h3>Lenses</h3>
-          <ul>
-            <li>Canon EF 50mm f1.8</li>
-            <li>Tamron 70-300mm Di Vc USM</li>
-          </ul>
-        </article>
-
-        <article class="equipment-card reveal">
-          <div class="equipment-icon">💡</div>
-          <h3>Lighting</h3>
-          <ul>
-            <li>Bike flashes</li>
-            <li>Ingenuity 😄</li>
-            <li>Natural light (favorite)</li>
-          </ul>
-        </article>
-
-        <article class="equipment-card reveal">
-          <div class="equipment-icon">🖥️</div>
-          <h3>Post-Production</h3>
-          <ul>
-            <li>Lightroom Classic</li>
-            <li>Premiere Pro</li>
-            <li>Davinci Resolve (grading)</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <!-- Awards -->
-    <section class="awards parallax" data-speed="0.1">
-      <header class="section-header reveal">
-        <p class="eyebrow">Recognition</p>
-        <h2>Moments that were <span class="italic">noticed</span></h2>
-      </header>
-
-      <div class="awards-grid">
-        <article class="award-card reveal" data-year="2023">
-          <span class="award-year">TBC...</span>
-        </article>
-        <article class="award-card reveal" data-year="2024">
-          <span class="award-year">2024</span>
-          <h3>Family Recognition</h3>
-          <p>Wow Effect</p>
-        </article>
-        <article class="award-card reveal" data-year="2025">
-          <span class="award-year">2025</span>
-          <h3>Myself Photo Award</h3>
-          <p>All Categories</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="about-cta reveal">
-      <h2>Ready to create<br><span class="italic">something together?</span></h2>
-      <p>I'm always excited to take on new projects and collaborations. Whether you have a clear vision or just a spark of an idea, let's talk.</p>
-      <a href="photography-index.html#contact" class="btn btn-primary">Get in Touch</a>
     </section>
   </main>
 
-  <footer class="footer">
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" aria-hidden="true">
+    <button class="lightbox-close" aria-label="Close lightbox">×</button>
+    <button class="lightbox-prev" aria-label="Previous image">←</button>
+    <button class="lightbox-next" aria-label="Next image">→</button>
+    <div class="lightbox-content">
+      <img class="lightbox-image" src="" alt="">
+    </div>
+  </div>
+
+  <footer class="footer" role="contentinfo">
     <div class="footer-content">
       <div class="footer-brand">
-        <span class="logo-mark">AM</span>
+        <a href="photography-index.html" class="footer-logo-link" aria-label="Artur Morin home">
+          <span class="logo-mark">AM</span>
+        </a>
         <div class="footer-brand-text">
           <p class="footer-tagline-mobile">Opening new experiences</p>
           <p class="footer-tagline-desktop-inline">Opening new experiences</p>
@@ -549,7 +501,8 @@
   </footer>
 
   <script src="js/imageLoader.js"></script>
-  <script src="js/about.js"></script>
+  <script src="js/photography-index.js"></script>
+  <script src="js/portfolio-lightbox.js"></script>
 </body>
 </html>
 

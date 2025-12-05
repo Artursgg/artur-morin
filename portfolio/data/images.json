@@ -1,11 +1,10 @@
 {
   "portfolio": {
-    "editorial": [],
-    "fashion": [],
+    "other": [],
+    "street": [],
     "landscape": [],
-    "portrait": [],
-    "commercial": [],
-    "documentary": []
+    "cars": [],
+    "products": []
   },
   "hero": {
     "featured": null
