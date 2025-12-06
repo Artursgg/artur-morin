@@ -1206,13 +1206,35 @@ h1, h2, h3, h4 {
   
   /* Hide Portfolio from desktop nav menu (it's a separate button) */
   .nav #primary-nav ul li:has(a[href*="/portfolio/"]),
-  .nav #primary-nav ul li:has(a[href*="portfolio.html"]) {
+  .nav #primary-nav ul li:has(a[href*="portfolio.html"]),
+  .nav #primary-nav ul li:has(a[href="/portfolio/"]),
+  .nav #primary-nav ul li:has(a[href*="portfolio"]) {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   
-  /* Fallback for browsers that don't support :has() */
+  /* Fallback for browsers that don't support :has() - hide the link itself */
   .nav #primary-nav ul li a[href*="/portfolio/"],
-  .nav #primary-nav ul li a[href*="portfolio.html"] {
+  .nav #primary-nav ul li a[href*="portfolio.html"],
+  .nav #primary-nav ul li a[href="/portfolio/"],
+  .nav #primary-nav ul li a[href*="portfolio"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+  
+  /* Also hide the parent li if link is hidden */
+  .nav #primary-nav ul li:has(a[href*="/portfolio/"][style*="display: none"]),
+  .nav #primary-nav ul li:has(a[href="/portfolio/"][style*="display: none"]) {
     display: none !important;
   }
 }
