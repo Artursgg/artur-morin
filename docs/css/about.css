@@ -1205,8 +1205,15 @@ h1, h2, h3, h4 {
   }
   
   /* Hide Portfolio from desktop nav menu (it's a separate button) */
-  .nav ul li a[href*="portfolio.html"] {
-    display: none;
+  .nav #primary-nav ul li:has(a[href*="/portfolio/"]),
+  .nav #primary-nav ul li:has(a[href*="portfolio.html"]) {
+    display: none !important;
+  }
+  
+  /* Fallback for browsers that don't support :has() */
+  .nav #primary-nav ul li a[href*="/portfolio/"],
+  .nav #primary-nav ul li a[href*="portfolio.html"] {
+    display: none !important;
   }
 }
 
