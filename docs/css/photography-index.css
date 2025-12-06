@@ -1391,6 +1391,7 @@ h1, h2, h3, h4 {
   }
   
   /* Hide Portfolio from desktop nav menu (it's a separate button) */
+  .nav ul li a[href*="/portfolio/"],
   .nav ul li a[href*="portfolio.html"] {
     display: none;
   }
