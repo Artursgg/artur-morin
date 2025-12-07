@@ -952,17 +952,13 @@ if (contactForm) {
     }
     
     if (isNameValid && isEmailValid && isMessageValid && isChallengeValid) {
-      // Get reCAPTCHA Enterprise token with timeout
+      // Get reCAPTCHA token with timeout
       let recaptchaToken = '';
       try {
-        // Check if grecaptcha Enterprise is loaded
-        if (typeof grecaptcha !== 'undefined' && grecaptcha.enterprise && grecaptcha.enterprise.execute) {
-          // Wait for Enterprise to be ready
-          await new Promise((resolve) => {
-            grecaptcha.enterprise.ready(() => resolve());
-          });
+        // Check if grecaptcha is loaded
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.execute) {
           // Add timeout to prevent hanging
-          const recaptchaPromise = grecaptcha.enterprise.execute('6Lcf9CMsAAAAAKKNJmm5tE4ilNNaluQLeR4fvUwM', { action: 'submit' });
+          const recaptchaPromise = grecaptcha.execute('6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK', { action: 'submit' });
           const timeoutPromise = new Promise((_, reject) => 
             setTimeout(() => reject(new Error('reCAPTCHA timeout')), 5000)
           );
