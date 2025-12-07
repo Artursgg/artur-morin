@@ -967,10 +967,17 @@ if (contactForm) {
       } catch (error) {
         // Silently handle timeout/errors - form can still submit
         if (error.message !== 'reCAPTCHA timeout') {
-          // Only log if it's not a 401 domain error (domain not authorized in reCAPTCHA console)
-          if (!error.message || (!error.message.includes('401') && !error.message.includes('Unauthorized'))) {
-            console.warn('reCAPTCHA error (form will still submit):', error.message || 'Domain not authorized. Please add ' + window.location.hostname + ' to reCAPTCHA console.');
+          // Suppress 401/Unauthorized errors (domain not authorized in reCAPTCHA console)
+          const errorMsg = error.message || error.toString() || '';
+          const isUnauthorized = errorMsg.includes('401') || 
+                                 errorMsg.includes('Unauthorized') || 
+                                 errorMsg.includes('pat?k=') ||
+                                 error.status === 401;
+          
+          if (!isUnauthorized) {
+            console.warn('reCAPTCHA error (form will still submit):', errorMsg || 'Domain not authorized. Please add ' + window.location.hostname + ' to reCAPTCHA console.');
           }
+          // Silently ignore 401 errors - domain needs to be added to reCAPTCHA console
         }
         // Continue with form submission even if reCAPTCHA fails (graceful degradation)
       }
