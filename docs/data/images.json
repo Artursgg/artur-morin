@@ -6,6 +6,12 @@
     "documentary": [],
     "landscape": [
       {
+        "thumbnail": "../assets/images/portfolio/landscape/thumbnails/Sunset-and-joy.jpg",
+        "full": "../assets/images/portfolio/landscape/full/Sunset-and-joy.jpg",
+        "alt": "Sunset and Joy",
+        "title": "Sunset and Joy"
+      },
+      {
         "thumbnail": "../assets/images/portfolio/landscape/thumbnails/Wooden-barrier.jpg",
         "full": "../assets/images/portfolio/landscape/full/Wooden-barrier.jpg",
         "alt": "Wooden Barrier",
@@ -53,7 +59,7 @@
     "other": [
       {
         "thumbnail": "../assets/images/portfolio/other/thumbnails/Apex-predator.jpg",
-        "full": "../assets/images/portfolio/other/full/Apex-predator.jpg",
+        "full": "../assets/images/portfolio/other/full/apex-predator.jpg",
         "alt": "Apex Predator",
         "title": "Apex Predator"
       },
@@ -70,32 +76,32 @@
         "title": "Till' The Win"
       },
       {
-        "thumbnail": "../assets/images/portfolio/other/thumbnails/Pan-till-you-done_pl.jpg",
-        "full": "../assets/images/portfolio/other/full/Pan-till-you-done.jpg",
+        "thumbnail": "../assets/images/portfolio/cars/thumbnails/Pan-till-you-done_pl.jpg",
+        "full": "../assets/images/portfolio/cars/full/pan-till-you-done.jpg",
         "alt": "Pan Till You Done",
         "title": "Pan Till You Done"
       },
       {
-        "thumbnail": "../assets/images/portfolio/other/thumbnails/Classy-luxury.jpg",
-        "full": "../assets/images/portfolio/other/full/Classy-luxury.jpg",
+        "thumbnail": "../assets/images/portfolio/cars/thumbnails/Classy-luxury.jpg",
+        "full": "../assets/images/portfolio/cars/full/classy-luxury.jpg",
         "alt": "Classy Luxury",
         "title": "Classy Luxury"
       },
       {
-        "thumbnail": "../assets/images/portfolio/other/thumbnails/heavy-cromed-squirrel_pl.jpg",
-        "full": "../assets/images/portfolio/other/full/heavy-cromed-squirrel.jpg",
+        "thumbnail": "../assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel_pl.jpg",
+        "full": "../assets/images/portfolio/cars/full/heavy-cromed-squirrel.jpg",
         "alt": "Heavy Cromed Squirrel",
         "title": "Heavy Cromed Squirrel"
       },
       {
-        "thumbnail": "../assets/images/portfolio/other/thumbnails/heavy-cromed-squirrel-2.jpg",
-        "full": "../assets/images/portfolio/other/full/heavy-cromed-squirrel-2.jpg",
+        "thumbnail": "../assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel-2.jpg",
+        "full": "../assets/images/portfolio/cars/full/heavy-cromed-squirrel-2.jpg",
         "alt": "Heavy Cromed Squirrel 2",
         "title": "Heavy Cromed Squirrel 2"
       },
       {
-        "thumbnail": "../assets/images/portfolio/other/thumbnails/Ying-yang_pl.jpg",
-        "full": "../assets/images/portfolio/other/full/ying-yang.jpg",
+        "thumbnail": "../assets/images/portfolio/cars/thumbnails/Ying-yang_pl.jpg",
+        "full": "../assets/images/portfolio/cars/full/Ying-yang.jpg",
         "alt": "Ying Yang",
         "title": "Ying Yang"
       },
