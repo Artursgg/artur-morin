@@ -26,6 +26,12 @@
     ],
     "portrait": [
       {
+        "thumbnail": "../assets/images/portfolio/portrait/thumbnails/Raven-stare.jpg",
+        "full": "../assets/images/portfolio/portrait/full/Raven-stare.jpg",
+        "alt": "Raven Stare",
+        "title": "Raven Stare"
+      },
+      {
         "thumbnail": "../assets/images/portfolio/portrait/thumbnails/Starry-eyes.jpg",
         "full": "../assets/images/portfolio/portrait/full/Starry-eyes.jpg",
         "alt": "Starry Eyes",
@@ -42,15 +48,21 @@
         "full": "../assets/images/portfolio/portrait/full/Up-side-duck.jpg",
         "alt": "Up Side Duck",
         "title": "Up Side Duck"
-      },
-      {
-        "thumbnail": "../assets/images/portfolio/portrait/thumbnails/Raven-stare.jpg",
-        "full": "../assets/images/portfolio/portrait/full/Raven-stare.jpg",
-        "alt": "Raven Stare",
-        "title": "Raven Stare"
       }
     ],
     "other": [
+      {
+        "thumbnail": "../assets/images/portfolio/other/thumbnails/Apex-predator.jpg",
+        "full": "../assets/images/portfolio/other/full/Apex-predator.jpg",
+        "alt": "Apex Predator",
+        "title": "Apex Predator"
+      },
+      {
+        "thumbnail": "../assets/images/portfolio/other/thumbnails/Winter-elephant-pic-thumbnail.jpg",
+        "full": "../assets/images/portfolio/other/full/Winter-elephant-pic.jpg",
+        "alt": "Close-up portrait of an elephant showing detailed textured skin and expressive eye",
+        "title": "Elephant Portrait"
+      },
       {
         "thumbnail": "../assets/images/portfolio/other/thumbnails/Till'-the-win_pl.jpg",
         "full": "../assets/images/portfolio/other/full/Till'-the-win.jpg",
@@ -92,18 +104,6 @@
         "full": "../assets/images/portfolio/other/full/Geometrical-splash.jpg",
         "alt": "Geometrical Splash",
         "title": "Geometrical Splash"
-      },
-      {
-        "thumbnail": "../assets/images/portfolio/other/thumbnails/Apex-predator.jpg",
-        "full": "../assets/images/portfolio/other/full/Apex-predator.jpg",
-        "alt": "Apex Predator",
-        "title": "Apex Predator"
-      },
-      {
-        "thumbnail": "../assets/images/portfolio/other/thumbnails/Winter-elephant-pic-thumbnail.jpg",
-        "full": "../assets/images/portfolio/other/full/Winter-elephant-pic.jpg",
-        "alt": "Close-up portrait of an elephant showing detailed textured skin and expressive eye",
-        "title": "Elephant Portrait"
       }
     ],
     "street": [
