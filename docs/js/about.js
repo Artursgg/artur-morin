@@ -1097,31 +1097,35 @@ window.addEventListener('scroll', () => {
         }
       }
       
-      // Check if we're on a subpage (about.html or privacy-policy.html)
+      // Check if we're on a subpage (about, privacy-policy, portfolio)
       function isSubpage() {
         const pathname = window.location.pathname;
-        const href = window.location.href;
-        return pathname.includes('about.html') || 
-               pathname.includes('privacy-policy.html') ||
-               href.includes('about.html') ||
-               href.includes('privacy-policy.html');
+        return pathname.includes('/about/') || 
+               pathname.includes('/privacy-policy/') ||
+               pathname.includes('/portfolio/') ||
+               pathname.includes('/terms-of-use/') ||
+               pathname.includes('/thank-you/');
       }
       
       // Unified click handler for all devices
       function handleLogoClick(e) {
-        e.preventDefault();
-        
         const scrollY = window.scrollY || window.pageYOffset;
         const scrollThreshold = 100; // Consider "at top" if scrolled less than 100px
         const isAtTop = scrollY <= scrollThreshold;
         const isOnSubpage = isSubpage();
         
+        // On subpage at top - let the link navigate naturally to home (don't prevent default)
+        if (isOnSubpage && isAtTop) {
+          // Don't prevent default - let the href="/" work naturally
+          return true;
+        }
+        
+        // Otherwise, prevent default and handle the toggle/scroll behavior
+        e.preventDefault();
+        
         if (isMobileTablet()) {
           // Mobile/Tablet behavior
-          if (isOnSubpage && isAtTop) {
-            // On subpage at top - directly navigate to home (no text expansion needed)
-            window.location.href = 'photography-index.html';
-          } else if (isTextVisible) {
+          if (isTextVisible) {
             // Text is visible and scrolled down
             if (isOnSubpage) {
               // On subpage - scroll to top and collapse text
@@ -1143,17 +1147,11 @@ window.addEventListener('scroll', () => {
             toggleLogoText();
           }
         } else {
-          // Desktop behavior
-          if (isOnSubpage && isAtTop) {
-            // On subpage at top - navigate to home
-            window.location.href = 'photography-index.html';
-          } else {
-            // Scroll to top
-            window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            });
-          }
+          // Desktop behavior - scroll to top
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
         }
         
         return false;
@@ -1191,12 +1189,10 @@ window.addEventListener('scroll', () => {
             const isAtTop = scrollY <= scrollThreshold;
             const isOnSubpage = isSubpage();
             
-            // If on subpage at top, navigate directly (don't toggle)
+            // If on subpage at top, let the link navigate naturally (don't toggle)
             if (isOnSubpage && isAtTop) {
-              e.preventDefault();
-              e.stopPropagation();
-              window.location.href = 'photography-index.html';
-              return false;
+              // Don't prevent default - let the href="/" work naturally
+              return true;
             }
             
             if (isTextVisible) {
