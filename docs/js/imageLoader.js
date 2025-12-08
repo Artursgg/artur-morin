@@ -9,7 +9,13 @@ class ImageLoader {
 
   async loadImages() {
     try {
-      const response = await fetch('data/images.json');
+      // Determine the correct path based on current location
+      // If we're in a subdirectory (e.g., /portfolio/), go up one level
+      const pathname = window.location.pathname;
+      const isSubdirectory = pathname.split('/').filter(Boolean).length > 1;
+      const jsonPath = isSubdirectory ? '../data/images.json' : 'data/images.json';
+      
+      const response = await fetch(jsonPath);
       if (!response.ok) {
         console.warn('Could not load images.json, using fallback images');
         return null;
