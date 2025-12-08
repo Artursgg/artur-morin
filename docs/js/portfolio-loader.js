@@ -51,8 +51,8 @@
         }
       });
 
-      // Shuffle images for variety (optional)
-      shuffleArray(allPortfolioImages);
+      // Images are already sorted by newest first in images.json
+      // No need to shuffle - maintain the order from JSON
 
       // Populate grid
       populateGrid();
