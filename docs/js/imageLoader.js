@@ -9,11 +9,21 @@ class ImageLoader {
 
   async loadImages() {
     try {
-      // Determine the correct path based on current location
-      // If we're in a subdirectory (e.g., /portfolio/), go up one level
+      // Use absolute path from root to work from any page location
+      // Calculate relative path from current page to data/images.json
       const pathname = window.location.pathname;
-      const isSubdirectory = pathname.split('/').filter(Boolean).length > 1;
-      const jsonPath = isSubdirectory ? '../data/images.json' : 'data/images.json';
+      const pathParts = pathname.split('/').filter(Boolean);
+      
+      // Remove the last part (filename or empty if directory)
+      // Count how many levels deep we are
+      const depth = pathParts.length > 0 && !pathParts[pathParts.length - 1].includes('.html') 
+        ? pathParts.length 
+        : pathParts.length - 1;
+      
+      // Build relative path: go up 'depth' levels, then into data/
+      const jsonPath = depth > 0 
+        ? '../'.repeat(depth) + 'data/images.json'
+        : 'data/images.json';
       
       const response = await fetch(jsonPath);
       if (!response.ok) {
