@@ -1,8 +1,27 @@
 {
   "portfolio": {
-    "other": [],
-    "street": [],
+    "editorial": [
+      {
+        "thumbnail": "../assets/images/portfolio/editorial/thumbnails/image1.jpg",
+        "full": "../assets/images/portfolio/editorial/full/image1.jpg",
+        "alt": "Editorial photography - Image 1",
+        "title": "Editorial Work 1"
+      }
+    ],
+    "fashion": [],
+    "commercial": [],
+    "documentary": [],
     "landscape": [],
+    "portrait": [],
+    "other": [
+      {
+        "thumbnail": "../assets/images/portfolio/other/thumbnails/Winter-elephant-pic-thumbnail.jpg",
+        "full": "../assets/images/portfolio/other/full/Winter-elephant-pic.jpg",
+        "alt": "Close-up portrait of an elephant showing detailed textured skin and expressive eye",
+        "title": "Elephant Portrait"
+      }
+    ],
+    "street": [],
     "cars": [],
     "products": []
   },

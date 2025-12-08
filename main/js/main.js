@@ -454,7 +454,7 @@ if (contactForm) {
     const message = sanitize(formData.get("message"), 1000);
 
     // Build mailto link
-    const recipient = contactForm.dataset.mailto || "standoffgamr@gmail.com";
+    const recipient = contactForm.dataset.mailto || "inquirymorin@gmail.com";
     const subject = encodeURIComponent("Dominant S5 II inquiry");
     const body = encodeURIComponent(
       `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
