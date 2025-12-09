@@ -1737,6 +1737,24 @@ h1, h2, h3, h4 {
     margin-left: clamp(-12px, -1.5vw, -24px); /* Responsive margin that scales down */
   }
 }
+@media (min-width: 1441px) {
+  .nav-portfolio {
+    /* Adjust margins for very large screens (e.g., 27-inch monitors) */
+    margin-right: clamp(50px, 8vw, 100px); /* smaller max margin */
+    margin-left: clamp(30px, 6vw, 80px);
+  }
+  
+  /* Adjust nav margin to maintain centering */
+  .nav nav {
+    margin-right: clamp(-50px, -8vw, -100px);
+  }
+  
+  /* Adjust Contact button margin to maintain spacing */
+  .nav-cta {
+    margin-left: clamp(-6px, -0.8vw, -12px);
+  }
+}
+
 
 /* --------------------------------------------------------------------------
    Hero Section
