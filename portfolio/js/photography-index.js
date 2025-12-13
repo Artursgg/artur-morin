@@ -2735,7 +2735,6 @@ window.addEventListener('pagehide', (event) => {
     const radius = getBorderRadius();
     pathLength = calculatePathLength(badgeWidth, badgeHeight, radius, PADDING);
 
-    DISTANCE_PER_FRAME = pathLength * 0.01;
     
     // Set container size to accommodate the path
     const containerSize = Math.max(badgeWidth, badgeHeight) + (PADDING * 4);
@@ -2779,7 +2778,7 @@ window.addEventListener('pagehide', (event) => {
   }
   
   let currentDistance = 0; // Distance along path in pixels
-  let DISTANCE_PER_FRAME; // Pixels to move per frame (constant speed)
+  const DISTANCE_PER_FRAME = 1; // Pixels to move per frame (constant speed)
   
   function animate() {
     // Move forward by constant distance (ensures constant speed on curves too)

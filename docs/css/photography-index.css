@@ -1645,7 +1645,7 @@ h1, h2, h3, h4 {
   font-weight: 500;
   letter-spacing: 0.02em;
   color: rgba(255, 255, 255, 0.9);
-  padding: 8px 16px; /* Outer container padding - increased horizontal padding for wider area */
+  padding: 8px 16px; 
   border-radius: var(--radius-lg); /* Outer container border radius */
   display: flex;
   align-items: center;
@@ -1658,10 +1658,19 @@ h1, h2, h3, h4 {
   text-transform: uppercase;
   text-align: center;
   text-decoration: none;
-  margin-right: 300px; /* Portfolio button position */
-  margin-left: 195px; /* Portfolio button position - moved 10px left */
+  margin-right: 300px;
+  margin-left: 195px;  
   background: rgba(255, 255, 255, 0.02); /* Outer container background */
   border: 1px solid rgba(255, 255, 255, 0.1); /* Outer container border */
+  white-space: nowrap;
+}
+
+.portfolio-wrapper {
+  display: inline-block;
+  margin-right: 1rem; /* distance to Contact button */
+  margin-left: 0;     /* adjust if needed */
+  margin-right: clamp(16px, 1.5vw, 48px);
+  margin-left: clamp(10px, 1.5vw, 16px);
 }
 
 /* Desktop only - Apply backdrop-filter to outer container matching nav ul */
@@ -1721,10 +1730,10 @@ h1, h2, h3, h4 {
 
 /* Maintain gap between Portfolio button and nav section on intermediate screen sizes */
 /* This prevents overlap on smaller laptops (between tablet and full desktop) */
-@media (min-width: 1025px) and (max-width: 1440px) {
+@media (min-width: 1025px) and (max-width: 1550px) {
   .nav-portfolio {
-    margin-right: clamp(150px, 15vw, 250px); /* Responsive margin that scales down */
-    margin-left: clamp(100px, 12vw, 195px); /* Responsive margin that scales down */
+    margin-right: clamp(60px, 40vw, 300px); /* Responsive margin that scales down */
+    margin-left: clamp(30px, 40vw, 80px); /* Responsive margin that scales down */
   }
   
   /* Adjust nav margin to maintain centering */
@@ -1737,7 +1746,7 @@ h1, h2, h3, h4 {
     margin-left: clamp(-12px, -1.5vw, -24px); /* Responsive margin that scales down */
   }
 }
-@media (min-width: 1441px) {
+@media (min-width: 1600px) {
   .nav-portfolio {
     /* Adjust margins for very large screens (e.g., 27-inch monitors) */
     margin-right: clamp(50px, 8vw, 100px); /* smaller max margin */

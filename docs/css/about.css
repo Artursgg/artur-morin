@@ -1522,25 +1522,6 @@ h1, h2, h3, h4 {
   }
 }
 
-/* Maintain gap between Portfolio button and nav section on intermediate screen sizes */
-/* This prevents overlap on smaller laptops (between tablet and full desktop) */
-@media (min-width: 1025px) and (max-width: 1440px) {
-  .nav-portfolio {
-    margin-right: clamp(150px, 20vw, 300px); /* Responsive margin that scales down */
-    margin-left: clamp(100px, 12vw, 195px); /* Responsive margin that scales down */
-  }
-
-  /* Adjust nav margin to maintain centering */
-  .nav nav {
-    margin-right: clamp(-150px, -15vw, -250px); /* Responsive margin that scales down */
-  }
-
-  /* Adjust Contact button margin to maintain spacing */
-  .nav-cta {
-    margin-left: clamp(-12px, -1.5vw, -24px); /* Responsive margin that scales down */
-  }
-}
-
 /* --------------------------------------------------------------------------
    Hero Section
    -------------------------------------------------------------------------- */

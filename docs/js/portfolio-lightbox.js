@@ -20,19 +20,12 @@
   
   // Collect all images from the grid
   function collectImages() {
-    // Re-query grid items in case new ones were added dynamically
-    const items = document.querySelectorAll('.portfolio-grid-6x6 .grid-item');
-    currentImages = Array.from(items).map(item => {
+    currentImages = Array.from(gridItems).map(item => {
       const img = item.querySelector('img');
-      if (!img) return null;
-      
-      // Use data-src for full-size image if available, otherwise use src
-      const fullSizeSrc = img.getAttribute('data-src') || img.src;
-      
-      return {
-        src: fullSizeSrc,
+      return img ? {
+        src: img.src,
         alt: img.alt || 'Portfolio image'
-      };
+      } : null;
     }).filter(Boolean);
   }
   
@@ -86,19 +79,10 @@
   function init() {
     collectImages();
     
-    // Re-query grid items in case they were dynamically added
-    const items = document.querySelectorAll('.portfolio-grid-6x6 .grid-item');
-    
-    // Remove old event listeners and add new ones
-    items.forEach((item, index) => {
-      // Clone and replace to remove old listeners
-      const newItem = item.cloneNode(true);
-      item.parentNode.replaceChild(newItem, item);
-      
-      // Add click handler
-      newItem.addEventListener('click', (e) => {
+    // Add click handlers to grid items
+    gridItems.forEach((item, index) => {
+      item.addEventListener('click', (e) => {
         e.preventDefault();
-        collectImages(); // Re-collect in case images changed
         openLightbox(index);
       });
     });
@@ -151,8 +135,5 @@
   } else {
     init();
   }
-
-  // Export init function for external use (e.g., portfolio-loader.js)
-  window.initPortfolioLightbox = init;
 })();
 
