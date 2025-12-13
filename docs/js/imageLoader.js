@@ -1,4 +1,5 @@
 // Image Loader - Manages portfolio images from JSON data
+// This allows you to manage images through a simple JSON file instead of hardcoding in HTML
 
 class ImageLoader {
   constructor() {
@@ -32,7 +33,6 @@ class ImageLoader {
       return this.images.portfolio[category] || [];
     }
 
-    // return all images
     const allImages = [];
     Object.keys(this.images.portfolio).forEach(cat => {
       if (Array.isArray(this.images.portfolio[cat])) {
@@ -61,48 +61,43 @@ function populatePortfolioGrid() {
   const workGrid = document.querySelector('.work-grid');
   if (!workGrid || !imageLoader.loaded) return;
 
-  const categories = [
-    'editorial', 'fashion', 'landscape', 'portrait',
-    'commercial', 'documentary', 'other', 'cars', 'products'
-  ];
-
   const workCards = Array.from(workGrid.querySelectorAll('.work-card'));
+  let cardIndex = 0;
 
-  categories.forEach((category, index) => {
+  // Loop through all categories
+  Object.keys(imageLoader.images.portfolio).forEach(category => {
     const images = imageLoader.getPortfolioImages(category);
-    if (images.length > 0 && workCards[index]) {
-      const firstImage = images[0];
-      const workCard = workCards[index];
+
+    images.forEach(image => {
+      if (cardIndex >= workCards.length) return;
+
+      const workCard = workCards[cardIndex];
 
       // Update image
       const img = workCard.querySelector('img');
-      if (img && firstImage.thumbnail) {
+      if (img && image.thumbnail) {
         const testImg = new Image();
         testImg.onload = () => {
-          img.src = firstImage.thumbnail;
-          img.alt = firstImage.title || img.alt;
+          img.src = image.thumbnail;
+          img.alt = image.title || img.alt;
         };
-        testImg.src = firstImage.thumbnail;
+        testImg.src = image.thumbnail;
       }
 
       // Update title
       const title = workCard.querySelector('h3');
-      if (title && firstImage.title) {
-        title.textContent = firstImage.title;
-      }
+      if (title) title.textContent = image.title || '';
 
       // Update description
       const description = workCard.querySelector('.work-card-info p');
-      if (description && firstImage.description) {
-        description.textContent = firstImage.description;
-      }
+      if (description) description.textContent = image.description || '';
 
       // Update category
       const categorySpan = workCard.querySelector('.work-category');
-      if (categorySpan && firstImage.category) {
-        categorySpan.textContent = firstImage.category;
-      }
-    }
+      if (categorySpan) categorySpan.textContent = category;
+
+      cardIndex++;
+    });
   });
 }
 
