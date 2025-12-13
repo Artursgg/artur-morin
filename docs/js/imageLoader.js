@@ -1,4 +1,5 @@
 // Image Loader - Manages portfolio images from JSON data
+
 class ImageLoader {
   constructor() {
     this.images = null;
@@ -8,7 +9,7 @@ class ImageLoader {
   // Load images from JSON
   async loadImages() {
     try {
-      const jsonPath = '../data/images.json'; // path relative to portfolio/index.html
+      const jsonPath = '../data/images.json'; // relative from portfolio/index.html
       const response = await fetch(jsonPath);
       if (!response.ok) {
         console.warn('Could not load images.json, using fallback images');
@@ -31,6 +32,7 @@ class ImageLoader {
       return this.images.portfolio[category] || [];
     }
 
+    // return all images
     const allImages = [];
     Object.keys(this.images.portfolio).forEach(cat => {
       if (Array.isArray(this.images.portfolio[cat])) {
@@ -38,6 +40,16 @@ class ImageLoader {
       }
     });
     return allImages;
+  }
+
+  // Get hero image
+  getHeroImage() {
+    return this.images?.hero?.featured || null;
+  }
+
+  // Get about image
+  getAboutImage() {
+    return this.images?.about?.portrait || null;
   }
 }
 
@@ -49,8 +61,12 @@ function populatePortfolioGrid() {
   const workGrid = document.querySelector('.work-grid');
   if (!workGrid || !imageLoader.loaded) return;
 
+  const categories = [
+    'editorial', 'fashion', 'landscape', 'portrait',
+    'commercial', 'documentary', 'other', 'cars', 'products'
+  ];
+
   const workCards = Array.from(workGrid.querySelectorAll('.work-card'));
-  const categories = Object.keys(imageLoader.images.portfolio); // dynamic from JSON
 
   categories.forEach((category, index) => {
     const images = imageLoader.getPortfolioImages(category);
@@ -90,7 +106,7 @@ function populatePortfolioGrid() {
   });
 }
 
-// Update hero image (unchanged)
+// Update hero image
 function updateHeroImage() {
   const heroImage = imageLoader.getHeroImage();
   if (heroImage) {
@@ -103,7 +119,7 @@ function updateHeroImage() {
   }
 }
 
-// Update about image (unchanged)
+// Update about image
 function updateAboutImage() {
   const aboutImage = imageLoader.getAboutImage();
   if (aboutImage) {
@@ -119,7 +135,9 @@ function updateAboutImage() {
 // Load images on page load
 document.addEventListener('DOMContentLoaded', async () => {
   await imageLoader.loadImages();
-  
+
+  console.log('Loaded images:', imageLoader.images);
+
   if (imageLoader.loaded) {
     populatePortfolioGrid();
     updateHeroImage();
