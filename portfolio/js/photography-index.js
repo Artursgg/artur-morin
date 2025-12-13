@@ -2777,7 +2777,7 @@ window.addEventListener('pagehide', (event) => {
   }
   
   let currentDistance = 0; // Distance along path in pixels
-  const DISTANCE_PER_FRAME = 0.5; // Pixels to move per frame (constant speed)
+  const DISTANCE_PER_FRAME = 2; // Pixels to move per frame (constant speed)
   
   function animate() {
     // Move forward by constant distance (ensures constant speed on curves too)
