@@ -1146,7 +1146,7 @@ window.addEventListener('scroll', () => {
           // Desktop behavior
           if (isOnSubpage && isAtTop) {
             // On subpage at top - navigate to home
-            window.location.href = 'photography-index.html';
+            window.location.href = '/';
           } else {
             // Scroll to top
             window.scrollTo({
