@@ -2908,9 +2908,8 @@ window.addEventListener('pagehide', (event) => {
   window.addEventListener('resize', detectPotwImageOrientation);
 })();
 
-// =============================================================================
-// Dev Tools Easter Egg - ASCII Art "Artur Morin"
-// The ASCII art is now in the HTML comment at the top of the page
-// This will be visible in the Elements tab when inspecting the HTML
-// =============================================================================
+if (window.location.pathname.includes('/portfolio')) {
+  window.location.href = 'https://arturmorin.page/'; // redirect to homepage
+}
+
 
