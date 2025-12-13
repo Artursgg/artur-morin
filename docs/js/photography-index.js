@@ -2101,34 +2101,32 @@ window.addEventListener('pagehide', (event) => {
       }
       
       // Unified click handler for all devices
-      // Check if we're on a subpage (about, privacy-policy, portfolio)
+      // Check if we're on a subpage (about.html, privacy-policy.html, or portfolio.html)
       function isSubpage() {
         const pathname = window.location.pathname;
-        return pathname.includes('/about/') || 
-               pathname.includes('/privacy-policy/') ||
-               pathname.includes('/portfolio/') ||
-               pathname.includes('/terms-of-use/') ||
-               pathname.includes('/thank-you/');
+        const href = window.location.href;
+        return pathname.includes('about.html') || 
+               pathname.includes('privacy-policy.html') ||
+               pathname.includes('portfolio.html') ||
+               href.includes('about.html') ||
+               href.includes('privacy-policy.html') ||
+               href.includes('portfolio.html');
       }
       
       function handleLogoClick(e) {
+        e.preventDefault();
+        
         const scrollY = window.scrollY || window.pageYOffset;
         const scrollThreshold = 100; // Consider "at top" if scrolled less than 100px
         const isAtTop = scrollY <= scrollThreshold;
         const isOnSubpage = isSubpage();
         
-        // On subpage at top - let the link navigate naturally to home (don't prevent default)
-        if (isOnSubpage && isAtTop) {
-          // Don't prevent default - let the href="/" work naturally
-          return true;
-        }
-        
-        // Otherwise, prevent default and handle the toggle/scroll behavior
-        e.preventDefault();
-        
         if (isMobileTablet()) {
           // Mobile/Tablet behavior
-          if (isTextVisible) {
+          if (isOnSubpage) {
+            // On subpage - always navigate to home (portfolio, about, privacy-policy)
+            window.location.href = 'photography-index.html';
+          } else if (isTextVisible) {
             // Text is visible and scrolled down - scroll to top and collapse text
             window.scrollTo({
               top: 0,
@@ -2140,11 +2138,17 @@ window.addEventListener('pagehide', (event) => {
             toggleLogoText();
           }
         } else {
-          // Desktop behavior - scroll to top
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
+          // Desktop behavior
+          if (isOnSubpage) {
+            // On subpage - always navigate to home (portfolio, about, privacy-policy)
+            window.location.href = 'photography-index.html';
+          } else {
+            // On main page - scroll to top
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
         }
         
         return false;
@@ -2182,10 +2186,12 @@ window.addEventListener('pagehide', (event) => {
             const isAtTop = scrollY <= scrollThreshold;
             const isOnSubpage = isSubpage();
             
-            // If on subpage at top, let the link navigate naturally (don't toggle)
+            // If on subpage at top, navigate directly (don't toggle)
             if (isOnSubpage && isAtTop) {
-              // Don't prevent default - let the href="/" work naturally
-              return true;
+              e.preventDefault();
+              e.stopPropagation();
+              window.location.href = 'photography-index.html';
+              return false;
             }
             
             if (isTextVisible) {
