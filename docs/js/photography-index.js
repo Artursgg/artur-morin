@@ -2557,15 +2557,15 @@ window.addEventListener('pagehide', (event) => {
   
   if (!badgeWrapper || !badge || !lettersContainer || letters.length === 0) return;
   
-  const WORD_LETTERS = 8; // D, e, c, e, m, b, e, r
-  const WORD_COUNT = 2; // Two "december" words
-  const LETTER_COUNT = WORD_LETTERS * WORD_COUNT; // 16 total letters
+  const WORD_LETTERS = 7; // january
+  const WORD_COUNT = 2; // Two "january" words
+  const LETTER_COUNT = WORD_LETTERS * WORD_COUNT; // 14 total letters
   const PADDING = 20; // Space between badge border and letters (in pixels)
   const BORDER_RADIUS = 16; // Match CSS border-radius (var(--radius-md))
   const WORD_SPACING = 0.05; // Spacing between words (5% of path) - equal gap after each word
   // Spacing between letters within a word - evenly distribute letters accounting for 2 equal gaps
   // Total: 16 letters × LETTER_SPACING + 2 gaps × WORD_SPACING = 1.0
-  const LETTER_SPACING = (1 - (WORD_SPACING * 2)) / (WORD_LETTERS * WORD_COUNT);
+  const LETTER_SPACING = (1 - (WORD_SPACING * WORD_COUNT)) / (WORD_LETTERS * WORD_COUNT);
   
   let badgeWidth = 0;
   let badgeHeight = 0;
