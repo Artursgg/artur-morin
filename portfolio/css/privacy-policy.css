@@ -647,8 +647,8 @@ h1, h2, h3, h4 {
   text-transform: uppercase;
   text-align: center;
   text-decoration: none;
-  margin-right: 300px; /* Portfolio button position */
-  margin-left: 195px; /* Portfolio button position - moved 10px left */
+  margin-right: 200px; /* Portfolio button position */
+  margin-left: 100px; /* Portfolio button position - moved 10px left */
   background: rgba(255, 255, 255, 0.02); /* Outer container background */
   border: 1px solid rgba(255, 255, 255, 0.1); /* Outer container border */
 }
