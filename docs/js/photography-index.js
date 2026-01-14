@@ -2907,9 +2907,3 @@ window.addEventListener('pagehide', (event) => {
   // Re-check on window resize (in case image changes)
   window.addEventListener('resize', detectPotwImageOrientation);
 })();
-
-if (window.location.pathname.includes('/portfolio')) {
-  window.location.href = 'https://arturmorin.page/'; // redirect to homepage
-}
-
-

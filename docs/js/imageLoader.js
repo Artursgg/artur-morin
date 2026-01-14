@@ -101,6 +101,46 @@ function populatePortfolioGrid() {
   });
 }
 
+// Populate dedicated portfolio page grid (6x6)
+function populatePortfolioPageGrid() {
+  const portfolioGrid = document.querySelector('.portfolio-grid-6x6');
+  if (!portfolioGrid || !imageLoader.loaded || !imageLoader.images) return;
+
+  const gridItems = Array.from(portfolioGrid.querySelectorAll('.grid-item'));
+  if (!gridItems.length) return;
+
+  // Get all images across categories (already ordered in images.json)
+  const allImages = imageLoader.getPortfolioImages();
+  if (!allImages.length) return;
+
+  const maxItems = Math.min(gridItems.length, allImages.length);
+
+  for (let i = 0; i < maxItems; i++) {
+    const item = gridItems[i];
+    const image = allImages[i];
+
+    if (!image || !image.thumbnail || !image.full) continue;
+
+    let img = item.querySelector('img');
+    if (!img) {
+      img = document.createElement('img');
+      item.appendChild(img);
+    }
+
+    img.src = image.thumbnail;
+    img.alt = image.alt || image.title || 'Portfolio image';
+    img.setAttribute('data-src', image.full);
+    img.setAttribute('loading', 'lazy');
+
+    item.style.display = ''; // ensure visible
+  }
+
+  // Hide any extra static placeholder items if there are fewer images than slots
+  for (let i = maxItems; i < gridItems.length; i++) {
+    gridItems[i].style.display = 'none';
+  }
+}
+
 // Update hero image
 function updateHeroImage() {
   const heroImage = imageLoader.getHeroImage();
@@ -135,6 +175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (imageLoader.loaded) {
     populatePortfolioGrid();
+    populatePortfolioPageGrid();
     updateHeroImage();
     updateAboutImage();
   }
