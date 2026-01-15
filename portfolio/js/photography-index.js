@@ -2551,7 +2551,7 @@ window.addEventListener('pagehide', (event) => {
   const LETTER_COUNT = WORD_LETTERS * WORD_COUNT; // 14 total letters
   const PADDING = 20; // Space between badge border and letters (in pixels)
   const BORDER_RADIUS = 16; // Match CSS border-radius (var(--radius-md))
-  const WORD_SPACING = 0.03; // Spacing between words (5% of path) - equal gap after each word
+  const WORD_SPACING = 0.05; // Spacing between words (5% of path) - equal gap after each word
   // Spacing between letters within a word - evenly distribute letters accounting for 2 equal gaps
   // Total: 16 letters × LETTER_SPACING + 2 gaps × WORD_SPACING = 1.0
   const LETTER_SPACING = (1 - (WORD_SPACING * WORD_COUNT)) / (WORD_LETTERS * WORD_COUNT);
