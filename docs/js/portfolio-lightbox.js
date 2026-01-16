@@ -5,135 +5,87 @@
 
 (function() {
   'use strict';
-  
+
   const lightbox = document.getElementById('lightbox');
   const lightboxImage = lightbox?.querySelector('.lightbox-image');
-  const lightboxClose = lightbox?.querySelector('.lightbox-close');
-  const lightboxPrev = lightbox?.querySelector('.lightbox-prev');
-  const lightboxNext = lightbox?.querySelector('.lightbox-next');
-  const gridItems = document.querySelectorAll('.portfolio-grid-6x6 .grid-item');
-  
+  const lightboxTitle = lightbox?.querySelector('.lightbox-title'); // optional
+  const closeBtn = lightbox?.querySelector('.lightbox-close');
+  const prevBtn = lightbox?.querySelector('.lightbox-prev');
+  const nextBtn = lightbox?.querySelector('.lightbox-next');
+
   if (!lightbox || !lightboxImage) return;
-  
-  let currentImages = [];
+
+  let images = [];
   let currentIndex = 0;
-  
-  // Collect all images from the grid
+
   function collectImages() {
-    currentImages = Array.from(gridItems).map(item => {
-      const img = item.querySelector('img');
-      return img ? {
-        src: img.src,
-        alt: img.alt || 'Portfolio image'
-      } : null;
-    }).filter(Boolean);
+    const imgs = document.querySelectorAll('.portfolio-grid-6x6 .grid-item img');
+    images = Array.from(imgs).map(img => ({
+      full: img.dataset.full || img.src,
+      alt: img.alt || 'Portfolio image',
+      title: img.dataset.title || ''
+    }));
   }
-  
-  // Open lightbox with specific image
+
   function openLightbox(index) {
-    if (index < 0 || index >= currentImages.length) return;
-    
+    if (index < 0 || index >= images.length) return;
+
     currentIndex = index;
-    const image = currentImages[currentIndex];
-    
-    lightboxImage.src = image.src;
-    lightboxImage.alt = image.alt;
+    const img = images[currentIndex];
+
+    lightboxImage.src = img.full;
+    lightboxImage.alt = img.alt;
+    if (lightboxTitle) lightboxTitle.textContent = img.title;
+
     lightbox.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    
-    updateNavigationButtons();
+    document.body.style.overflow = 'hidden';
+    updateButtons();
   }
-  
-  // Close lightbox
+
   function closeLightbox() {
     lightbox.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = ''; // Restore scrolling
+    document.body.style.overflow = '';
     lightboxImage.src = '';
   }
-  
-  // Navigate to previous image
+
   function prevImage() {
-    if (currentIndex > 0) {
-      openLightbox(currentIndex - 1);
-    }
+    if (currentIndex > 0) openLightbox(currentIndex - 1);
   }
-  
-  // Navigate to next image
+
   function nextImage() {
-    if (currentIndex < currentImages.length - 1) {
-      openLightbox(currentIndex + 1);
-    }
+    if (currentIndex < images.length - 1) openLightbox(currentIndex + 1);
   }
-  
-  // Update navigation button states
-  function updateNavigationButtons() {
-    if (lightboxPrev) {
-      lightboxPrev.disabled = currentIndex === 0;
-    }
-    if (lightboxNext) {
-      lightboxNext.disabled = currentIndex === currentImages.length - 1;
-    }
+
+  function updateButtons() {
+    if (prevBtn) prevBtn.disabled = currentIndex === 0;
+    if (nextBtn) nextBtn.disabled = currentIndex === images.length - 1;
   }
-  
-  // Initialize: collect images and add click handlers
+
   function init() {
     collectImages();
-    
-    // Add click handlers to grid items
-    gridItems.forEach((item, index) => {
-      item.addEventListener('click', (e) => {
+    document.querySelectorAll('.portfolio-grid-6x6 .grid-item img')
+      .forEach((img, i) => img.addEventListener('click', e => {
         e.preventDefault();
-        openLightbox(index);
-      });
-    });
-    
-    // Close button
-    if (lightboxClose) {
-      lightboxClose.addEventListener('click', closeLightbox);
-    }
-    
-    // Previous button
-    if (lightboxPrev) {
-      lightboxPrev.addEventListener('click', (e) => {
-        e.stopPropagation();
-        prevImage();
-      });
-    }
-    
-    // Next button
-    if (lightboxNext) {
-      lightboxNext.addEventListener('click', (e) => {
-        e.stopPropagation();
-        nextImage();
-      });
-    }
-    
-    // Close on background click
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) {
-        closeLightbox();
-      }
-    });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
+        openLightbox(i);
+      }));
+
+    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    if (prevBtn) prevBtn.addEventListener('click', e => { e.stopPropagation(); prevImage(); });
+    if (nextBtn) nextBtn.addEventListener('click', e => { e.stopPropagation(); nextImage(); });
+
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => {
       if (lightbox.getAttribute('aria-hidden') === 'false') {
-        if (e.key === 'Escape') {
-          closeLightbox();
-        } else if (e.key === 'ArrowLeft') {
-          prevImage();
-        } else if (e.key === 'ArrowRight') {
-          nextImage();
-        }
+        if (e.key === 'Escape') closeLightbox();
+        else if (e.key === 'ArrowLeft') prevImage();
+        else if (e.key === 'ArrowRight') nextImage();
       }
     });
   }
-  
-  // Initialize on DOM ready
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
 })();
-
