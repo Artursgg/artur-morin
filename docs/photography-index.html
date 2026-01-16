@@ -277,6 +277,27 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   
   <!-- reCAPTCHA v3 - Load async to prevent blocking -->
   <script async defer src="https://www.google.com/recaptcha/api.js?render=6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK"></script>
+
+  <button id="submitBtn">Submit</button>
+
+<script>
+document.getElementById('submitBtn').addEventListener('click', () => {
+  grecaptcha.ready(() => {
+    grecaptcha.execute('6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK', { action: 'submit_form' })
+      .then(token => {
+        fetch('/verify-recaptcha', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        })
+        .then(res => res.json())
+        .then(data => {
+          alert(`Success: ${data.success}, Score: ${data.score}`);
+        });
+      });
+  });
+});
+</script>
   
   <!-- Styles -->
   <link rel="stylesheet" href="css/photography-index.css">
@@ -888,8 +909,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <script src="js/imageLoader.js"></script>
   <script src="js/photography-index.js"></script>
-  <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lcf9CMsAAAAAKKNJmm5tE4ilNNaluQLeR4fvUwM"></script>
-
 </body>
 </html>
 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>reCAPTCHA v3 Demo</title>
+  <script async defer src="https://www.google.com/recaptcha/api.js?render=6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK"></script>
+</head>
+<body>
+  <form id="myForm">
+    <input type="text" name="username" placeholder="Username">
+    <button id="submitBtn" type="button">Submit</button>
+  </form>
+
+  <script>
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      grecaptcha.ready(() => {
+        grecaptcha.execute('6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK', { action: 'submit_form' })
+          .then(token => {
+            fetch('/verify-recaptcha', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token })
+            })
+            .then(res => res.json())
+            .then(data => {
+              alert(`Success: ${data.success}, Score: ${data.score}`);
+            });
+          });
+      });
+    });
+  </script>
+</body>
+</html>
