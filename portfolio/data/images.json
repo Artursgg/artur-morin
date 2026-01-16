@@ -1,16 +1,163 @@
 {
   "portfolio": {
-    "other": [],
-    "street": [],
-    "landscape": [],
-    "cars": [],
+    "editorial": [],
+    "fashion": [],
+    "commercial": [],
+    "documentary": [],
+    "landscape": [
+      {
+        "thumbnail": "assets/images/portfolio/landscape/thumbnails/Sunset-and-joy.jpg",
+        "full": "assets/images/portfolio/landscape/full/Sunset-and-joy.jpg",
+        "alt": "Sunset and Joy",
+        "title": "Sunset and Joy"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/landscape/thumbnails/Wooden-barrier.jpg",
+        "full": "assets/images/portfolio/landscape/full/Wooden-barrier.jpg",
+        "alt": "Wooden Barrier",
+        "title": "Wooden Barrier"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/landscape/thumbnails/Pine'd-alone_pl.jpg",
+        "full": "assets/images/portfolio/landscape/full/Pine'd-alone.jpg",
+        "alt": "Pine'D Alone",
+        "title": "Pine'D Alone"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/landscape/thumbnails/B&W-brick-wall.jpg",
+        "full": "assets/images/portfolio/landscape/full/B&W-brick-wall.jpg",
+        "alt": "B&W Brick Wall",
+        "title": "B&W Brick Wall"
+      }
+    ],
+    "portrait": [
+      {
+        "thumbnail": "assets/images/portfolio/portrait/thumbnails/Raven-stare.jpg",
+        "full": "assets/images/portfolio/portrait/full/Raven-stare.jpg",
+        "alt": "Raven Stare",
+        "title": "Raven Stare"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/portrait/thumbnails/Starry-eyes.jpg",
+        "full": "assets/images/portfolio/portrait/full/Starry-eyes.jpg",
+        "alt": "Starry Eyes",
+        "title": "Starry Eyes"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/portrait/thumbnails/Duck-sanctuary.jpg",
+        "full": "assets/images/portfolio/portrait/full/Duck-sanctuary.jpg",
+        "alt": "Duck Sanctuary",
+        "title": "Duck Sanctuary"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/portrait/thumbnails/Up-side-duck.jpg",
+        "full": "assets/images/portfolio/portrait/full/Up-side-duck.jpg",
+        "alt": "Up Side Duck",
+        "title": "Up Side Duck"
+      }
+    ],
+    "other": [
+      {
+        "thumbnail": "assets/images/portfolio/other/thumbnails/Apex-predator.jpg",
+        "full": "assets/images/portfolio/other/full/apex-predator.jpg",
+        "alt": "Apex Predator",
+        "title": "Apex Predator"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/other/thumbnails/Till'-the-win_pl.jpg",
+        "full": "assets/images/portfolio/other/full/Till'-the-win.jpg",
+        "alt": "Till' The Win",
+        "title": "Till' The Win"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/cars/thumbnails/Pan-till-you-done_pl.jpg",
+        "full": "assets/images/portfolio/cars/full/pan-till-you-done.jpg",
+        "alt": "Pan Till You Done",
+        "title": "Pan Till You Done"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/cars/thumbnails/Classy-luxury.jpg",
+        "full": "assets/images/portfolio/cars/full/classy-luxury.jpg",
+        "alt": "Classy Luxury",
+        "title": "Classy Luxury"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel_pl.jpg",
+        "full": "assets/images/portfolio/cars/full/heavy-cromed-squirrel.jpg",
+        "alt": "Heavy Cromed Squirrel",
+        "title": "Heavy Cromed Squirrel"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel-2.jpg",
+        "full": "assets/images/portfolio/cars/full/heavy-cromed-squirrel-2.jpg",
+        "alt": "Heavy Cromed Squirrel 2",
+        "title": "Heavy Cromed Squirrel 2"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/cars/thumbnails/Ying-yang_pl.jpg",
+        "full": "assets/images/portfolio/cars/full/Ying-yang.jpg",
+        "alt": "Ying Yang",
+        "title": "Ying Yang"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/other/thumbnails/Geometrical-splash_PL.jpg",
+        "full": "assets/images/portfolio/other/full/Geometrical-splash.jpg",
+        "alt": "Geometrical Splash",
+        "title": "Geometrical Splash"
+      }
+    ],
+    "street": [
+      {
+        "thumbnail": "assets/images/portfolio/street/thumbnails/Grumpy-town_pl.jpg",
+        "full": "assets/images/portfolio/street/full/Grumpy-town.jpg",
+        "alt": "Grumpy Town",
+        "title": "Grumpy Town"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/street/thumbnails/no-words-needed-irony.jpg",
+        "full": "assets/images/portfolio/street/full/no-words-needed-irony.jpg",
+        "alt": "No Words Needed Irony",
+        "title": "No Words Needed Irony"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/street/thumbnails/Parking-lot-vibe.jpg",
+        "full": "assets/images/portfolio/street/full/Parking-lot-vibe.jpg",
+        "alt": "Parking Lot Vibe",
+        "title": "Parking Lot Vibe"
+      }
+    ],
+    "cars": [
+      {
+        "thumbnail": "assets/images/portfolio/cars/thumbnails/neat-mini.jpg",
+        "full": "assets/images/portfolio/cars/full/neat-mini.jpg",
+        "alt": "Neat Mini",
+        "title": "Neat Mini"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/cars/thumbnails/Bentley-front.jpg",
+        "full": "assets/images/portfolio/cars/full/Bentley-front.jpg",
+        "alt": "Bentley Front",
+        "title": "Bentley Front"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/cars/thumbnails/Sunset-lambo.jpg",
+        "full": "assets/images/portfolio/cars/full/Sunset-lambo.jpg",
+        "alt": "Sunset Lambo",
+        "title": "Sunset Lambo"
+      },
+      {
+        "thumbnail": "assets/images/portfolio/cars/thumbnails/Roar-of-a-beast.jpg",
+        "full": "assets/images/portfolio/cars/full/Roar-of-a-beast.jpg",
+        "alt": "Roar Of A Beast",
+        "title": "Roar Of A Beast"
+      }
+    ],
     "products": []
   },
   "hero": {
     "featured": null
   },
   "about": {
-    "portrait": "assets/images/portfolio/about/me.jpg"
+    "portrait": "docs/assets/images/portfolio/about/Me-2.jpg"
   }
 }
-
