@@ -2,6 +2,11 @@
  * Portfolio Lightbox - Dynamic Image Viewer
  * Powered by ImageLoader (JSON)
  */
+document.addEventListener('DOMContentLoaded', () => {
+  const lightbox = document.getElementById('lightbox');
+  console.log('Lightbox at DOMContentLoaded:', lightbox);
+});
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   if (!imageLoader.loaded) {
