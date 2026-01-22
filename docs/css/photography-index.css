@@ -2270,11 +2270,9 @@ h1, h2, h3, h4 {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  overflow: hidden;
+  overflow: hidden; 
   padding: 0;
   margin: 0;
-  border: 5px solid lime; /* temporary debug */
-  outline: 5px solid red; /* another visual check */
 }
 
 /* Lightbox content container */
@@ -2336,6 +2334,13 @@ h1, h2, h3, h4 {
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.lightbox[aria-hidden="true"] {
+  display: none !important;
+}
+.lightbox[aria-hidden="false"] {
+  display: flex !important;
 }
 
 
