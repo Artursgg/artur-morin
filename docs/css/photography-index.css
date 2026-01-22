@@ -2268,7 +2268,7 @@ h1, h2, h3, h4 {
   background: rgba(0, 0, 0, 0.9);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   z-index: 9999;
   overflow: hidden; /* prevent scrolling */
 }
@@ -2276,7 +2276,7 @@ h1, h2, h3, h4 {
 /* Lightbox content container */
 .lightbox-content {
   max-width: 95vw;
-  max-height: 95vh;
+  max-height: calc(100vh - 40px);
   display: flex;
   justify-content: center;
   align-items: center;
