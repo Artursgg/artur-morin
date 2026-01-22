@@ -2258,6 +2258,79 @@ h1, h2, h3, h4 {
   transform: scale(1.05);
 }
 
+/* Lightbox overlay */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden; /* prevent scrolling */
+}
+
+/* Lightbox content container */
+.lightbox-content {
+  max-width: 95vw;
+  max-height: 95vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* The image itself */
+.lightbox-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* maintain aspect ratio and fit in container */
+  display: block;
+  margin: 0 auto;
+}
+
+/* Arrows & close button */
+.lightbox-prev,
+.lightbox-next,
+.lightbox-close {
+  position: absolute;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 10000;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover,
+.lightbox-close:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.lightbox-close {
+  top: 20px;
+  right: 20px;
+}
+
+.lightbox-prev {
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lightbox-next {
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
 /* Responsive adjustments for 5x6 grid */
 @media (max-width: 1024px) {
   .portfolio-grid-6x6 {
