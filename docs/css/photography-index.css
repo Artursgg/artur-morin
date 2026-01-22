@@ -2288,11 +2288,11 @@ h1, h2, h3, h4 {
 
 /* The image itself */
 .lightbox-image {
-  max-width: 50vw !important;
-  max-height: 30vh !important;
+  max-width: 10vw !important;
+  max-height: 10vh !important;
   width: auto;
   height: auto;
-  object-fit: contain;
+  object-fit: contain !important;
   display: block;
   margin: 0;
 }
