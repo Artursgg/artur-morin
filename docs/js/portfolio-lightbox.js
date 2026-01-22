@@ -1,10 +1,12 @@
 /**
  * Portfolio Lightbox - Dynamic Image Viewer
- * Works with images loaded from ImageLoader (JSON)
+ * Powered by ImageLoader (JSON)
  */
 
-(function() {
-  'use strict';
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!imageLoader.loaded) {
+    await imageLoader.loadImages();
+  }
 
   const lightbox = document.getElementById('lightbox');
   const lightboxImage = lightbox?.querySelector('.lightbox-image');
@@ -14,42 +16,47 @@
 
   if (!lightbox || !lightboxImage) return;
 
+  let images = imageLoader.getPortfolioImages(); // all categories
   let currentIndex = 0;
-  let images = [];
 
-  // Initialize Lightbox images from the grid
-  function initImages() {
-    const gridItems = document.querySelectorAll('.portfolio-grid-6x6 .grid-item');
-    images = Array.from(gridItems).map(item => {
-      const img = item.querySelector('img');
-      if (!img) return null;
-      return {
-        thumbnail: img.src,
-        full: img.dataset.full || img.src,
-        alt: img.alt
-      };
-    }).filter(Boolean);
+  const grid = document.querySelector('.portfolio-grid-6x6');
+  if (!grid) return;
+
+  // Render portfolio grid dynamically
+  function renderGrid() {
+    grid.innerHTML = '';
+    images.forEach(img => {
+      const div = document.createElement('div');
+      div.className = 'grid-item';
+      div.innerHTML = `<img src="${img.thumbnail}" data-full="${img.full}" alt="${img.alt}">`;
+      grid.appendChild(div);
+    });
   }
 
+  renderGrid();
+
+  // Open lightbox
   function open(index) {
     if (index < 0 || index >= images.length) return;
     currentIndex = index;
     const img = images[currentIndex];
 
     lightboxImage.src = img.full;
-    lightboxImage.alt = img.alt;
+    lightboxImage.alt = img.alt || img.title || 'Portfolio image';
     lightbox.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
 
     updateButtons();
   }
 
+  // Close lightbox
   function close() {
     lightbox.setAttribute('aria-hidden', 'true');
     lightboxImage.src = '';
     document.body.style.overflow = '';
   }
 
+  // Navigate
   function prev() { if (currentIndex > 0) open(currentIndex - 1); }
   function next() { if (currentIndex < images.length - 1) open(currentIndex + 1); }
 
@@ -58,8 +65,9 @@
     if (lightboxNext) lightboxNext.disabled = currentIndex === images.length - 1;
   }
 
+  // Attach events
   function attachEvents() {
-    const gridItems = document.querySelectorAll('.portfolio-grid-6x6 .grid-item');
+    const gridItems = grid.querySelectorAll('.grid-item');
     gridItems.forEach((item, idx) => {
       item.addEventListener('click', e => {
         e.preventDefault();
@@ -84,15 +92,5 @@
     });
   }
 
-  function init() {
-    initImages();
-    attachEvents();
-  }
-
-  // Wait until DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
+  attachEvents();
+});

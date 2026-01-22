@@ -11,14 +11,14 @@ class ImageLoader {
   async loadImages() {
     try {
       // Relative path from docs/index.html
-      const jsonPath = '/docs/data/images.json';
+      const jsonPath = './data/images.json';
       const response = await fetch(jsonPath);
       if (!response.ok) {
         console.warn('Could not load images.json, using fallback images');
         return null;
       }
       this.images = await response.json();
-      this.loaded = true;
+      this.loaded=true;
       return this.images;
     } catch (error) {
       console.warn('Error loading images:', error);
