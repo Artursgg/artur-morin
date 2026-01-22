@@ -2320,7 +2320,7 @@ h1, h2, h3, h4 {
 }
 
 .lightbox-close {
-  top: 30% !important;
+  top: 200px !important;
   right: 20px;
 }
 
