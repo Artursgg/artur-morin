@@ -2,13 +2,6 @@
  * Portfolio Lightbox - Dynamic Image Viewer
  * Powered by ImageLoader (JSON)
  */
-console.log('portfolio-lightbox.js loaded');
-document.addEventListener('DOMContentLoaded', () => {
-  const lightbox = document.getElementById('lightbox');
-  console.log('Lightbox at DOMContentLoaded:', lightbox);
-});
-
-
 document.addEventListener('DOMContentLoaded', async () => {
   if (!imageLoader.loaded) {
     await imageLoader.loadImages();
@@ -43,7 +36,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Open lightbox
   function open(index) {
-    console.log("Open called for index:", index, images[index]);
     if (index < 0 || index >= images.length) return;
     currentIndex = index;
     const img = images[currentIndex];
@@ -81,7 +73,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         open(idx);
       });
     });
-    console.log("Grid items found:", gridItems.length);
 
     if (lightboxClose) lightboxClose.addEventListener('click', close);
     if (lightboxPrev) lightboxPrev.addEventListener('click', e => { e.stopPropagation(); prev(); });
