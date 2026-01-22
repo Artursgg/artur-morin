@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Open lightbox
   function open(index) {
+    console.log("Open called for index:", index, images[index]);
     if (index < 0 || index >= images.length) return;
     currentIndex = index;
     const img = images[currentIndex];
@@ -74,6 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         open(idx);
       });
     });
+    console.log("Grid items found:", gridItems.length);
 
     if (lightboxClose) lightboxClose.addEventListener('click', close);
     if (lightboxPrev) lightboxPrev.addEventListener('click', e => { e.stopPropagation(); prev(); });
