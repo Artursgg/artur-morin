@@ -5102,15 +5102,21 @@ h1, h2, h3, h4 {
     -webkit-backdrop-filter: blur(25px) saturate(180%);
   }
 
-  /* links sit on a glass panel like the desktop nav */
+  /* links sit on a clean panel; the blur is only outside it (on the backdrop) */
   .nav #primary-nav ul {
     padding: 28px 44px !important;
-    background: rgba(255, 255, 255, 0.04) !important;
+    background: rgba(15, 15, 15, 0.6) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: var(--radius-lg) !important;
-    backdrop-filter: blur(25px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(25px) saturate(200%) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35) !important;
+    /* centre on whole pixels (translate(-50%,-50%) can land on half pixels = soft text) */
+    inset: 0 !important;
+    margin: auto !important;
+    width: fit-content !important;
+    height: fit-content !important;
+    transform: none !important;
   }
 }
 
