@@ -26,6 +26,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentIndex = 0;
   let lastFocused = null;
 
+  // Responsive grid images: the browser picks the smallest thumbnail that stays
+  // sharp for the tile size (tiles are square crops, so wide photos need
+  // proportionally more width). Tile widths follow the grid CSS breakpoints.
+  function thumbSources(image) {
+    if (!image.thumbnailSmall || !image.width || !image.height) return null;
+    const ratio = image.width / image.height;
+    const widthFor = (shortSide, maxLong) => Math.round(ratio >= 1 ? Math.min(maxLong, shortSide * ratio) : shortSide);
+    const crop = Math.max(1, ratio).toFixed(2);
+    return {
+      srcset: `${image.thumbnailSmall} ${widthFor(400, 1600)}w, ${image.thumbnail} ${widthFor(800, 1600)}w`,
+      sizes: [
+        `(max-width: 480px) calc((92vw - 12px) / 2 * ${crop})`,
+        `(max-width: 768px) calc((92vw - 16px) / 2 * ${crop})`,
+        `(max-width: 1024px) calc((92vw - 40px) / 3 * ${crop})`,
+        `calc((90vw - 80px) / 5 * ${crop})`,
+      ].join(', '),
+    };
+  }
+
+  // Photo viewer: the 1600px version unless the screen really needs more pixels
+  function viewerSrc(image) {
+    const needed = Math.max(window.innerWidth, window.innerHeight) * (window.devicePixelRatio || 1);
+    return image.large && needed <= 1600 * 1.15 ? image.large : image.full;
+  }
+
   // Render portfolio grid
   function renderGrid() {
     grid.innerHTML = '';
@@ -37,6 +62,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       item.setAttribute('aria-label', `Open ${image.title || 'image'}`);
 
       const img = document.createElement('img');
+      const sources = thumbSources(image);
+      if (sources) {
+        img.srcset = sources.srcset;
+        img.sizes = sources.sizes;
+      }
       img.src = image.thumbnail;
       img.alt = image.alt || image.title || 'Portfolio image';
       img.loading = 'lazy';
@@ -52,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function preload(index) {
-    if (images[index]) new Image().src = images[index].full;
+    if (images[index]) new Image().src = viewerSrc(images[index]);
   }
 
   function show(index) {
@@ -60,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     currentIndex = index;
     const image = images[currentIndex];
 
-    lightboxImage.src = image.full;
+    lightboxImage.src = viewerSrc(image);
     lightboxImage.alt = image.alt || image.title || 'Portfolio image';
     if (lightboxCounter) lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
     if (lightboxPrev) lightboxPrev.disabled = currentIndex === 0;
