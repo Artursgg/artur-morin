@@ -5230,6 +5230,11 @@ h1, h2, h3, h4 {
 
 /* stacking order (which card lies on top) is set by js/about.js */
 
+/* places in dealing order (2024, 2025, TBC): left to right, or top to bottom on phones */
+.stack-card:nth-child(1) { order: 3; }
+.stack-card:nth-child(2) { order: 1; }
+.stack-card:nth-child(3) { order: 2; }
+
 /* cards still in the deck under the top one: darker, text hidden (real depth) */
 .stack-card:not(.is-dealt):not(.is-deck-top) {
   background: rgba(22, 20, 18, 0.98);
@@ -5303,10 +5308,7 @@ h1, h2, h3, h4 {
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
-  /* one column: in dealing order (2024, 2025, TBC), so it fills from the top */
-  .stack-card:nth-child(1) { order: 3; }
-  .stack-card:nth-child(2) { order: 1; }
-  .stack-card:nth-child(3) { order: 2; }
+
   .stack-card {
     min-height: 180px;
   }

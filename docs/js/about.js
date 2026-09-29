@@ -947,8 +947,9 @@ window.addEventListener('scroll', () => {
 // Awards - card stack
 // Closed: the cards lie on top of each other like a deck, slightly rotated.
 // Each tap deals the top card: it stays in its place and the rest of the deck
-// slides on to the next empty place (so nothing is ever hidden under a dealt
-// card). Order: 2024, 2025, TBC. A tap when all are out gathers them back.
+// takes the next place (so nothing is ever hidden under a dealt card). On
+// desktop the group stays centred and grows from the middle.
+// Order: 2024, 2025, TBC. A tap when all are out gathers them back.
 // The button deals all remaining cards at once ("Show 'em all!").
 // Cards stay in the normal grid; only transforms move them, so nothing jumps.
 // =============================================================================
@@ -995,24 +996,41 @@ window.addEventListener('scroll', () => {
       const spread = fanned && dealt === 0 ? 1.6 : 1; // hover: the closed deck fans a little
       // full-width cards on phones: a tighter fan so corners stay on screen
       const narrow = Math.min(1, stack.clientWidth / 700);
-      // the deck sits in the place of the card that will be dealt next
-      const anchor = cards[next >= 0 ? next : DEAL_ORDER[0]];
-      const anchorX = anchor.offsetLeft + anchor.offsetWidth / 2;
-      const anchorY = anchor.offsetTop;
+      const oneColumn = cards.every((c) => c.offsetLeft === cards[0].offsetLeft);
+
+      // Places are filled in deal order: place j = the j-th card dealt, the deck
+      // takes the next place. Row (desktop/tablet): the visible group is centred,
+      // so it grows from the middle. Column (phones): the column's own slots.
+      const visible = dealt + (dealt < total ? 1 : 0);
+      const cardW = cards[0].offsetWidth;
+      const gap = parseFloat(getComputedStyle(stack).columnGap) || 0;
+      const rowStart = (stack.clientWidth - (visible * cardW + (visible - 1) * gap)) / 2;
+      const place = (j) => {
+        if (oneColumn) {
+          const slot = cards[DEAL_ORDER[Math.min(j, total - 1)]];
+          return { x: slot.offsetLeft + slot.offsetWidth / 2, y: slot.offsetTop };
+        }
+        return { x: rowStart + j * (cardW + gap) + cardW / 2, y: cards[0].offsetTop };
+      };
 
       let height = 0;
       cards.forEach((card, i) => {
+        const ownX = card.offsetLeft + card.offsetWidth / 2;
         if (isDealt(i)) {
-          card.style.transform = '';
-          height = Math.max(height, card.offsetTop + card.offsetHeight);
+          const p = place(positionInOrder(i));
+          const dx = p.x - ownX;
+          const dy = p.y - card.offsetTop;
+          card.style.transform = Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5 ? '' : `translate(${dx}px, ${dy}px)`;
+          height = Math.max(height, p.y + card.offsetHeight);
         } else {
+          const p = place(dealt);
           const depth = positionInOrder(i) - dealt; // 0 = top of the deck
           const [px, py, rot] = POSES[Math.min(depth, POSES.length - 1)];
-          const dx = anchorX - (card.offsetLeft + card.offsetWidth / 2) + px * spread * narrow;
-          const dy = anchorY - card.offsetTop + py * spread;
+          const dx = p.x - ownX + px * spread * narrow;
+          const dy = p.y - card.offsetTop + py * spread;
           const r = rot * spread * (narrow < 1 ? narrow * 0.6 : 1);
           card.style.transform = `translate(${dx}px, ${dy}px) rotate(${r}deg)`;
-          height = Math.max(height, anchorY + card.offsetHeight + 24);
+          height = Math.max(height, p.y + card.offsetHeight + 24);
         }
       });
       stack.style.height = `${height}px`;
@@ -1022,7 +1040,7 @@ window.addEventListener('scroll', () => {
     stack.dataset.state = allOut ? 'open' : dealt ? 'dealing' : 'stacked';
     if (toggle) {
       toggle.setAttribute('aria-expanded', String(allOut));
-      if (toggleLabel) toggleLabel.textContent = allOut ? 'Stack them again' : "Show 'em all!";
+      if (toggleLabel) toggleLabel.textContent = allOut ? "Close 'em all!" : "Show 'em all!";
     }
   }
 
