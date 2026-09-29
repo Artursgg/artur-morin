@@ -65,10 +65,19 @@ def unique_name(folder, slug, ext):
     return name
 
 
+IMAGE_EXTS = {".jpg", ".jpeg", ".webp", ".png"}
+MAX_BODY = 60 * 1024 * 1024  # a couple of resized photos as base64
+
+
 def write_data_url(path, data_url):
     _, b64 = data_url.split(",", 1)
+    raw = base64.b64decode(b64)
+    is_jpeg = raw[:3] == b"\xff\xd8\xff"
+    is_webp = raw[:4] == b"RIFF" and raw[8:12] == b"WEBP"
+    if not (is_jpeg or is_webp):
+        raise ValueError("Not a JPEG/WebP image")
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(base64.b64decode(b64))
+    path.write_bytes(raw)
 
 
 def site_path(path):
@@ -77,10 +86,12 @@ def site_path(path):
 
 
 def fs_path(url_path):
-    """URL path (/assets/...) -> filesystem path, refusing anything outside docs/."""
-    p = (SITE / url_path.lstrip("/")).resolve()
-    if SITE.resolve() not in p.parents:
-        raise ValueError("path outside site")
+    """URL path (/assets/...) -> filesystem path of a portfolio photo; refuses anything else."""
+    p = (SITE / str(url_path).lstrip("/")).resolve()
+    if PORTFOLIO_DIR.resolve() not in p.parents or p.suffix.lower() not in IMAGE_EXTS:
+        raise ValueError(f"Not a portfolio image: {url_path}")
+    if POTW_DIR.resolve() in p.parents:
+        raise ValueError("Picture of the Week images are managed separately")
     return p
 
 
@@ -104,7 +115,7 @@ def render_potw(potw):
           <div class="potw-image">
             <div class="image-frame">
               <picture>{webp}
-                <img src="{e(potw["image"])}" alt="{e(potw.get("alt") or "Picture of the Week - " + potw.get("title", ""))}" width="{potw.get("width", "")}" height="{potw.get("height", "")}">
+                <img src="{e(potw["image"])}" alt="{e(potw.get("alt") or "Picture of the Week - " + potw.get("title", ""))}" width="{int(potw.get("width") or 0)}" height="{int(potw.get("height") or 0)}">
               </picture>
               <div class="frame-corner tl"></div>
               <div class="frame-corner tr"></div>
@@ -168,6 +179,10 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         super().end_headers()
 
+    def host_ok(self):
+        # blocks DNS-rebinding: only answer to our own address
+        return self.headers.get("Host", "") in (f"localhost:{PORT}", f"127.0.0.1:{PORT}")
+
     def translate_path(self, path):
         parsed = urlparse(path).path
         if parsed in ("/admin", "/admin/"):
@@ -175,6 +190,8 @@ class Handler(SimpleHTTPRequestHandler):
         return super().translate_path(path)
 
     def do_GET(self):
+        if not self.host_ok():
+            return self.reply({"error": "forbidden"}, 403)
         if urlparse(self.path).path == "/api/data":
             return self.reply({"data": load_data(), "changes": git_status()})
         return super().do_GET()
@@ -182,10 +199,16 @@ class Handler(SimpleHTTPRequestHandler):
     def do_POST(self):
         # Only accept requests from this page (blocks other websites from poking the local server)
         origin = self.headers.get("Origin", "")
-        if origin and not re.match(rf"^http://(localhost|127\.0\.0\.1):{PORT}$", origin):
+        if (
+            not self.host_ok()
+            or not re.match(rf"^http://(localhost|127\.0\.0\.1):{PORT}$", origin)
+            or not self.headers.get("Content-Type", "").startswith("application/json")
+        ):
             return self.reply({"error": "forbidden"}, 403)
 
         length = int(self.headers.get("Content-Length", 0))
+        if length > MAX_BODY:
+            return self.reply({"error": "Upload too large"}, 413)
         body = json.loads(self.rfile.read(length) or b"{}")
         route = {
             "/api/upload": self.api_upload,
@@ -238,7 +261,9 @@ class Handler(SimpleHTTPRequestHandler):
         new_portfolio = body["portfolio"]
         for images in new_portfolio.values():
             for img in images:
-                fs_path(img["full"]), fs_path(img["thumbnail"])  # validate
+                for key in ("full", "thumbnail"):
+                    if not fs_path(img[key]).is_file():
+                        raise ValueError(f"Missing file: {img[key]}")
         data["portfolio"] = new_portfolio
         save_data(data)
         return {"data": data, "changes": git_status()}
@@ -270,7 +295,7 @@ class Handler(SimpleHTTPRequestHandler):
             jpg = POTW_DIR / unique_name(POTW_DIR, base, ".jpg")
             write_data_url(jpg, body["image"])
             potw["image"] = site_path(jpg)
-            potw["width"], potw["height"] = body.get("width"), body.get("height")
+            potw["width"], potw["height"] = int(body.get("width") or 0), int(body.get("height") or 0)
             potw.pop("webp", None)
             if body.get("webp"):
                 webp = jpg.with_suffix(".webp")
