@@ -30,72 +30,78 @@
 let parallaxSections = [];
 let lastScrollTop = 0;
 let parallaxVelocity = 0;
+let parallaxData = [];
+let parallaxFrame = 0;
 
-// Initialize parallax sections - re-query on page load to ensure DOM is ready
-function initParallaxSections() {
-  parallaxSections = document.querySelectorAll('.parallax');
-  // Initialize lastScrollTop to current scroll position to prevent jumps
-  lastScrollTop = window.scrollY || 0;
-  parallaxVelocity = 0;
-  
-  // Disable transitions on all parallax elements for immediate response
-  parallaxSections.forEach(section => {
-    section.style.transition = 'none';
-  });
+// Parallax: sections with class "parallax" drift slightly while scrolling.
+// Runs at most once per frame (requestAnimationFrame) and uses section positions
+// measured without the parallax offset (cached, re-measured on resize/content
+// changes), so scrolling never forces the browser to recalculate the layout.
+const reduceMotionParallax = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function pageTop(el) {
+  // layout position (offsetTop chain) - not affected by the parallax transform
+  let top = 0;
+  for (let n = el; n; n = n.offsetParent) top += n.offsetTop;
+  return top;
 }
 
-// Easing function for smooth parallax motion (ease-out cubic)
+function measureParallax() {
+  parallaxData = Array.from(parallaxSections).map((section) => ({
+    section,
+    speed: Number(section.dataset.speed || 0.1),
+    top: pageTop(section),
+    height: section.offsetHeight,
+  }));
+}
+
+function initParallaxSections() {
+  parallaxSections = document.querySelectorAll('.parallax');
+  lastScrollTop = window.scrollY;
+  parallaxVelocity = 0;
+  parallaxSections.forEach((section) => { section.style.transition = 'none'; });
+  measureParallax();
+}
+
 function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
 }
 
 function updateParallax() {
-  // Early return if no parallax sections found (prevents errors during initialization)
-  if (!parallaxSections || parallaxSections.length === 0) {
-    return;
-  }
-  
+  parallaxFrame = 0;
+  if (reduceMotionParallax || !parallaxData.length) return;
+
   const scrollTop = window.scrollY;
+  const viewportHeight = window.innerHeight;
   const delta = scrollTop - lastScrollTop;
-  
-  // Calculate scroll velocity for dynamic effects
   parallaxVelocity = delta * 0.1 + parallaxVelocity * 0.9;
-  
-  parallaxSections.forEach((section) => {
-    const speed = Number(section.dataset.speed || 0.1);
-    const rect = section.getBoundingClientRect();
-    const sectionTop = rect.top + window.scrollY;
-    const sectionCenter = sectionTop + rect.height / 2;
-    
-    // Calculate distance from viewport center
-    const distanceFromCenter = scrollTop + window.innerHeight / 2 - sectionCenter;
-    const normalizedDistance = distanceFromCenter / window.innerHeight;
-    
-    // Apply easing for smoother motion
+
+  parallaxData.forEach(({ section, speed, top, height }) => {
+    // skip sections far off screen
+    if (top + height < scrollTop - viewportHeight || top > scrollTop + viewportHeight * 2) return;
+
+    const distanceFromCenter = scrollTop + viewportHeight / 2 - (top + height / 2);
+    const normalizedDistance = distanceFromCenter / viewportHeight;
     const eased = easeOutCubic(Math.abs(normalizedDistance)) * Math.sign(normalizedDistance);
-    
-    // Calculate offset with velocity influence
-    const baseOffset = eased * speed * 100;
-    const velocityOffset = parallaxVelocity * speed * 0.5;
-    const totalOffset = baseOffset + velocityOffset;
-    
-    // Clamp to prevent extreme movement
-    const clamped = Math.max(-80, Math.min(80, totalOffset));
-    
-    // Apply with smooth transform - no transition for immediate response
+    const offset = eased * speed * 100 + parallaxVelocity * speed * 0.5;
+    const clamped = Math.max(-80, Math.min(80, offset));
+
     section.style.setProperty('--parallax-offset', `${clamped}px`);
     section.style.transform = `translateY(${clamped}px)`;
-    section.style.transition = 'none'; // Always use immediate updates for smooth scrolling
   });
-  
+
   lastScrollTop = scrollTop;
 }
 
-// Scroll handler - update parallax immediately for smooth scrolling
 function onScroll() {
-  // Update parallax immediately without throttling for smooth scrolling
-  updateParallax();
+  if (!parallaxFrame) parallaxFrame = requestAnimationFrame(updateParallax);
 }
+
+// re-measure when the page layout changes (images/fonts loading, resize)
+if ('ResizeObserver' in window) {
+  new ResizeObserver(() => { measureParallax(); onScroll(); }).observe(document.body);
+}
+window.addEventListener('resize', () => { measureParallax(); onScroll(); }, { passive: true });
 
 // =============================================================================
 // Enhanced Scroll Reveal Animation
@@ -439,10 +445,9 @@ if (document.readyState === 'loading') {
 }
 
 // Simple scroll handler - no custom smooth scroll, just parallax updates
-window.addEventListener('scroll', () => {
-  onScroll();
-  updateNavBackground();
-}, { passive: true });
+// parallax only (the nav background is constant, set once below)
+window.addEventListener('scroll', onScroll, { passive: true });
+if (typeof updateNavBackground === 'function') updateNavBackground();
 
 // =============================================================================
 // Spotlight Effect for "Let's Talk" Button

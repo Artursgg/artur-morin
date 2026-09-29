@@ -30,88 +30,78 @@
 let parallaxSections = [];
 let lastScrollTop = 0;
 let parallaxVelocity = 0;
+let parallaxData = [];
+let parallaxFrame = 0;
 
-// Initialize parallax sections - re-query on page load to ensure DOM is ready
-// Unified for all pages (same as photography-index.html)
-function initParallaxSections() {
-  parallaxSections = document.querySelectorAll('.parallax');
-  // Initialize lastScrollTop to 0 - will be set properly in first updateParallax call
-  // Defer reading window.scrollY to avoid forced reflow
-  lastScrollTop = 0;
-  parallaxVelocity = 0;
-  
-  // Disable transitions on all parallax elements for immediate response (unified)
-  parallaxSections.forEach(section => {
-    section.style.transition = 'none';
-  });
+// Parallax: sections with class "parallax" drift slightly while scrolling.
+// Runs at most once per frame (requestAnimationFrame) and uses section positions
+// measured without the parallax offset (cached, re-measured on resize/content
+// changes), so scrolling never forces the browser to recalculate the layout.
+const reduceMotionParallax = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function pageTop(el) {
+  // layout position (offsetTop chain) - not affected by the parallax transform
+  let top = 0;
+  for (let n = el; n; n = n.offsetParent) top += n.offsetTop;
+  return top;
 }
 
-// Easing function for smooth parallax motion (ease-out cubic)
+function measureParallax() {
+  parallaxData = Array.from(parallaxSections).map((section) => ({
+    section,
+    speed: Number(section.dataset.speed || 0.1),
+    top: pageTop(section),
+    height: section.offsetHeight,
+  }));
+}
+
+function initParallaxSections() {
+  parallaxSections = document.querySelectorAll('.parallax');
+  lastScrollTop = window.scrollY;
+  parallaxVelocity = 0;
+  parallaxSections.forEach((section) => { section.style.transition = 'none'; });
+  measureParallax();
+}
+
 function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
 }
 
 function updateParallax() {
-  // Early return if no parallax sections found (prevents errors during initialization)
-  if (!parallaxSections || parallaxSections.length === 0) {
-    return;
-  }
-  
-  // Batch all reads first to avoid forced reflows
+  parallaxFrame = 0;
+  if (reduceMotionParallax || !parallaxData.length) return;
+
   const scrollTop = window.scrollY;
   const viewportHeight = window.innerHeight;
   const delta = scrollTop - lastScrollTop;
-  
-  // Calculate scroll velocity for dynamic effects
   parallaxVelocity = delta * 0.1 + parallaxVelocity * 0.9;
-  
-  // Batch all getBoundingClientRect() calls first (read phase)
-  const sectionData = Array.from(parallaxSections).map((section) => {
-    const rect = section.getBoundingClientRect();
-    const speed = Number(section.dataset.speed || 0.1);
-    return {
-      section,
-      speed,
-      rect,
-      sectionTop: rect.top + scrollTop,
-      sectionHeight: rect.height
-    };
-  });
-  
-  // Now perform all writes (write phase) - this avoids forced reflows
-  sectionData.forEach(({ section, speed, sectionTop, sectionHeight }) => {
-    const sectionCenter = sectionTop + sectionHeight / 2;
-    
-    // Calculate distance from viewport center
-    const distanceFromCenter = scrollTop + viewportHeight / 2 - sectionCenter;
+
+  parallaxData.forEach(({ section, speed, top, height }) => {
+    // skip sections far off screen
+    if (top + height < scrollTop - viewportHeight || top > scrollTop + viewportHeight * 2) return;
+
+    const distanceFromCenter = scrollTop + viewportHeight / 2 - (top + height / 2);
     const normalizedDistance = distanceFromCenter / viewportHeight;
-    
-    // Apply easing for smoother motion
     const eased = easeOutCubic(Math.abs(normalizedDistance)) * Math.sign(normalizedDistance);
-    
-    // Calculate offset with velocity influence
-    const baseOffset = eased * speed * 100;
-    const velocityOffset = parallaxVelocity * speed * 0.5;
-    const totalOffset = baseOffset + velocityOffset;
-    
-    // Clamp to prevent extreme movement
-    const clamped = Math.max(-80, Math.min(80, totalOffset));
-    
-    // Apply with smooth transform - no transition for immediate response (unified for all pages)
+    const offset = eased * speed * 100 + parallaxVelocity * speed * 0.5;
+    const clamped = Math.max(-80, Math.min(80, offset));
+
     section.style.setProperty('--parallax-offset', `${clamped}px`);
     section.style.transform = `translateY(${clamped}px)`;
-    section.style.transition = 'none'; // Always use immediate updates for smooth scrolling
   });
-  
+
   lastScrollTop = scrollTop;
 }
 
-// Scroll handler - update parallax immediately for smooth scrolling
-// Unified for all pages - no throttling for immediate response
 function onScroll() {
-  // Update parallax immediately without throttling for smooth scrolling
-  updateParallax();
+  if (!parallaxFrame) parallaxFrame = requestAnimationFrame(updateParallax);
 }
+
+// re-measure when the page layout changes (images/fonts loading, resize)
+if ('ResizeObserver' in window) {
+  new ResizeObserver(() => { measureParallax(); onScroll(); }).observe(document.body);
+}
+window.addEventListener('resize', () => { measureParallax(); onScroll(); }, { passive: true });
 
 // =============================================================================
 // Enhanced Scroll Reveal Animation
@@ -172,17 +162,29 @@ function updateNavBackground() {
 // Hero Image Tilt Effect - Applied to all carousel slides
 // Slower and smoother mouse-following 3D tilt effect
 // =============================================================================
+// Pointer effects helper: measures the element once when the mouse enters and
+// runs the effect at most once per frame (measuring on every mouse move forces
+// a layout; measuring a tilted element also reads its own rotation back).
+function onPointerFrame(el, apply) {
+  let rect = null, frame = 0, px = 0, py = 0;
+  el.addEventListener('mouseenter', () => { rect = el.getBoundingClientRect(); });
+  el.addEventListener('mousemove', (e) => {
+    px = e.clientX; py = e.clientY;
+    if (!rect) rect = el.getBoundingClientRect();
+    if (!frame) frame = requestAnimationFrame(() => { frame = 0; apply(px - rect.left, py - rect.top, rect); });
+  }, { passive: true });
+  el.addEventListener('mouseleave', () => { rect = null; });
+}
+
 function initImageTiltEffect() {
   // Apply to all carousel slide image frames
   const carouselImageFrames = document.querySelectorAll('.carousel-slide .image-frame');
   
   carouselImageFrames.forEach((imageFrame) => {
-    imageFrame.addEventListener('mousemove', (e) => {
-      const rect = imageFrame.getBoundingClientRect();
-      // Reduced multiplier from 8 to 4 for slower, less sharp movement
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 4;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 4;
-      // Add smooth transition for less sharp movement
+    onPointerFrame(imageFrame, (mx, my, rect) => {
+      // gentle tilt (max ~2deg) following the mouse
+      const x = (mx / rect.width - 0.5) * 4;
+      const y = (my / rect.height - 0.5) * 4;
       imageFrame.style.transition = 'transform 0.3s ease-out';
       imageFrame.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
     });
@@ -196,10 +198,9 @@ function initImageTiltEffect() {
   // Also apply to regular hero image frame if it exists (non-carousel)
   const heroImage = document.querySelector('.hero-image .image-frame:not(.carousel-slide .image-frame)');
   if (heroImage) {
-    heroImage.addEventListener('mousemove', (e) => {
-      const rect = heroImage.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 4;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 4;
+    onPointerFrame(heroImage, (mx, my, rect) => {
+      const x = (mx / rect.width - 0.5) * 4;
+      const y = (my / rect.height - 0.5) * 4;
       heroImage.style.transition = 'transform 0.3s ease-out';
       heroImage.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
     });
@@ -247,11 +248,7 @@ workCards.forEach((card) => {
 const serviceCards = document.querySelectorAll('.service-card');
 
 serviceCards.forEach((card) => {
-  card.addEventListener('mousemove', (e) => {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
+  onPointerFrame(card, (x, y) => {
     card.style.background = `
       radial-gradient(
         600px circle at ${x}px ${y}px,
@@ -389,20 +386,29 @@ if (window.matchMedia('(pointer: fine)').matches) {
     background: radial-gradient(circle, rgba(201, 166, 107, 0.03) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
-    transform: translate(-50%, -50%);
+    left: -150px;
+    top: -150px;
+    transform: translate3d(-9999px, -9999px, 0);
     transition: opacity 0.3s ease;
     opacity: 0;
-    left: -9999px;
-    top: -9999px;
+    will-change: transform;
   `;
   document.body.appendChild(cursor);
 
   let cursorVisible = false;
 
+  // moved with transform once per frame (left/top would re-layout on every mouse move)
+  let glowX = 0, glowY = 0, glowFrame = 0;
   document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-    
+    glowX = e.clientX;
+    glowY = e.clientY;
+    if (!glowFrame) {
+      glowFrame = requestAnimationFrame(() => {
+        glowFrame = 0;
+        cursor.style.transform = `translate3d(${glowX}px, ${glowY}px, 0)`;
+      });
+    }
+
     if (!cursorVisible) {
       cursorVisible = true;
       cursor.style.opacity = '1';
@@ -412,8 +418,6 @@ if (window.matchMedia('(pointer: fine)').matches) {
   document.addEventListener('mouseleave', () => {
     cursorVisible = false;
     cursor.style.opacity = '0';
-    cursor.style.left = '-9999px';
-    cursor.style.top = '-9999px';
   });
 }
 
@@ -1152,8 +1156,13 @@ if (document.readyState === 'loading') {
     }, { passive: true });
     
     // Update form bounds on scroll/resize
-    window.addEventListener('scroll', updateFormBounds, { passive: true });
-    window.addEventListener('resize', updateFormBounds, { passive: true });
+    // at most once per frame while scrolling
+    let boundsFrame = 0;
+    const scheduleBounds = () => {
+      if (!boundsFrame) boundsFrame = requestAnimationFrame(() => { boundsFrame = 0; updateFormBounds(); });
+    };
+    window.addEventListener('scroll', scheduleBounds, { passive: true });
+    window.addEventListener('resize', scheduleBounds, { passive: true });
     
     // Initial bounds update
     updateFormBounds();
@@ -1697,10 +1706,9 @@ if (document.readyState === 'loading') {
 })();
 
 // Simple scroll handler - no custom smooth scroll, just parallax updates
-window.addEventListener('scroll', () => {
-  onScroll();
-  updateNavBackground();
-}, { passive: true });
+// parallax only (the nav background is constant, set once below)
+window.addEventListener('scroll', onScroll, { passive: true });
+if (typeof updateNavBackground === 'function') updateNavBackground();
 
 // Preloader fade out (if needed)
 window.addEventListener('load', () => {
