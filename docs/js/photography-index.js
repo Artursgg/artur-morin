@@ -911,12 +911,42 @@ if (contactForm) {
         });
       }
 
-      // Show success message
       formStatus.textContent = 'Sending...';
       formStatus.className = 'form-status success';
-      
-      // Submit the form to FormSubmit (this will send the email automatically)
-      contactForm.submit();
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      // Send in the background via FormSubmit's AJAX endpoint, so a provider outage
+      // shows a friendly message (with the email address) instead of their error page
+      const ajaxUrl = contactForm.action.replace('formsubmit.co/', 'formsubmit.co/ajax/');
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+      try {
+        const res = await fetch(ajaxUrl, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(contactForm),
+          signal: controller.signal,
+        });
+        const result = await res.json().catch(() => ({}));
+        if (!res.ok || String(result.success) !== 'true') {
+          throw new Error(result.message || `HTTP ${res.status}`);
+        }
+        window.location.href = nextInput.value;
+      } catch (err) {
+        const mail = contactForm.action.split('/').pop();
+        formStatus.innerHTML = '';
+        formStatus.append(
+          "Sorry, the message couldn't be sent right now. Please email me directly at ",
+          Object.assign(document.createElement('a'), { href: `mailto:${mail}`, textContent: mail }),
+          '.'
+        );
+        formStatus.className = 'form-status error';
+        if (window.dataLayer) window.dataLayer.push({ event: 'form_error', form_error: String(err.message) });
+      } finally {
+        clearTimeout(timeout);
+        if (submitBtn) submitBtn.disabled = false;
+      }
     } else {
       // Form has errors
       formStatus.textContent = 'Please fix the errors above and try again.';
