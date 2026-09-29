@@ -1896,3 +1896,11 @@ h1, h2, h3, h4 {
                 0 0 40px rgba(201, 166, 107, 0.4);
   }
 }
+
+/* Phones/tablets: the separate Portfolio button is desktop-only; Portfolio is
+   in the menu instead (this rule was missing here, the button floated over the logo) */
+@media (max-width: 1024px) {
+  .nav-portfolio {
+    display: none;
+  }
+}
