@@ -944,132 +944,96 @@ window.addEventListener('scroll', () => {
 // Logo (AM button) behaviour lives in js/logo.js
 
 // =============================================================================
-// Award Cards Stacked Progressive Reveal Animation
+// Awards - card stack
+// Closed: the cards lie on top of each other like a deck (newest on top),
+// slightly rotated. Click/tap the stack (or the button) to deal them out;
+// click again to gather them back. Works the same on desktop and phones.
+// Cards stay in the normal grid; only transforms move them, so nothing jumps.
 // =============================================================================
 (function() {
   'use strict';
-  
-  function initAwardCards() {
-    const awardsGrid = document.querySelector('.awards-grid');
-    if (!awardsGrid) return;
 
-    // Disable all card interactions on mobile and tablet
-    if (window.innerWidth <= 1024) {
-      return;
-    }
+  const stack = document.getElementById('award-stack');
+  if (!stack) return;
 
-    const card2023 = awardsGrid.querySelector('.award-card[data-year="2023"]');
-    const card2024 = awardsGrid.querySelector('.award-card[data-year="2024"]');
-    const card2025 = awardsGrid.querySelector('.award-card[data-year="2025"]');
+  const cards = Array.from(stack.querySelectorAll('.stack-card'));
+  const toggle = document.querySelector('.award-stack-toggle');
+  const toggleLabel = toggle && toggle.querySelector('.award-stack-toggle-label');
+  if (!cards.length) return;
 
-    if (!card2023 || !card2024 || !card2025) return;
-    
-    let visibleCards = 1; // Start with only 2023 visible
-    
-    function handleCardClick(e) {
-      const clickedCard = e.target.closest('.award-card');
-      if (!clickedCard) return;
-      
-      // Add resonate animation
-      clickedCard.classList.add('resonating');
-      setTimeout(() => {
-        clickedCard.classList.remove('resonating');
-      }, 400);
-      
-      const clickedYear = clickedCard.getAttribute('data-year');
-      
-      if (visibleCards === 1) {
-        // Only 2023 visible - clicking 2023 reveals 2024
-        if (clickedYear === '2023') {
-          card2024.classList.add('expanded');
-          visibleCards = 2;
-        }
-      } else if (visibleCards === 2) {
-        // 2023 and 2024 visible
-        if (clickedYear === '2023') {
-          // Clicking 2023 closes 2024
-          card2024.classList.remove('expanded');
-          visibleCards = 1;
-        } else if (clickedYear === '2024') {
-          // Clicking 2024 reveals 2025
-          card2025.classList.add('expanded');
-          visibleCards = 3;
-          awardsGrid.classList.add('all-expanded');
-        }
-      } else if (visibleCards === 3) {
-        // All 3 cards visible - back and forth toggle behavior
-        if (clickedYear === '2025') {
-          // Clicking 2025 closes both 2024 and 2025 smoothly in sync
-          card2024.classList.add('sliding-back');
-          card2025.classList.add('sliding-back');
-          
-          // Force reflow for smooth animation
-          void card2024.offsetWidth;
-          void card2025.offsetWidth;
-          
-          requestAnimationFrame(() => {
-            card2025.classList.remove('expanded');
-            card2024.classList.remove('expanded');
-            awardsGrid.classList.remove('all-expanded');
-            visibleCards = 1;
-            
-            // Clean up sliding class after animation
-            setTimeout(() => {
-              card2024.classList.remove('sliding-back');
-              card2025.classList.remove('sliding-back');
-            }, 600);
-          });
-        } else if (clickedYear === '2023') {
-          // Clicking 2023 closes only 2025 (first click), then closes 2024 (second click)
-          if (card2025.classList.contains('expanded')) {
-            // First click: close 2025
-            card2025.classList.add('sliding-back');
-            void card2025.offsetWidth;
-            
-            requestAnimationFrame(() => {
-              card2025.classList.remove('expanded');
-              awardsGrid.classList.remove('all-expanded');
-              visibleCards = 2;
-              
-              setTimeout(() => {
-                card2025.classList.remove('sliding-back');
-              }, 600);
-            });
-          } else {
-            // Second click: close 2024
-            card2024.classList.add('sliding-back');
-            void card2024.offsetWidth;
-            
-            requestAnimationFrame(() => {
-              card2024.classList.remove('expanded');
-              visibleCards = 1;
-              
-              setTimeout(() => {
-                card2024.classList.remove('sliding-back');
-              }, 600);
-            });
-          }
-        }
+  // How each card lies in the closed deck, bottom -> top: [x px, y px, rotate deg]
+  const POSES = [[-18, 14, -7], [14, 7, 5], [0, 0, 0]];
+  const DEAL_DELAY = 80; // ms between cards when dealing out / gathering
+  let isOpen = false;
+  let fanned = false;
+
+  function pose(index) {
+    // extra cards (if more are added later) reuse the poses from the bottom up
+    return POSES[Math.max(0, POSES.length - cards.length + index)] || [0, 0, 0];
+  }
+
+  function render(stagger = true) {
+    // offsetLeft/offsetTop are layout positions - transforms don't affect them
+    const centreX = stack.clientWidth / 2;
+    const tallest = Math.max(...cards.map((c) => c.offsetHeight));
+    const openHeight = Math.max(...cards.map((c) => c.offsetTop + c.offsetHeight));
+    const spread = fanned && !isOpen ? 1.6 : 1; // hover: the deck fans a little
+    // full-width cards on phones: a tighter fan so corners stay on screen
+    const narrow = Math.min(1, stack.clientWidth / 700);
+
+    cards.forEach((card, i) => {
+      // deal out bottom card first, gather top card first
+      const order = isOpen ? i : cards.length - 1 - i;
+      card.style.transitionDelay = stagger ? `${order * DEAL_DELAY}ms` : '0ms';
+
+      if (isOpen) {
+        card.style.transform = '';
+      } else {
+        const [px, py, rot] = pose(i);
+        const dx = centreX - (card.offsetLeft + card.offsetWidth / 2) + px * spread * narrow;
+        const dy = -card.offsetTop + py * spread;
+        const r = rot * spread * (narrow < 1 ? narrow * 0.6 : 1);
+        card.style.transform = `translate(${dx}px, ${dy}px) rotate(${r}deg)`;
       }
-    }
-    
-    // Add click handler to all cards
-    card2023.addEventListener('click', handleCardClick, false);
-    card2024.addEventListener('click', handleCardClick, false);
-    card2025.addEventListener('click', handleCardClick, false);
-  }
-  
+    });
 
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAwardCards);
-  } else {
-    setTimeout(initAwardCards, 50);
+    stack.style.height = `${isOpen ? openHeight : tallest + 24}px`;
+    stack.dataset.state = isOpen ? 'open' : 'stacked';
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', String(isOpen));
+      if (toggleLabel) toggleLabel.textContent = isOpen ? 'Stack them again' : 'Open the stack';
+    }
   }
-  
-  window.addEventListener('load', function() {
-    setTimeout(initAwardCards, 100);
-  });
+
+  function setOpen(open) {
+    isOpen = open;
+    fanned = false;
+    render();
+  }
+
+  stack.addEventListener('click', () => setOpen(!isOpen));
+  toggle && toggle.addEventListener('click', () => setOpen(!isOpen));
+
+  // hover hint on desktop: the closed deck fans slightly
+  stack.addEventListener('mouseenter', () => { if (!isOpen) { fanned = true; render(false); } });
+  stack.addEventListener('mouseleave', () => { if (fanned) { fanned = false; render(false); } });
+
+  // re-measure when the layout changes (resize, rotation, fonts loading)
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => render(false), 120);
+  }, { passive: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render(false));
+
+  // first paint: place the deck without animating
+  cards.forEach((c) => (c.style.transition = 'none'));
+  stack.style.transition = 'none';
+  render(false);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    cards.forEach((c) => (c.style.transition = ''));
+    stack.style.transition = '';
+  }));
 })();
 
 // =============================================================================

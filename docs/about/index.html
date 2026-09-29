@@ -335,21 +335,25 @@
         <h2>Moments that were <span class="italic">noticed</span></h2>
       </header>
 
-      <div class="awards-grid">
-        <article class="award-card reveal" data-year="2023">
+      <!-- Card stack: closed = a deck (newest on top), click/tap deals it out. js/about.js -->
+      <div class="award-stack reveal" id="award-stack" data-state="stacked">
+        <article class="stack-card">
           <span class="award-year">TBC...</span>
         </article>
-        <article class="award-card reveal" data-year="2024">
+        <article class="stack-card">
           <span class="award-year">2024</span>
           <h3>Family Recognition</h3>
           <p>Wow Effect</p>
         </article>
-        <article class="award-card reveal" data-year="2025">
+        <article class="stack-card">
           <span class="award-year">2025</span>
           <h3>Myself Photo Award</h3>
           <p>All Categories</p>
         </article>
       </div>
+      <button type="button" class="award-stack-toggle" aria-controls="award-stack" aria-expanded="false">
+        <span class="award-stack-toggle-label">Open the stack</span>
+      </button>
     </section>
 
     <!-- CTA -->

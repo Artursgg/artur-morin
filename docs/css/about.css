@@ -5188,3 +5188,124 @@ h1, h2, h3, h4 {
     overflow: hidden !important;
   }
 }
+
+/* =============================================================================
+   Awards - card stack (js/about.js)
+   Closed: cards lie on top of each other like a deck, newest on top.
+   Open: dealt out into a row (desktop) or a column (phones).
+   Positions are transforms set by JS, so the layout itself never jumps.
+   ============================================================================= */
+.award-stack {
+  --deal: cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  align-content: start; /* rows keep their own height when the stack height is set */
+  position: relative;
+  transition: height 0.6s var(--deal);
+}
+
+.award-stack[data-state="stacked"] {
+  cursor: pointer;
+}
+
+.stack-card {
+  position: relative;
+  min-height: 220px;
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  transform-origin: 50% 70%;
+  transition: transform 0.6s var(--deal), box-shadow 0.6s var(--deal), border-color 0.3s ease;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* later cards lie on top */
+.stack-card:nth-child(1) { z-index: 1; }
+.stack-card:nth-child(2) { z-index: 2; }
+.stack-card:nth-child(3) { z-index: 3; }
+
+/* cards underneath are a touch darker, like real depth */
+.award-stack[data-state="stacked"] .stack-card:not(:last-child) {
+  background: rgba(22, 20, 18, 0.98);
+}
+.award-stack[data-state="stacked"] .stack-card:not(:last-child) > * {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.award-stack[data-state="open"] .stack-card > * {
+  opacity: 1;
+  transition: opacity 0.4s ease 0.2s;
+}
+
+.award-stack[data-state="open"] .stack-card:hover {
+  border-color: rgba(212, 177, 122, 0.3);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+.stack-card .award-year {
+  margin-bottom: 16px;
+}
+.stack-card h3 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--text);
+}
+.stack-card p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Open / stack again button */
+.award-stack-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 40px auto 0;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+.award-stack-toggle:hover,
+.award-stack-toggle:focus-visible {
+  color: var(--gold);
+  border-color: rgba(212, 177, 122, 0.4);
+}
+.award-stack-toggle::before {
+  content: '';
+  width: 14px;
+  height: 10px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  box-shadow: 3px -3px 0 -1px var(--bg), 3px -3px 0 0 currentColor;
+}
+
+@media (max-width: 768px) {
+  .award-stack {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .stack-card {
+    min-height: 180px;
+  }
+}
