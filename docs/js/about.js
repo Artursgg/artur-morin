@@ -946,8 +946,9 @@ window.addEventListener('scroll', () => {
 // =============================================================================
 // Awards - card stack
 // Closed: the cards lie on top of each other like a deck (newest on top),
-// slightly rotated. Click/tap the stack (or the button) to deal them out;
-// click again to gather them back. Works the same on desktop and phones.
+// slightly rotated. Each tap on the deck deals the top card to its place
+// (2025, then 2024, then TBC); a tap when all are out gathers them back.
+// The button deals all remaining cards at once ("Show 'em all!").
 // Cards stay in the normal grid; only transforms move them, so nothing jumps.
 // =============================================================================
 (function() {
@@ -963,73 +964,107 @@ window.addEventListener('scroll', () => {
 
   // How each card lies in the closed deck, bottom -> top: [x px, y px, rotate deg]
   const POSES = [[-18, 14, -7], [14, 7, 5], [0, 0, 0]];
-  const DEAL_DELAY = 80; // ms between cards when dealing out / gathering
-  let isOpen = false;
+  const DEAL_DELAY = 80; // ms between cards when several move at once
+  const total = cards.length;
+  let dealt = 0; // how many cards are out of the deck (taken from the top)
   let fanned = false;
+
+  const isDealt = (i) => i >= total - dealt; // the top card (last) is dealt first
 
   function pose(index) {
     // extra cards (if more are added later) reuse the poses from the bottom up
-    return POSES[Math.max(0, POSES.length - cards.length + index)] || [0, 0, 0];
+    return POSES[Math.max(0, POSES.length - total + index)] || [0, 0, 0];
   }
 
-  function render(stagger = true) {
-    // offsetLeft/offsetTop are layout positions - transforms don't affect them
-    const centreX = stack.clientWidth / 2;
-    const tallest = Math.max(...cards.map((c) => c.offsetHeight));
-    const openHeight = Math.max(...cards.map((c) => c.offsetTop + c.offsetHeight));
-    const spread = fanned && !isOpen ? 1.6 : 1; // hover: the deck fans a little
-    // full-width cards on phones: a tighter fan so corners stay on screen
-    const narrow = Math.min(1, stack.clientWidth / 700);
-
+  // changed: indexes of cards that move now, in the order they should move
+  function render(changed = []) {
+    const topOfDeck = total - dealt - 1;
     cards.forEach((card, i) => {
-      // deal out bottom card first, gather top card first
-      const order = isOpen ? i : cards.length - 1 - i;
-      card.style.transitionDelay = stagger ? `${order * DEAL_DELAY}ms` : '0ms';
-
-      if (isOpen) {
-        card.style.transform = '';
-      } else {
-        const [px, py, rot] = pose(i);
-        const dx = centreX - (card.offsetLeft + card.offsetWidth / 2) + px * spread * narrow;
-        const dy = -card.offsetTop + py * spread;
-        const r = rot * spread * (narrow < 1 ? narrow * 0.6 : 1);
-        card.style.transform = `translate(${dx}px, ${dy}px) rotate(${r}deg)`;
-      }
+      const order = changed.indexOf(i);
+      card.style.transitionDelay = order > 0 ? `${order * DEAL_DELAY}ms` : '0ms';
+      card.classList.toggle('is-dealt', isDealt(i));
+      card.classList.toggle('is-deck-top', i === topOfDeck);
     });
 
-    stack.style.height = `${isOpen ? openHeight : tallest + 24}px`;
-    stack.dataset.state = isOpen ? 'open' : 'stacked';
+    // Measure twice: setting the height can shift rows slightly, so place the
+    // cards only after the height matches the new state.
+    // (offsetLeft/offsetTop are layout positions - transforms don't affect them)
+    for (let pass = 0; pass < 2; pass++) {
+      const centreX = stack.clientWidth / 2;
+      const spread = fanned && dealt < total ? 1.6 : 1; // hover: the deck fans a little
+      // full-width cards on phones: a tighter fan so corners stay on screen
+      const narrow = Math.min(1, stack.clientWidth / 700);
+      // one column (phones): the deck sits in its top card's slot and slides down
+      // as cards are dealt; rows (desktop/tablet): the deck stays centred
+      const oneColumn = cards.every((c) => c.offsetLeft === cards[0].offsetLeft);
+      const anchor = oneColumn && topOfDeck >= 0 ? cards[topOfDeck] : null;
+      const anchorX = anchor ? anchor.offsetLeft + anchor.offsetWidth / 2 : centreX;
+      const anchorY = anchor ? anchor.offsetTop : 0;
+
+      let height = 0;
+      cards.forEach((card, i) => {
+        if (isDealt(i)) {
+          card.style.transform = '';
+          height = Math.max(height, card.offsetTop + card.offsetHeight);
+        } else {
+          const [px, py, rot] = pose(i);
+          const dx = anchorX - (card.offsetLeft + card.offsetWidth / 2) + px * spread * narrow;
+          const dy = anchorY - card.offsetTop + py * spread;
+          const r = rot * spread * (narrow < 1 ? narrow * 0.6 : 1);
+          card.style.transform = `translate(${dx}px, ${dy}px) rotate(${r}deg)`;
+          height = Math.max(height, anchorY + card.offsetHeight + 24);
+        }
+      });
+      stack.style.height = `${height}px`;
+    }
+
+    const allOut = dealt === total;
+    stack.dataset.state = allOut ? 'open' : dealt ? 'dealing' : 'stacked';
     if (toggle) {
-      toggle.setAttribute('aria-expanded', String(isOpen));
-      if (toggleLabel) toggleLabel.textContent = isOpen ? 'Stack them again' : 'Open the stack';
+      toggle.setAttribute('aria-expanded', String(allOut));
+      if (toggleLabel) toggleLabel.textContent = allOut ? 'Stack them again' : "Show 'em all!";
     }
   }
 
-  function setOpen(open) {
-    isOpen = open;
+  function dealNext() {
+    dealt += 1;
     fanned = false;
-    render();
+    render([total - dealt]);
   }
 
-  stack.addEventListener('click', () => setOpen(!isOpen));
-  toggle && toggle.addEventListener('click', () => setOpen(!isOpen));
+  function dealAll() {
+    const moving = [];
+    for (let i = total - dealt - 1; i >= 0; i--) moving.push(i); // top card first
+    dealt = total;
+    fanned = false;
+    render(moving);
+  }
+
+  function gather() {
+    dealt = 0;
+    fanned = false;
+    render(cards.map((_, i) => i)); // left/first card goes back first, top card last
+  }
+
+  stack.addEventListener('click', () => (dealt < total ? dealNext() : gather()));
+  toggle && toggle.addEventListener('click', () => (dealt < total ? dealAll() : gather()));
 
   // hover hint on desktop: the closed deck fans slightly
-  stack.addEventListener('mouseenter', () => { if (!isOpen) { fanned = true; render(false); } });
-  stack.addEventListener('mouseleave', () => { if (fanned) { fanned = false; render(false); } });
+  stack.addEventListener('mouseenter', () => { if (dealt === 0) { fanned = true; render(); } });
+  stack.addEventListener('mouseleave', () => { if (fanned) { fanned = false; render(); } });
 
   // re-measure when the layout changes (resize, rotation, fonts loading)
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => render(false), 120);
+    resizeTimer = setTimeout(() => render(), 120);
   }, { passive: true });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render(false));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render());
 
   // first paint: place the deck without animating
   cards.forEach((c) => (c.style.transition = 'none'));
   stack.style.transition = 'none';
-  render(false);
+  render();
   requestAnimationFrame(() => requestAnimationFrame(() => {
     cards.forEach((c) => (c.style.transition = ''));
     stack.style.transition = '';

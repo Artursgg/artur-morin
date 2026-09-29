@@ -5205,7 +5205,7 @@ h1, h2, h3, h4 {
   transition: height 0.6s var(--deal);
 }
 
-.award-stack[data-state="stacked"] {
+.award-stack {
   cursor: pointer;
 }
 
@@ -5233,20 +5233,21 @@ h1, h2, h3, h4 {
 .stack-card:nth-child(2) { z-index: 2; }
 .stack-card:nth-child(3) { z-index: 3; }
 
-/* cards underneath are a touch darker, like real depth */
-.award-stack[data-state="stacked"] .stack-card:not(:last-child) {
+/* cards still in the deck under the top one: darker, text hidden (real depth) */
+.stack-card:not(.is-dealt):not(.is-deck-top) {
   background: rgba(22, 20, 18, 0.98);
 }
-.award-stack[data-state="stacked"] .stack-card:not(:last-child) > * {
+.stack-card:not(.is-dealt):not(.is-deck-top) > * {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
-.award-stack[data-state="open"] .stack-card > * {
+.stack-card.is-dealt > *,
+.stack-card.is-deck-top > * {
   opacity: 1;
-  transition: opacity 0.4s ease 0.2s;
+  transition: opacity 0.4s ease 0.15s;
 }
 
-.award-stack[data-state="open"] .stack-card:hover {
+.stack-card.is-dealt:hover {
   border-color: rgba(212, 177, 122, 0.3);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
 }
@@ -5305,6 +5306,10 @@ h1, h2, h3, h4 {
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
+  /* one column: newest first, so dealing fills the column from the top */
+  .stack-card:nth-child(1) { order: 3; }
+  .stack-card:nth-child(2) { order: 2; }
+  .stack-card:nth-child(3) { order: 1; }
   .stack-card {
     min-height: 180px;
   }
