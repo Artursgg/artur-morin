@@ -5026,3 +5026,9 @@ h1, h2, h3, h4 {
   .hero { gap: 48px; }
   .hero .btn { white-space: nowrap; }
 }
+
+/* "You are here": the separate desktop Portfolio button uses the same gold as nav links */
+.nav-portfolio.active,
+.nav #primary-nav ul a.active {
+  color: var(--gold) !important;
+}

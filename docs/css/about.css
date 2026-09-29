@@ -5153,3 +5153,9 @@ h1, h2, h3, h4 {
     padding-right: 12px;
   }
 }
+
+/* "You are here": the separate desktop Portfolio button uses the same gold as nav links */
+.nav-portfolio.active,
+.nav #primary-nav ul a.active {
+  color: var(--gold) !important;
+}
