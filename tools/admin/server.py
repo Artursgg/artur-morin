@@ -106,7 +106,7 @@ def fs_path(url_path):
 
 def is_used_elsewhere(data, url_path):
     return any(
-        url_path in (img.get("thumbnail"), img.get("full"))
+        url_path in (img.get("thumbnail"), img.get("full"), img.get("thumbnailSmall"), img.get("large"))
         for images in data["portfolio"].values()
         for img in images
     )
@@ -211,7 +211,7 @@ class Handler(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(SITE), **kwargs)
 
     def log_message(self, fmt, *args):
-        if "/api/" in (args[0] if args else ""):
+        if args and "/api/" in str(args[0]):  # args[0] can be an HTTPStatus on errors
             sys.stderr.write("  " + (fmt % args) + "\n")
 
     def end_headers(self):
@@ -288,7 +288,20 @@ class Handler(SimpleHTTPRequestHandler):
             "full": site_path(full),
             "alt": body.get("alt", "").strip() or title,
             "title": title,
+            "width": int(body.get("width") or 0),
+            "height": int(body.get("height") or 0),
         }
+        # extra sizes for phones / normal screens (see tools/admin/variants.py)
+        if body.get("thumbnailSmall"):
+            small = folder / "thumbnails" / "small" / name
+            write_data_url(small, body["thumbnailSmall"])
+            entry["thumbnailSmall"] = site_path(small)
+        if body.get("large"):
+            large = folder / "large" / name
+            write_data_url(large, body["large"])
+            entry["large"] = site_path(large)
+        else:
+            entry["large"] = entry["full"]
         images = data["portfolio"].setdefault(category, [])
         images.insert(0, entry) if body.get("position") == "start" else images.append(entry)
         save_data(data)
@@ -300,8 +313,8 @@ class Handler(SimpleHTTPRequestHandler):
         new_portfolio = body["portfolio"]
         for images in new_portfolio.values():
             for img in images:
-                for key in ("full", "thumbnail"):
-                    if not fs_path(img[key]).is_file():
+                for key in ("full", "thumbnail", "thumbnailSmall", "large"):
+                    if key in img and not fs_path(img[key]).is_file():
                         raise ValueError(f"Missing file: {img[key]}")
         data["portfolio"] = new_portfolio
         save_data(data)
@@ -317,8 +330,8 @@ class Handler(SimpleHTTPRequestHandler):
         else:
             raise ValueError("Photo not found - reload the page")
         save_data(data)
-        for key in ("full", "thumbnail"):
-            if not is_used_elsewhere(data, entry[key]):
+        for key in ("full", "thumbnail", "thumbnailSmall", "large"):
+            if entry.get(key) and not is_used_elsewhere(data, entry[key]):
                 fs_path(entry[key]).unlink(missing_ok=True)
         return {"data": data, "changes": git_status()}
 

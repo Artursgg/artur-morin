@@ -9,25 +9,41 @@
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Sunset-and-joy.jpg",
         "full": "/assets/images/portfolio/landscape/full/Sunset-and-joy.jpg",
         "alt": "Sunset and Joy",
-        "title": "Sunset and Joy"
+        "title": "Sunset and Joy",
+        "width": 3118,
+        "height": 4144,
+        "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Sunset-and-joy.jpg",
+        "large": "/assets/images/portfolio/landscape/large/Sunset-and-joy.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Wooden-barrier.jpg",
         "full": "/assets/images/portfolio/landscape/full/Wooden-barrier.jpg",
         "alt": "Wooden Barrier",
-        "title": "Wooden Barrier"
+        "title": "Wooden Barrier",
+        "width": 1900,
+        "height": 2850,
+        "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Wooden-barrier.jpg",
+        "large": "/assets/images/portfolio/landscape/large/Wooden-barrier.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Pine-d-alone_pl.jpg",
         "full": "/assets/images/portfolio/landscape/full/Pine-d-alone.jpg",
         "alt": "Pine-d alone",
-        "title": "Pine-d alone"
+        "title": "Pine-d alone",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Pine-d-alone.jpg",
+        "large": "/assets/images/portfolio/landscape/large/Pine-d-alone.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/B&W-brick-wall.jpg",
         "full": "/assets/images/portfolio/landscape/full/B&W-brick-wall.jpg",
         "alt": "B&W Brick Wall",
-        "title": "B&W Brick Wall"
+        "title": "B&W Brick Wall",
+        "width": 2600,
+        "height": 1733,
+        "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/B&W-brick-wall.jpg",
+        "large": "/assets/images/portfolio/landscape/large/B&W-brick-wall.jpg"
       }
     ],
     "portrait": [
@@ -35,25 +51,41 @@
         "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Raven-stare.jpg",
         "full": "/assets/images/portfolio/portrait/full/Raven-stare.jpg",
         "alt": "Raven Stare",
-        "title": "Raven Stare"
+        "title": "Raven Stare",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Raven-stare.jpg",
+        "large": "/assets/images/portfolio/portrait/large/Raven-stare.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Starry-eyes.jpg",
         "full": "/assets/images/portfolio/portrait/full/Starry-eyes.jpg",
         "alt": "Starry Eyes",
-        "title": "Starry Eyes"
+        "title": "Starry Eyes",
+        "width": 3000,
+        "height": 2000,
+        "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Starry-eyes.jpg",
+        "large": "/assets/images/portfolio/portrait/large/Starry-eyes.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Duck-sanctuary.jpg",
         "full": "/assets/images/portfolio/portrait/full/Duck-sanctuary.jpg",
         "alt": "Duck Sanctuary",
-        "title": "Duck Sanctuary"
+        "title": "Duck Sanctuary",
+        "width": 3000,
+        "height": 2000,
+        "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Duck-sanctuary.jpg",
+        "large": "/assets/images/portfolio/portrait/large/Duck-sanctuary.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Up-side-duck.jpg",
         "full": "/assets/images/portfolio/portrait/full/Up-side-duck.jpg",
         "alt": "Up Side Duck",
-        "title": "Up Side Duck"
+        "title": "Up Side Duck",
+        "width": 3000,
+        "height": 2000,
+        "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Up-side-duck.jpg",
+        "large": "/assets/images/portfolio/portrait/large/Up-side-duck.jpg"
       }
     ],
     "other": [
@@ -61,49 +93,81 @@
         "thumbnail": "/assets/images/portfolio/other/thumbnails/Apex-predator.jpg",
         "full": "/assets/images/portfolio/other/full/apex-predator.jpg",
         "alt": "Apex Predator",
-        "title": "Apex Predator"
+        "title": "Apex Predator",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/other/thumbnails/small/apex-predator.jpg",
+        "large": "/assets/images/portfolio/other/large/apex-predator.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/other/thumbnails/Till'-the-win_pl.jpg",
         "full": "/assets/images/portfolio/other/full/Till'-the-win.jpg",
         "alt": "Till' The Win",
-        "title": "Till' The Win"
+        "title": "Till' The Win",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/other/thumbnails/small/Till'-the-win.jpg",
+        "large": "/assets/images/portfolio/other/large/Till'-the-win.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Pan-till-you-done_pl.jpg",
         "full": "/assets/images/portfolio/cars/full/pan-till-you-done.jpg",
         "alt": "Pan Till You Done",
-        "title": "Pan Till You Done"
+        "title": "Pan Till You Done",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/pan-till-you-done.jpg",
+        "large": "/assets/images/portfolio/cars/large/pan-till-you-done.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Classy-luxury.jpg",
         "full": "/assets/images/portfolio/cars/full/classy-luxury.jpg",
         "alt": "Classy Luxury",
-        "title": "Classy Luxury"
+        "title": "Classy Luxury",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/classy-luxury.jpg",
+        "large": "/assets/images/portfolio/cars/large/classy-luxury.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel_pl.jpg",
         "full": "/assets/images/portfolio/cars/full/heavy-cromed-squirrel.jpg",
         "alt": "Heavy Cromed Squirrel",
-        "title": "Heavy Cromed Squirrel"
+        "title": "Heavy Cromed Squirrel",
+        "width": 1905,
+        "height": 2858,
+        "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/heavy-cromed-squirrel.jpg",
+        "large": "/assets/images/portfolio/cars/large/heavy-cromed-squirrel.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel-2.jpg",
         "full": "/assets/images/portfolio/cars/full/heavy-cromed-squirrel-2.jpg",
         "alt": "Heavy Cromed Squirrel 2",
-        "title": "Heavy Cromed Squirrel 2"
+        "title": "Heavy Cromed Squirrel 2",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/heavy-cromed-squirrel-2.jpg",
+        "large": "/assets/images/portfolio/cars/large/heavy-cromed-squirrel-2.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Ying-yang_pl.jpg",
         "full": "/assets/images/portfolio/cars/full/Ying-yang.jpg",
         "alt": "Ying Yang",
-        "title": "Ying Yang"
+        "title": "Ying Yang",
+        "width": 3000,
+        "height": 2000,
+        "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Ying-yang.jpg",
+        "large": "/assets/images/portfolio/cars/large/Ying-yang.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/other/thumbnails/Geometrical-splash_PL.jpg",
         "full": "/assets/images/portfolio/other/full/Geometrical-splash.jpg",
         "alt": "Geometrical Splash",
-        "title": "Geometrical Splash"
+        "title": "Geometrical Splash",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/other/thumbnails/small/Geometrical-splash.jpg",
+        "large": "/assets/images/portfolio/other/large/Geometrical-splash.jpg"
       }
     ],
     "street": [
@@ -111,19 +175,31 @@
         "thumbnail": "/assets/images/portfolio/street/thumbnails/Grumpy-town_pl.jpg",
         "full": "/assets/images/portfolio/street/full/Grumpy-town.jpg",
         "alt": "Grumpy Town",
-        "title": "Grumpy Town"
+        "title": "Grumpy Town",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/street/thumbnails/small/Grumpy-town.jpg",
+        "large": "/assets/images/portfolio/street/large/Grumpy-town.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/street/thumbnails/no-words-needed-irony.jpg",
         "full": "/assets/images/portfolio/street/full/no-words-needed-irony.jpg",
         "alt": "No Words Needed Irony",
-        "title": "No Words Needed Irony"
+        "title": "No Words Needed Irony",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/street/thumbnails/small/no-words-needed-irony.jpg",
+        "large": "/assets/images/portfolio/street/large/no-words-needed-irony.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/street/thumbnails/Parking-lot-vibe.jpg",
         "full": "/assets/images/portfolio/street/full/Parking-lot-vibe.jpg",
         "alt": "Parking Lot Vibe",
-        "title": "Parking Lot Vibe"
+        "title": "Parking Lot Vibe",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/street/thumbnails/small/Parking-lot-vibe.jpg",
+        "large": "/assets/images/portfolio/street/large/Parking-lot-vibe.jpg"
       }
     ],
     "cars": [
@@ -131,25 +207,41 @@
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/neat-mini.jpg",
         "full": "/assets/images/portfolio/cars/full/neat-mini.jpg",
         "alt": "Neat Mini",
-        "title": "Neat Mini"
+        "title": "Neat Mini",
+        "width": 2809,
+        "height": 4213,
+        "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/neat-mini.jpg",
+        "large": "/assets/images/portfolio/cars/large/neat-mini.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Bentley-front.jpg",
         "full": "/assets/images/portfolio/cars/full/Bentley-front.jpg",
         "alt": "Bentley Front",
-        "title": "Bentley Front"
+        "title": "Bentley Front",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Bentley-front.jpg",
+        "large": "/assets/images/portfolio/cars/large/Bentley-front.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Sunset-lambo.jpg",
         "full": "/assets/images/portfolio/cars/full/Sunset-lambo.jpg",
         "alt": "Sunset Lambo",
-        "title": "Sunset Lambo"
+        "title": "Sunset Lambo",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Sunset-lambo.jpg",
+        "large": "/assets/images/portfolio/cars/large/Sunset-lambo.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Roar-of-a-beast.jpg",
         "full": "/assets/images/portfolio/cars/full/Roar-of-a-beast.jpg",
         "alt": "Roar Of A Beast",
-        "title": "Roar Of A Beast"
+        "title": "Roar Of A Beast",
+        "width": 2000,
+        "height": 3000,
+        "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Roar-of-a-beast.jpg",
+        "large": "/assets/images/portfolio/cars/large/Roar-of-a-beast.jpg"
       }
     ],
     "products": []

@@ -439,7 +439,14 @@ async function uploadFiles(files) {
       const thumb = resize(bitmap, Math.min(1600, Math.round(800 * ratio)), 'image/jpeg', 0.8);
       row.lastChild.textContent = 'uploading…';
       const title = titleFromFile(file.name);
-      await api('/api/upload', { category, position, title, alt: title, full: full.url, thumbnail: thumb.url });
+      // extra sizes: small grid thumbnail (short side 400) + 1600px for the photo viewer
+      const small = resize(bitmap, Math.min(800, Math.round(400 * ratio)), 'image/jpeg', 0.75);
+      const large = Math.max(bitmap.width, bitmap.height) > 1760 ? resize(bitmap, 1600, 'image/jpeg', 0.75) : null;
+      await api('/api/upload', {
+        category, position, title, alt: title,
+        full: full.url, thumbnail: thumb.url, thumbnailSmall: small.url, large: large && large.url,
+        width: full.width, height: full.height,
+      });
       row.lastChild.textContent = 'added ✓';
       row.classList.add('done');
       renderPortfolio();

@@ -19,7 +19,9 @@ python3 tools/admin/server.py
 
 **Portfolio tab**
 - Drop photos anywhere on the page (or click the drop area). Pick the category first.
-- Each photo is resized in the browser: full size up to 2560px, plus a thumbnail.
+- Each photo is resized in the browser into 4 sizes: full (up to 2560px), large (1600px, used by
+  the photo viewer on phones/laptops), thumbnail (800px short side) and small thumbnail (400px).
+  The site picks the smallest one that stays sharp on each screen.
 - Drag cards to reorder, or drag them onto another category (empty categories are at the bottom).
 - Edit the title or alt text inline. Changes save automatically.
 - `#1, #2 …` on each card is its position on the portfolio page.
@@ -38,6 +40,14 @@ python3 tools/admin/server.py
 | What | Where |
 | --- | --- |
 | Portfolio list (order, titles, categories) | `docs/data/images.json` → `portfolio` |
-| Portfolio photos | `docs/assets/images/portfolio/<category>/full/` and `/thumbnails/` |
+| Portfolio photos | `docs/assets/images/portfolio/<category>/full/`, `/large/`, `/thumbnails/`, `/thumbnails/small/` |
 | Picture of the Week data | `docs/data/images.json` → `potw` / `potwHistory` |
 | Picture of the Week HTML | `docs/index.html`, between the `POTW:START` / `POTW:END` comments (written by the tool, don't edit by hand) |
+
+## Older photos
+
+Photos added before the 4-size setup can be given the extra sizes with:
+
+```bash
+python3 tools/admin/variants.py
+```
