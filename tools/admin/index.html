@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photo Manager</title>
+<link rel="icon" href="/assets/favicon.svg">
+<style>
+  :root {
+    --bg: #0b0b0b;
+    --panel: #151515;
+    --panel-2: #1d1d1d;
+    --line: rgba(255, 255, 255, 0.09);
+    --text: #f2efe9;
+    --muted: #9a958c;
+    --gold: #c9a66b;
+    --danger: #e0685c;
+    --ok: #7cbf8a;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+
+  header {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 14px 24px;
+    background: rgba(11, 11, 11, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: .02em; }
+  .brand .mark { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--gold); color: var(--gold); font-size: 12px; }
+  .tabs { display: flex; gap: 4px; background: var(--panel); padding: 4px; border-radius: 999px; }
+  .tabs button { border: 0; background: none; padding: 7px 16px; border-radius: 999px; color: var(--muted); }
+  .tabs button[aria-selected="true"] { background: var(--panel-2); color: var(--text); }
+  .spacer { flex: 1; }
+  .status { color: var(--muted); font-size: 13px; }
+  .status b { color: var(--gold); font-weight: 600; }
+
+  .btn { border: 1px solid var(--line); background: var(--panel-2); padding: 8px 14px; border-radius: 8px; }
+  .btn:hover { border-color: rgba(255,255,255,.25); }
+  .btn-gold { background: var(--gold); border-color: var(--gold); color: #111; font-weight: 600; }
+  .btn-gold:hover { filter: brightness(1.08); }
+  .btn-gold:disabled { opacity: .4; cursor: default; filter: none; }
+  .btn-danger { color: var(--danger); }
+  a.btn { text-decoration: none; color: var(--text); }
+
+  main { max-width: 1280px; margin: 0 auto; padding: 24px; }
+  [hidden] { display: none !important; }
+
+  .drop {
+    display: grid; place-items: center; text-align: center;
+    min-height: 170px; padding: 24px;
+    border: 1.5px dashed rgba(201, 166, 107, 0.45);
+    border-radius: 14px;
+    background: rgba(201, 166, 107, 0.04);
+    transition: background .15s, border-color .15s;
+    cursor: pointer;
+  }
+  .drop.over { background: rgba(201, 166, 107, 0.12); border-color: var(--gold); }
+  .drop h2 { margin: 0 0 6px; font-size: 18px; font-weight: 600; }
+  .drop p { margin: 0; color: var(--muted); }
+  .upload-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 14px 0 28px; color: var(--muted); }
+  .upload-row select, .upload-row input { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; }
+
+  .queue { display: grid; gap: 6px; margin-bottom: 20px; }
+  .queue:empty { display: none; }
+  .queue div { display: flex; justify-content: space-between; background: var(--panel); border-radius: 8px; padding: 8px 12px; color: var(--muted); }
+  .queue .done { color: var(--ok); }
+  .queue .fail { color: var(--danger); }
+
+  section.cat { margin-bottom: 36px; }
+  .cat-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+  .cat-head h3 { margin: 0; font-size: 16px; text-transform: capitalize; }
+  .cat-head span { color: var(--muted); font-size: 13px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; min-height: 60px; border-radius: var(--radius); }
+  .empty-cats { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; color: var(--muted); font-size: 13px; }
+  .empty-cats .grid { display: flex; align-items: center; min-height: 0; padding: 7px 14px; border: 1px dashed var(--line); border-radius: 999px; text-transform: capitalize; }
+  .grid.drag-target { outline: 1px dashed var(--gold); outline-offset: 6px; }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+  .card.dragging { opacity: .35; }
+  .card .thumb { position: relative; aspect-ratio: 1; background: #000; cursor: grab; }
+  .card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+  .card .num { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,.65); padding: 1px 8px; border-radius: 999px; font-size: 12px; color: var(--muted); }
+  .card .body { padding: 10px; display: grid; gap: 6px; }
+  .card input, .card select { width: 100%; background: var(--panel-2); border: 1px solid transparent; border-radius: 6px; padding: 6px 8px; }
+  .card input:focus, .card select:focus { outline: none; border-color: var(--gold); }
+  .card .row { display: flex; gap: 6px; }
+  .card .row .btn { padding: 5px 9px; font-size: 12px; }
+  .card .row select { flex: 1; font-size: 12px; }
+
+  .potw-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); gap: 28px; align-items: start; }
+  .potw-preview { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; place-items: center; min-height: 360px; }
+  .potw-preview img { max-width: 100%; max-height: 70vh; display: block; border-radius: 6px; }
+  .form { display: grid; gap: 14px; }
+  .form label { display: grid; gap: 6px; color: var(--muted); font-size: 13px; }
+  .form input, .form textarea { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; color: var(--text); }
+  .form textarea { min-height: 80px; resize: vertical; }
+  .history { margin-top: 28px; }
+  .history h4 { margin: 0 0 10px; color: var(--muted); font-weight: 500; }
+  .history-list { display: flex; gap: 10px; flex-wrap: wrap; }
+  .history-list img { width: 72px; height: 72px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
+
+  dialog { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 14px; padding: 22px; width: min(560px, 92vw); }
+  dialog::backdrop { background: rgba(0,0,0,.7); }
+  dialog h3 { margin: 0 0 6px; }
+  dialog p { color: var(--muted); margin: 0 0 14px; }
+  dialog input { width: 100%; background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; }
+  dialog pre { background: #000; border-radius: 8px; padding: 12px; max-height: 260px; overflow: auto; font-size: 12px; white-space: pre-wrap; color: var(--muted); }
+  dialog ul { margin: 0 0 14px; padding-left: 18px; color: var(--muted); font-size: 12px; max-height: 160px; overflow: auto; }
+  .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--panel-2); border: 1px solid var(--line); padding: 10px 16px; border-radius: 999px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 50; }
+  .toast.show { opacity: 1; }
+  .toast.error { border-color: var(--danger); color: var(--danger); }
+
+  @media (max-width: 800px) {
+    header { padding: 12px 16px; }
+    main { padding: 16px; }
+    .potw-layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="mark">AM</span> Photo Manager</div>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="portfolio">Portfolio</button>
+    <button role="tab" aria-selected="false" data-tab="potw">Picture of the Week</button>
+  </div>
+  <div class="spacer"></div>
+  <span class="status" id="status">Loading…</span>
+  <a class="btn" href="/portfolio/" target="_blank">Preview site ↗</a>
+  <button class="btn btn-gold" id="publish-btn" disabled>Publish</button>
+</header>
+
+<main>
+  <!-- ============================ PORTFOLIO ============================ -->
+  <div id="tab-portfolio">
+    <label class="drop" id="drop">
+      <div>
+        <h2>Drop photos here</h2>
+        <p>or click to choose · JPG, PNG, HEIC (Safari), WebP · resized automatically</p>
+      </div>
+      <input type="file" id="file-input" accept="image/*" multiple hidden>
+    </label>
+    <div class="upload-row">
+      Add to category
+      <select id="upload-category"></select>
+      <select id="upload-position">
+        <option value="end">at the end</option>
+        <option value="start">at the start</option>
+      </select>
+      <span>·</span>
+      <span>Titles come from the file name. Change them below.</span>
+    </div>
+    <div class="queue" id="queue"></div>
+    <div id="categories"></div>
+  </div>
+
+  <!-- ======================= PICTURE OF THE WEEK ======================= -->
+  <div id="tab-potw" hidden>
+    <div class="potw-layout">
+      <label class="potw-preview drop" id="potw-drop">
+        <img id="potw-img" alt="">
+        <input type="file" id="potw-file" accept="image/*" hidden>
+      </label>
+      <div class="form">
+        <p class="status" style="margin:0">Drop a new photo on the left (or click it), fill in the text, then Save. It shows up on the home page.</p>
+        <label>Title <input id="potw-title" placeholder="Blasting Emotions"></label>
+        <label>Caption <textarea id="potw-caption" placeholder="A short line about the photo"></textarea></label>
+        <label>Location <input id="potw-location" placeholder="Tallinn"></label>
+        <label>Alt text (for screen readers / SEO) <input id="potw-alt" placeholder="Fireworks over the old town"></label>
+        <div><button class="btn btn-gold" id="potw-save">Save Picture of the Week</button></div>
+      </div>
+    </div>
+    <div class="history" id="potw-history" hidden>
+      <h4>Previous weeks</h4>
+      <div class="history-list" id="potw-history-list"></div>
+    </div>
+  </div>
+</main>
+
+<dialog id="publish-dialog">
+  <h3>Publish to arturmorin.page</h3>
+  <p>This commits your changes and pushes them to GitHub. The live site updates in about 1 minute.</p>
+  <ul id="publish-changes"></ul>
+  <input id="publish-message" placeholder="What changed? e.g. Added 3 street photos">
+  <pre id="publish-log" hidden></pre>
+  <div class="dialog-actions">
+    <button class="btn" id="publish-cancel">Close</button>
+    <button class="btn btn-gold" id="publish-go">Publish now</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const state = { data: null, changes: [] };
+
+// ---------------------------------------------------------------------------
+// API
+// ---------------------------------------------------------------------------
+async function api(path, body, { keepData = false } = {}) {
+  const res = await fetch(path, body ? {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  } : undefined);
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || res.statusText);
+  if (json.data && !keepData) state.data = json.data;
+  if (json.changes) state.changes = json.changes;
+  renderStatus();
+  return json;
+}
+
+function toast(msg, isError = false) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.toggle('error', isError);
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), isError ? 6000 : 2200);
+}
+
+function renderStatus() {
+  const n = state.changes.length;
+  $('#status').innerHTML = n ? `<b>${n}</b> unpublished change${n > 1 ? 's' : ''}` : 'Everything is published';
+  $('#publish-btn').disabled = !n;
+}
+
+// ---------------------------------------------------------------------------
+// Image resizing (done in the browser, so the server needs no image library)
+// ---------------------------------------------------------------------------
+async function loadBitmap(file) {
+  try {
+    return await createImageBitmap(file, { imageOrientation: 'from-image' });
+  } catch {
+    // Fallback for formats createImageBitmap can't read directly (e.g. HEIC in Safari)
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    URL.revokeObjectURL(url);
+    return img;
+  }
+}
+
+function resize(bitmap, maxSide, type = 'image/jpeg', quality = 0.86) {
+  const w = bitmap.width, h = bitmap.height;
+  const scale = Math.min(1, maxSide / Math.max(w, h));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(w * scale);
+  canvas.height = Math.round(h * scale);
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  return { url: canvas.toDataURL(type, quality), width: canvas.width, height: canvas.height };
+}
+
+function titleFromFile(name) {
+  const base = name.replace(/\.[^.]+$/, '').replace(/_(pl|tb|TB)$/, '').replace(/[-_]+/g, ' ').trim();
+  return base.charAt(0).toUpperCase() + base.slice(1);
+}
+
+// ---------------------------------------------------------------------------
+// Portfolio
+// ---------------------------------------------------------------------------
+function categories() {
+  return Object.keys(state.data.portfolio);
+}
+
+function renderCategorySelect() {
+  const sel = $('#upload-category');
+  const current = sel.value;
+  sel.innerHTML = categories().map(c => `<option value="${c}">${c}</option>`).join('');
+  let saved = null;
+  try { saved = localStorage.getItem('uploadCategory'); } catch {}
+  sel.value = current || (categories().includes(saved) ? saved : categories().find(c => state.data.portfolio[c].length) || categories()[0]);
+}
+
+function renderPortfolio() {
+  renderCategorySelect();
+  const wrap = $('#categories');
+  wrap.innerHTML = '';
+  let globalNum = 0;
+  const emptyRow = document.createElement('div');
+  emptyRow.className = 'empty-cats';
+  emptyRow.textContent = 'Empty categories (drag a photo onto one):';
+
+  for (const cat of categories()) {
+    const images = state.data.portfolio[cat];
+    const section = document.createElement('section');
+    section.className = 'cat';
+    section.innerHTML = `<div class="cat-head"><h3>${cat}</h3><span>${images.length} photo${images.length === 1 ? '' : 's'}</span></div>`;
+
+    const grid = document.createElement('div');
+    grid.className = 'grid';
+    grid.dataset.cat = cat;
+    if (!images.length) grid.textContent = cat;
+
+    images.forEach((img, idx) => {
+      globalNum++;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.draggable = true;
+      card.dataset.cat = cat;
+      card.dataset.idx = idx;
+      card.innerHTML = `
+        <div class="thumb"><img loading="lazy" alt=""><span class="num" title="Position on the portfolio page">#${globalNum}</span></div>
+        <div class="body">
+          <input class="f-title" placeholder="Title">
+          <input class="f-alt" placeholder="Alt text">
+          <div class="row">
+            <select class="f-cat" title="Move to category">${categories().map(c => `<option ${c === cat ? 'selected' : ''}>${c}</option>`).join('')}</select>
+            <button class="btn btn-danger f-del" title="Delete photo">Delete</button>
+          </div>
+        </div>`;
+      $('img', card).src = img.thumbnail;
+      $('.f-title', card).value = img.title || '';
+      $('.f-alt', card).value = img.alt || '';
+
+      $('.f-title', card).addEventListener('change', e => { img.title = e.target.value.trim(); saveSoon(); });
+      $('.f-alt', card).addEventListener('change', e => { img.alt = e.target.value.trim(); saveSoon(); });
+      $('.f-cat', card).addEventListener('change', e => {
+        images.splice(idx, 1);
+        state.data.portfolio[e.target.value].push(img);
+        renderPortfolio();
+        saveSoon(0);
+      });
+      $('.f-del', card).addEventListener('click', async () => {
+        if (!confirm(`Delete "${img.title || 'this photo'}"? The files are removed too.`)) return;
+        try {
+          await flushSave();
+          await api('/api/delete', { full: img.full });
+          renderPortfolio();
+          toast('Deleted');
+        } catch (err) { toast(err.message, true); }
+      });
+
+      card.addEventListener('dragstart', e => {
+        dragged = { cat, idx };
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/x-reorder', '1');
+      });
+      card.addEventListener('dragend', () => { card.classList.remove('dragging'); dragged = null; });
+      grid.appendChild(card);
+    });
+
+    // Reorder / move between categories by dragging cards
+    grid.addEventListener('dragover', e => {
+      if (!dragged) return;
+      e.preventDefault();
+      grid.classList.add('drag-target');
+    });
+    grid.addEventListener('dragleave', () => grid.classList.remove('drag-target'));
+    grid.addEventListener('drop', e => {
+      if (!dragged) return;
+      e.preventDefault();
+      e.stopPropagation();
+      grid.classList.remove('drag-target');
+      const targetCard = e.target.closest('.card');
+      const from = state.data.portfolio[dragged.cat];
+      const [item] = from.splice(dragged.idx, 1);
+      const to = state.data.portfolio[cat];
+      let toIdx = to.length;
+      if (targetCard) {
+        toIdx = Number(targetCard.dataset.idx);
+        if (dragged.cat === cat && dragged.idx < toIdx) toIdx--;
+        const rect = targetCard.getBoundingClientRect();
+        if (e.clientX > rect.left + rect.width / 2) toIdx++;
+      }
+      to.splice(toIdx, 0, item);
+      dragged = null;
+      renderPortfolio();
+      saveSoon(0);
+    });
+
+    if (images.length) {
+      section.appendChild(grid);
+      wrap.appendChild(section);
+    } else {
+      emptyRow.appendChild(grid);
+    }
+  }
+  if (emptyRow.querySelector('.grid')) wrap.appendChild(emptyRow);
+}
+
+let dragged = null;
+let saveTimer = null;
+// The page holds the portfolio order/titles while editing; the server just stores it
+async function saveNow() {
+  clearTimeout(saveTimer);
+  saveTimer = null;
+  try {
+    await api('/api/save', { portfolio: state.data.portfolio }, { keepData: true });
+    toast('Saved');
+  } catch (err) { toast(err.message, true); }
+}
+function saveSoon(delay = 400) {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveNow, delay);
+}
+async function flushSave() {
+  if (saveTimer) await saveNow();
+}
+
+async function uploadFiles(files) {
+  const list = [...files].filter(f => f.type.startsWith('image/') || /\.(heic|heif)$/i.test(f.name));
+  if (!list.length) return;
+  const category = $('#upload-category').value;
+  const position = $('#upload-position').value;
+  const queue = $('#queue');
+  await flushSave();
+  // "at the start" keeps the dropped order
+  const ordered = position === 'start' ? list.reverse() : list;
+
+  for (const file of ordered) {
+    const row = document.createElement('div');
+    row.innerHTML = `<span>${file.name}</span><span>resizing…</span>`;
+    queue.appendChild(row);
+    try {
+      const bitmap = await loadBitmap(file);
+      const full = resize(bitmap, 2560, 'image/jpeg', 0.88);
+      // thumbnails are cropped to squares/cards: keep the short side 800px (sharp on retina)
+      const ratio = Math.max(bitmap.width, bitmap.height) / Math.min(bitmap.width, bitmap.height);
+      const thumb = resize(bitmap, Math.min(1600, Math.round(800 * ratio)), 'image/jpeg', 0.8);
+      row.lastChild.textContent = 'uploading…';
+      const title = titleFromFile(file.name);
+      await api('/api/upload', { category, position, title, alt: title, full: full.url, thumbnail: thumb.url });
+      row.lastChild.textContent = 'added ✓';
+      row.classList.add('done');
+      renderPortfolio();
+    } catch (err) {
+      row.lastChild.textContent = 'failed: ' + err.message;
+      row.classList.add('fail');
+    }
+  }
+  setTimeout(() => { queue.querySelectorAll('.done').forEach(r => r.remove()); }, 3000);
+}
+
+function setupDropZone(zone, input, onFiles) {
+  input.addEventListener('change', () => { onFiles(input.files); input.value = ''; });
+  zone.addEventListener('dragover', e => {
+    if (dragged) return;
+    e.preventDefault();
+    zone.classList.add('over');
+  });
+  zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+  zone.addEventListener('drop', e => {
+    if (dragged) return;
+    e.preventDefault();
+    zone.classList.remove('over');
+    onFiles(e.dataTransfer.files);
+  });
+}
+
+// Dropping files anywhere on the Portfolio tab also works
+document.addEventListener('dragover', e => { if (!dragged && e.dataTransfer.types.includes('Files')) e.preventDefault(); });
+document.addEventListener('drop', e => {
+  if (e.defaultPrevented || dragged || !e.dataTransfer.files.length) return;
+  e.preventDefault();
+  if (!$('#tab-portfolio').hidden) uploadFiles(e.dataTransfer.files);
+});
+
+// ---------------------------------------------------------------------------
+// Picture of the Week
+// ---------------------------------------------------------------------------
+let potwPending = null;
+
+function renderPotw() {
+  const p = state.data.potw || {};
+  $('#potw-img').src = potwPending?.image.url || p.image || '';
+  $('#potw-img').hidden = !(potwPending || p.image);
+  for (const k of ['title', 'caption', 'location', 'alt']) $('#potw-' + k).value = p[k] || '';
+
+  const history = state.data.potwHistory || [];
+  $('#potw-history').hidden = !history.length;
+  $('#potw-history-list').innerHTML = history
+    .map(h => `<img src="${h.image}" title="${(h.title || '').replace(/"/g, '&quot;')}${h.replaced ? ' · until ' + h.replaced : ''}" alt="">`)
+    .join('');
+}
+
+async function pickPotw(files) {
+  const file = files[0];
+  if (!file) return;
+  const bitmap = await loadBitmap(file);
+  potwPending = {
+    image: resize(bitmap, 1600, 'image/jpeg', 0.86),
+    webp: resize(bitmap, 1600, 'image/webp', 0.82),
+  };
+  $('#potw-img').src = potwPending.image.url;
+  $('#potw-img').hidden = false;
+  // new photo = new text (location usually stays the same)
+  $('#potw-title').value = titleFromFile(file.name);
+  $('#potw-caption').value = '';
+  $('#potw-alt').value = '';
+  $('#potw-title').focus();
+  toast('Photo ready. Add the text and press Save.');
+}
+
+$('#potw-save').addEventListener('click', async () => {
+  const body = {
+    title: $('#potw-title').value,
+    caption: $('#potw-caption').value,
+    location: $('#potw-location').value,
+    alt: $('#potw-alt').value,
+  };
+  if (potwPending) {
+    body.image = potwPending.image.url;
+    body.width = potwPending.image.width;
+    body.height = potwPending.image.height;
+    // only keep webp if the browser actually produced one (Safari may fall back to png)
+    if (potwPending.webp.url.startsWith('data:image/webp')) body.webp = potwPending.webp.url;
+  }
+  try {
+    await api('/api/potw', body);
+    potwPending = null;
+    renderPotw();
+    toast('Picture of the Week saved');
+  } catch (err) { toast(err.message, true); }
+});
+
+// ---------------------------------------------------------------------------
+// Tabs & publish
+// ---------------------------------------------------------------------------
+document.querySelectorAll('[data-tab]').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-selected', b === btn));
+  $('#tab-portfolio').hidden = btn.dataset.tab !== 'portfolio';
+  $('#tab-potw').hidden = btn.dataset.tab !== 'potw';
+}));
+
+const dialog = $('#publish-dialog');
+$('#publish-btn').addEventListener('click', () => {
+  $('#publish-changes').innerHTML = state.changes.map(c => `<li>${c.replace(/</g, '&lt;')}</li>`).join('');
+  $('#publish-log').hidden = true;
+  $('#publish-go').disabled = false;
+  dialog.showModal();
+  $('#publish-message').focus();
+});
+$('#publish-cancel').addEventListener('click', () => dialog.close());
+$('#publish-go').addEventListener('click', async () => {
+  const log = $('#publish-log');
+  $('#publish-go').disabled = true;
+  log.hidden = false;
+  log.textContent = 'Publishing…';
+  try {
+    const res = await api('/api/publish', { message: $('#publish-message').value });
+    log.textContent = res.log + '\n\n✓ Done. The live site updates in about a minute.';
+    $('#publish-message').value = '';
+  } catch (err) {
+    log.textContent = err.message;
+    $('#publish-go').disabled = false;
+  }
+});
+
+$('#upload-category').addEventListener('change', e => {
+  try { localStorage.setItem('uploadCategory', e.target.value); } catch {}
+});
+
+// ---------------------------------------------------------------------------
+// Init
+// ---------------------------------------------------------------------------
+setupDropZone($('#drop'), $('#file-input'), uploadFiles);
+setupDropZone($('#potw-drop'), $('#potw-file'), pickPotw);
+
+api('/api/data').then(() => {
+  renderPortfolio();
+  renderPotw();
+}).catch(err => toast('Could not load data: ' + err.message, true));
+</script>
+</body>
+</html>

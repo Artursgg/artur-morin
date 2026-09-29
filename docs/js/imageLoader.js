@@ -75,13 +75,15 @@ function populatePortfolioGrid() {
 
       const workCard = workCards[cardIndex];
       const img = workCard.querySelector('img');
-      if (img && image.thumbnail) {
+      // the large featured card is too wide for a thumbnail
+      const src = workCard.classList.contains('work-card--large') ? image.full : image.thumbnail;
+      if (img && src) {
         const testImg = new Image();
         testImg.onload = () => {
-          img.src = image.thumbnail;
+          img.src = src;
           img.alt = image.title || img.alt;
         };
-        testImg.src = image.thumbnail;
+        testImg.src = src;
       }
 
       const title = workCard.querySelector('h3');
