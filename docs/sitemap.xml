@@ -4,7 +4,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://arturmorin.page/</loc>
-    <lastmod>2026-09-29</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://arturmorin.page/portfolio/</loc>
-    <lastmod>2026-09-29</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -32,6 +32,10 @@
     <image:image>
       <image:loc>https://arturmorin.page/assets/images/portfolio/landscape/full/B&amp;W-brick-wall.jpg</image:loc>
       <image:title>B&amp;W Brick Wall</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://arturmorin.page/assets/images/portfolio/landscape/full/Photo-1-2026-09-30-00-01-58.jpg</image:loc>
+      <image:title>Lonely Baloon</image:title>
     </image:image>
     <image:image>
       <image:loc>https://arturmorin.page/assets/images/portfolio/portrait/full/Raven-stare.jpg</image:loc>
@@ -58,30 +62,6 @@
       <image:title>Till&#x27; The Win</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/pan-till-you-done.jpg</image:loc>
-      <image:title>Pan Till You Done</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/classy-luxury.jpg</image:loc>
-      <image:title>Classy Luxury</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/heavy-cromed-squirrel.jpg</image:loc>
-      <image:title>Heavy Cromed Squirrel</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/heavy-cromed-squirrel-2.jpg</image:loc>
-      <image:title>Heavy Cromed Squirrel 2</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/Ying-yang.jpg</image:loc>
-      <image:title>Ying Yang</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://arturmorin.page/assets/images/portfolio/other/full/Geometrical-splash.jpg</image:loc>
-      <image:title>Geometrical Splash</image:title>
-    </image:image>
-    <image:image>
       <image:loc>https://arturmorin.page/assets/images/portfolio/street/full/Grumpy-town.jpg</image:loc>
       <image:title>Grumpy Town</image:title>
     </image:image>
@@ -92,6 +72,18 @@
     <image:image>
       <image:loc>https://arturmorin.page/assets/images/portfolio/street/full/Parking-lot-vibe.jpg</image:loc>
       <image:title>Parking Lot Vibe</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://arturmorin.page/assets/images/portfolio/landscape/full/Photo-2-2026-09-30-00-01-58.jpg</image:loc>
+      <image:title>IronMan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://arturmorin.page/assets/images/portfolio/landscape/full/Photo-3-2026-09-30-00-01-58.jpg</image:loc>
+      <image:title>Big Sur Moon</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://arturmorin.page/assets/images/portfolio/other/full/Geometrical-splash.jpg</image:loc>
+      <image:title>Geometrical Splash</image:title>
     </image:image>
     <image:image>
       <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/neat-mini.jpg</image:loc>
@@ -109,16 +101,36 @@
       <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/Roar-of-a-beast.jpg</image:loc>
       <image:title>Roar Of A Beast</image:title>
     </image:image>
+    <image:image>
+      <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/Ying-yang.jpg</image:loc>
+      <image:title>Ying Yang</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/pan-till-you-done.jpg</image:loc>
+      <image:title>Pan Till You Done</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/classy-luxury.jpg</image:loc>
+      <image:title>Classy Luxury</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/heavy-cromed-squirrel.jpg</image:loc>
+      <image:title>Heavy Cromed Squirrel</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://arturmorin.page/assets/images/portfolio/cars/full/heavy-cromed-squirrel-2.jpg</image:loc>
+      <image:title>Heavy Cromed Squirrel 2</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://arturmorin.page/about/</loc>
-    <lastmod>2026-09-29</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://arturmorin.page/privacy-policy/</loc>
-    <lastmod>2026-09-29</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
