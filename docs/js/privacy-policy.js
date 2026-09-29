@@ -3,22 +3,6 @@
  * ==========================================
  */
 
-// Set current date in privacy policy
-(function() {
-  'use strict';
-  
-  const currentDateElement = document.getElementById('current-date');
-  if (currentDateElement) {
-    const date = new Date();
-    const formattedDate = date.toLocaleDateString('en-GB', { 
-      day: '2-digit', 
-      month: '2-digit', 
-      year: 'numeric' 
-    });
-    currentDateElement.textContent = formattedDate;
-  }
-})();
-
 // =============================================================================
 // Wrap "Opening new experiences" letters for outline animation (near AM box)
 // =============================================================================

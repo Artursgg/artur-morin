@@ -40,6 +40,10 @@
   --radius-xl: 32px;  /* Extra large: hero sections, major containers */
 }
 
+/* width/height attributes are for layout stability (no jump while loading);
+   :where() keeps this at zero specificity so any component rule still wins */
+:where(img[width][height]) { height: auto; }
+
 /* --------------------------------------------------------------------------
    Growing Grid Lines Animation
    Fine grid lines that spread like vines across the page
@@ -300,7 +304,6 @@ img {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  display: none;
 }
 
 /* Film grain overlay for authentic photography feel */
@@ -5121,3 +5124,19 @@ h1, h2, h3, h4 {
   }
 }
 
+
+/* =============================================================================
+   Reduced motion - respect the OS "reduce motion" setting
+   ============================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .parallax { transform: none !important; }
+  .grain, .loader-grain, .cursor-trail { display: none !important; }
+}
+
+#main-content:focus { outline: none; }

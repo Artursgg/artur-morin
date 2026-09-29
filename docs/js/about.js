@@ -5,97 +5,20 @@
  */
 
 // =============================================================================
-// Page Loader - Hide when page is fully loaded
+// Page Loader - fade out as soon as the page is ready, then remove it
+// (scripts load at the end of <body>, so the DOM is already there)
 // =============================================================================
 (function() {
   'use strict';
-  
-  function hideLoader() {
-    const pageLoader = document.getElementById("page-loader");
-    if (pageLoader && !pageLoader.classList.contains("hidden")) {
-      pageLoader.classList.add("hidden");
-    }
-  }
 
-  // Strategy 1: Immediate check if already loaded
-  if (document.readyState === "complete" || document.readyState === "interactive") {
-    setTimeout(hideLoader, 100);
-  }
+  const pageLoader = document.getElementById('page-loader');
+  if (!pageLoader) return;
 
-  // Strategy 2: Wait for full page load
-  window.addEventListener("load", function() {
-    setTimeout(hideLoader, 100);
-  });
-
-  // Strategy 3: Also try on DOMContentLoaded
-  // Check if DOMContentLoaded has already fired
-  if (document.readyState === "loading") {
-    // DOMContentLoaded hasn't fired yet, add listener
-  document.addEventListener("DOMContentLoaded", function() {
-    setTimeout(hideLoader, 500);
-  });
-  } else {
-    // DOMContentLoaded has already fired, call hideLoader directly
-    setTimeout(hideLoader, 500);
-  }
-
-  // Strategy 4: Aggressive fallback - force hide after 1 second
-  setTimeout(hideLoader, 1000);
-  
-  // Strategy 5: Final fallback - force hide after 2 seconds
-  setTimeout(hideLoader, 2000);
+  pageLoader.classList.add('hidden');
+  // remove after the fade so its animations stop running
+  setTimeout(() => pageLoader.remove(), 700);
 })();
 
-// =============================================================================
-// Camera Settings Rotation - Rotate through different camera settings
-// =============================================================================
-(function() {
-  'use strict';
-  
-  // Camera settings options (3 options for each field)
-  const fNumbers = ['2.8', '4.0', '5.6'];
-  const isoValues = ['400', '800', '1600'];
-  const shutterValues = ['60', '125', '250'];
-  
-  let currentIndex = 0;
-  
-  function rotateCameraSettings() {
-    const fNumberElement = document.querySelector('.f-number');
-    const isoValueElement = document.querySelector('.iso-value');
-    const shutterValueElement = document.querySelector('.shutter-value');
-    
-    if (!fNumberElement || !isoValueElement || !shutterValueElement) {
-      return; // Elements not found, exit early
-    }
-    
-    // Update to next index (cycle through 0, 1, 2)
-    currentIndex = (currentIndex + 1) % fNumbers.length;
-    
-    // Update values with fade effect
-    fNumberElement.style.opacity = '0';
-    isoValueElement.style.opacity = '0';
-    shutterValueElement.style.opacity = '0';
-    
-    setTimeout(() => {
-      fNumberElement.textContent = fNumbers[currentIndex];
-      isoValueElement.textContent = isoValues[currentIndex];
-      shutterValueElement.textContent = shutterValues[currentIndex];
-      
-      fNumberElement.style.opacity = '1';
-      isoValueElement.style.opacity = '1';
-      shutterValueElement.style.opacity = '1';
-    }, 200); // Half of transition time for smooth fade
-  }
-  
-  // Start rotation when DOM is ready
-  document.addEventListener('DOMContentLoaded', function() {
-    const pageLoader = document.getElementById('page-loader');
-    if (pageLoader) {
-      // Rotate every 2 seconds
-      setInterval(rotateCameraSettings, 2000);
-    }
-  });
-})();
 
 // Smooth scrolling is handled by CSS scroll-behavior: smooth
 // No custom JavaScript needed for better performance
@@ -292,6 +215,17 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     
     // Skip if it's the logo (handled separately)
     if (anchor.classList.contains('logo')) {
+      return;
+    }
+
+    // Skip link: move keyboard focus into the main content, not just the scroll position
+    if (anchor.classList.contains('skip-link')) {
+      const main = document.getElementById('main-content');
+      if (main) {
+        e.preventDefault();
+        main.setAttribute('tabindex', '-1');
+        main.focus();
+      }
       return;
     }
     

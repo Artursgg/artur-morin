@@ -40,6 +40,10 @@
   --radius-xl: 32px;  /* Extra large: hero sections, major containers */
 }
 
+/* width/height attributes are for layout stability (no jump while loading);
+   :where() keeps this at zero specificity so any component rule still wins */
+:where(img[width][height]) { height: auto; }
+
 /* --------------------------------------------------------------------------
    Growing Grid Lines Animation
    Fine grid lines that spread like vines across the page
@@ -365,7 +369,7 @@ img {
     padding-top: 35px; /* Balanced top padding for tablet */
   }
   
-  .work .section-header h2 {
+  .work .section-header :is(h1, h2) {
     display: block;
     margin-top: 0; /* Ensure no overlap */
     margin-bottom: 0;
@@ -426,7 +430,7 @@ img {
     padding-top: 50px !important; /* Balanced top padding for mobile */
   }
   
-  .work .section-header h2 {
+  .work .section-header :is(h1, h2) {
     margin-top: 0;
   }
 }
@@ -486,7 +490,6 @@ img {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  display: none;
 }
 
 /* Film grain overlay for authentic photography feel */
@@ -2294,7 +2297,7 @@ h1, h2, h3, h4 {
   }
 }
 
-.section-header h2 {
+.section-header :is(h1, h2) {
   font-size: clamp(2rem, 4vw, 3rem);
   margin-top: 0;
 }
@@ -4528,7 +4531,7 @@ h1, h2, h3, h4 {
     margin-bottom: 40px;
   }
 
-  .section-header h2 {
+  .section-header :is(h1, h2) {
     font-size: clamp(2rem, 4vw, 3rem); /* Match desktop size */
   }
 }
@@ -4877,7 +4880,7 @@ h1, h2, h3, h4 {
     margin-bottom: 32px;
   }
 
-  .section-header h2 {
+  .section-header :is(h1, h2) {
     font-size: 1.8rem;
   }
 }
@@ -4983,3 +4986,19 @@ h1, h2, h3, h4 {
   .lightbox-prev  { left: 10px; }
   .lightbox-next  { right: 10px; }
 }
+
+/* =============================================================================
+   Reduced motion - respect the OS "reduce motion" setting
+   ============================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .parallax { transform: none !important; }
+  .grain, .loader-grain, .cursor-trail { display: none !important; }
+}
+
+#main-content:focus { outline: none; }

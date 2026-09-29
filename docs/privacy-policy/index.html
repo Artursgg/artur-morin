@@ -1,222 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Start cookieyes banner - Only load on production domain -->
-  <script>
-    // Only load CookieYes on production domain, not localhost
-    if (window.location.hostname !== 'localhost' && 
-        window.location.hostname !== '127.0.0.1' && 
-        !window.location.hostname.startsWith('192.168.') &&
-        !window.location.hostname.startsWith('10.') &&
-        window.location.hostname !== '') {
-      var script = document.createElement('script');
-      script.id = 'cookieyes';
-      script.type = 'text/javascript';
-      script.src = 'https://cdn-cookieyes.com/client_data/0cc137e141492894816e3e85bd125764/script.js';
-      document.head.appendChild(script);
-    }
-  </script>
-  <!-- End cookieyes banner -->
-  
-  <!-- Force CookieYes banner to stay visible -->
-  <script>
-    (function() {
-      'use strict';
-      
-      // Skip on localhost - CookieYes doesn't load there
-      if (window.location.hostname === 'localhost' || 
-          window.location.hostname === '127.0.0.1' || 
-          window.location.hostname.startsWith('192.168.') ||
-          window.location.hostname.startsWith('10.') ||
-          window.location.hostname === '') {
-        return;
-      }
-      
-      let bannerFound = false;
-      let isUpdating = false; // Prevent infinite loops
-      
-      function forceBannerVisible() {
-        // Prevent recursive calls
-        if (isUpdating) return;
-        isUpdating = true;
-        // Find all possible CookieYes banner selectors
-        const selectors = [
-          '#cookieyes-banner',
-          '.cky-banner',
-          '[id*="cookieyes"]',
-          '[class*="cky-banner"]',
-          '[class*="cookieyes"]',
-          '[id*="cky"]',
-          'div[class*="cookie"]'
-        ];
-        
-        selectors.forEach(selector => {
-          try {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-              if (el && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.textContent.trim().length > 0)) {
-                bannerFound = true;
-                // Only update if actually needed to prevent infinite loops
-                if (el.style.display === 'none' || el.style.visibility === 'hidden' || el.style.opacity === '0') {
-                  el.style.display = 'block';
-                  el.style.visibility = 'visible';
-                  el.style.opacity = '1';
-                  el.style.zIndex = '99999';
-                  el.style.position = 'fixed';
-                  el.style.bottom = '0';
-                  el.style.left = '0';
-                  el.style.right = '0';
-                }
-                // Remove any hidden classes
-                el.classList.remove('hidden', 'cky-hidden', 'cookieyes-hidden', 'cky-notice-box-hidden');
-              }
-            });
-          } catch(e) {
-            console.error('CookieYes selector error:', e);
-          }
-        });
-        
-        // Also check for iframes that might contain the banner
-        try {
-          const iframes = document.querySelectorAll('iframe[src*="cookieyes"], iframe[src*="cky"]');
-          iframes.forEach(iframe => {
-            iframe.style.setProperty('display', 'block', 'important');
-            iframe.style.setProperty('visibility', 'visible', 'important');
-            iframe.style.setProperty('z-index', '99999', 'important');
-          });
-        } catch(e) {}
-        
-        isUpdating = false;
-      }
-      
-      // Run immediately
-      forceBannerVisible();
-      
-      // Run on DOM ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-          forceBannerVisible();
-          setTimeout(forceBannerVisible, 1000);
-          setTimeout(forceBannerVisible, 2000);
-        });
-      } else {
-        forceBannerVisible();
-        setTimeout(forceBannerVisible, 1000);
-        setTimeout(forceBannerVisible, 2000);
-      }
-      
-      // Run on window load
-      window.addEventListener('load', function() {
-        forceBannerVisible();
-        setTimeout(forceBannerVisible, 500);
-        setTimeout(forceBannerVisible, 1500);
-      });
-      
-      // Monitor for DOM additions only (not style changes) to prevent infinite loops
-      const observer = new MutationObserver(function(mutations) {
-        // Only react to new nodes being added, not style/attribute changes
-        const hasNewNodes = mutations.some(mutation => 
-          mutation.type === 'childList' && mutation.addedNodes.length > 0
-        );
-        if (hasNewNodes) {
-          forceBannerVisible();
-        }
-      });
-      
-      // Start observing when body is available - only watch for new nodes
-      function startObserving() {
-        if (document.body) {
-          observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            attributes: false // Don't watch attributes to prevent loops
-          });
-        } else {
-          setTimeout(startObserving, 100);
-        }
-      }
-      
-      startObserving();
-      
-      // Continuously check every 300ms for first 10 seconds, then every 1 second
-      let checkCount = 0;
-      const fastInterval = setInterval(function() {
-        forceBannerVisible();
-        checkCount++;
-        if (checkCount >= 33) { // ~10 seconds
-          clearInterval(fastInterval);
-        }
-      }, 300);
-      
-      // Also check every 2 seconds (less frequent to reduce load)
-      setInterval(forceBannerVisible, 2000);
-      
-      // Debug: Log after 3 seconds
-      setTimeout(function() {
-        if (!bannerFound) {
-          console.warn('CookieYes banner not found in DOM. Check CookieYes dashboard settings and domain configuration.');
-        }
-      }, 3000);
-    })();
-  </script>
-  
-  <!-- Google Consent Mode - Must load BEFORE GTM/GA -->
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    
-    // Set default consent state to 'denied' - no cookies until consent
-    gtag('consent', 'default', {
-      'analytics_storage': 'denied',
-      'ad_storage': 'denied',
-      'wait_for_update': 500
-    });
-    
-    // Listen for CookieYes consent updates and update Google Consent Mode
-    window.addEventListener('CookieYes', function(e) {
-      if (e.detail && e.detail.action === 'accept' || e.detail === 'accept') {
-        gtag('consent', 'update', {
-          'analytics_storage': 'granted',
-          'ad_storage': 'granted'
-        });
-      } else if (e.detail && e.detail.action === 'reject' || e.detail === 'reject') {
-        gtag('consent', 'update', {
-          'analytics_storage': 'denied',
-          'ad_storage': 'denied'
-        });
-      }
-    });
-    
-    document.addEventListener('DOMContentLoaded', function() {
-      if (typeof window.CookieYes !== 'undefined' && window.CookieYes.getConsent) {
-        const consent = window.CookieYes.getConsent();
-        if (consent && consent.analytics) {
-          gtag('consent', 'update', {
-            'analytics_storage': 'granted',
-            'ad_storage': 'granted'
-          });
-        }
-      }
-    });
-  </script>
-  
-  <!-- Google Tag Manager - Blocked until consent -->
-  <script data-cookieyes="cookieyes-analytics">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-K97CNH32');</script>
-  <!-- End Google Tag Manager -->
-  <!-- Google tag (gtag.js) - Blocked until consent -->
-  <script async data-cookieyes="cookieyes-analytics" src="https://www.googletagmanager.com/gtag/js?id=G-X89C2WMLSL"></script>
-  <script data-cookieyes="cookieyes-analytics">
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-X89C2WMLSL');
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/js/consent.js"></script>
   
   <!-- Primary Meta Tags -->
   <title>Privacy Policy & Terms of Use | Artur Morin</title>
@@ -247,10 +34,10 @@
   <meta name="twitter:creator" content="@morinartur">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
   <meta name="theme-color" content="#0f0f0f">
   
   <!-- Preconnect for performance -->
@@ -261,7 +48,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Science+Gothic:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   
   <!-- Styles -->
-  <link rel="stylesheet" href="../css/privacy-policy.css">
+  <link rel="stylesheet" href="/css/privacy-policy.css">
   
   <!-- Structured Data (JSON-LD) for Rich Results -->
   <script type="application/ld+json">
@@ -280,10 +67,6 @@
   </script>
 </head>
 <body>
-  <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K97CNH32"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
   <!-- Skip to main content link for keyboard users -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
   
@@ -345,7 +128,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <span class="italic">& Terms of Use</span>
         </h1>
         <div class="hero-lead-row privacy-hero-lead-row">
-          <p class="hero-lead privacy-hero-lead">Last updated: <span id="current-date"></span></p>
+          <p class="hero-lead privacy-hero-lead">Last updated: <time datetime="2026-09-29">29 September 2026</time></p>
           <!-- Breadcrumbs - Tablet position (same line as last updated) -->
           <nav class="breadcrumbs breadcrumbs-tablet" aria-label="Breadcrumb">
             <a href="/">Home</a>
@@ -382,7 +165,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <div class="privacy-section">
           <h2>3. Analytics & Cookies</h2>
-          <p>Our website uses the following services to understand how visitors interact with the site:</p>
+          <p>Analytics only runs if you allow it in the cookie banner. You can change your choice at any time via <a href="#" class="cky-banner-element privacy-link">Cookie settings</a> (also linked in the footer). If you decline, no analytics scripts are loaded.</p>
           
           <h3>Google Analytics</h3>
           <p>Google Analytics may collect:</p>
@@ -398,14 +181,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <h3>Google Tag Manager</h3>
           <p>We use Google Tag Manager to manage website tags and tracking scripts. This service helps us organize and deploy analytics and marketing tags efficiently.</p>
 
-          <h3>reCAPTCHA v3</h3>
-          <p>We use Google reCAPTCHA v3 to protect our contact forms from spam and abuse. reCAPTCHA may collect:</p>
-          <ul>
-            <li>• Browser and device information</li>
-            <li>• Mouse movements and interactions</li>
-            <li>• IP address</li>
-          </ul>
-          <p>This data is processed by Google to determine if you are a human user. Google's Privacy Policy applies: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="privacy-link">https://policies.google.com/privacy</a></p>
+          <h3>Cookie banner (CookieYes)</h3>
+          <p>We use CookieYes to ask for and store your cookie choice. It sets a small cookie that remembers your decision.</p>
+
+          <h3>Fonts (Google Fonts)</h3>
+          <p>Our fonts are loaded from Google Fonts, which means your browser connects to Google's servers and your IP address is shared with Google to deliver the font files. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="privacy-link">Google's Privacy Policy</a></p>
+
+          <h3>Hosting (GitHub Pages)</h3>
+          <p>The website is hosted on GitHub Pages. GitHub may log technical data such as your IP address when you visit, to operate and secure the service. <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener" class="privacy-link">GitHub Privacy Statement</a></p>
         </div>
 
         <div class="privacy-section">
@@ -423,8 +206,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <h2>5. Legal Basis for Processing (GDPR)</h2>
           <p>We process your personal data based on:</p>
           <ul>
-            <li>• <strong>Your consent</strong> — when you submit the contact form</li>
-            <li>• <strong>Legitimate interest</strong> — for basic website analytics and security</li>
+            <li>• <strong>Your consent</strong> — when you submit the contact form, and for analytics cookies (only if you accept them in the cookie banner)</li>
+            <li>• <strong>Legitimate interest</strong> — for hosting, fonts and keeping the website secure</li>
             <li>• <strong>Contractual necessity</strong> — if you become a client, to fulfill our service agreement</li>
           </ul>
         </div>
@@ -445,7 +228,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <p>We use reasonable technical and organizational measures to protect your information from unauthorized access, loss, or misuse. This includes:</p>
           <ul>
             <li>• SSL encryption for data transmission</li>
-            <li>• reCAPTCHA protection on forms</li>
+            <li>• Spam filtering of form submissions (FormSubmit)</li>
             <li>• Secure email communication</li>
           </ul>
           <p>However, no online transmission or storage system is completely secure. While we strive to protect your data, we cannot guarantee absolute security.</p>
@@ -464,6 +247,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <li>• <strong>Withdraw consent</strong> at any time</li>
           </ul>
           <p>To exercise these rights, contact us at <a href="mailto:inquirymorin@gmail.com" class="privacy-link">inquirymorin@gmail.com</a></p>
+          <p>You also have the right to lodge a complaint with the Estonian Data Protection Inspectorate (Andmekaitse Inspektsioon, <a href="https://www.aki.ee/en" target="_blank" rel="noopener" class="privacy-link">aki.ee</a>).</p>
         </div>
 
         <div class="privacy-section">
@@ -473,7 +257,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <li>• <strong>FormSubmit</strong> — Contact form submission and email delivery (<a href="https://formsubmit.co/privacy" target="_blank" rel="noopener" class="privacy-link">Privacy Policy</a>)</li>
             <li>• <strong>Google Analytics</strong> — Website analytics (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="privacy-link">Privacy Policy</a>)</li>
             <li>• <strong>Google Tag Manager</strong> — Tag management (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="privacy-link">Privacy Policy</a>)</li>
-            <li>• <strong>Google reCAPTCHA</strong> — Spam protection (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="privacy-link">Privacy Policy</a>)</li>
+            <li>• <strong>CookieYes</strong> — Cookie consent (<a href="https://www.cookieyes.com/privacy-policy/" target="_blank" rel="noopener" class="privacy-link">Privacy Policy</a>)</li>
+            <li>• <strong>Google Fonts</strong> — Web fonts (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="privacy-link">Privacy Policy</a>)</li>
+            <li>• <strong>GitHub Pages</strong> — Website hosting (<a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener" class="privacy-link">Privacy Statement</a>)</li>
           </ul>
           <p>These services have their own privacy policies and terms of service. When you submit our contact form, your data is processed by FormSubmit to deliver your message to us via email.</p>
         </div>
@@ -482,11 +268,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <h2>10. Cookies</h2>
           <p>Our website uses cookies and similar technologies for:</p>
           <ul>
-            <li>• Analytics (Google Analytics)</li>
-            <li>• Security (reCAPTCHA)</li>
-            <li>• Website functionality</li>
+            <li>• <strong>Necessary</strong> — remembering your cookie choice (CookieYes)</li>
+            <li>• <strong>Analytics</strong> — Google Analytics, only after you accept</li>
           </ul>
-          <p>You can control cookies through your browser settings. However, disabling cookies may affect website functionality.</p>
+          <p>You can change or withdraw your choice at any time via <a href="#" class="cky-banner-element privacy-link">Cookie settings</a>, or block cookies in your browser settings.</p>
         </div>
 
         <div class="privacy-section">
@@ -513,7 +298,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <!-- Terms of Use Section -->
         <div class="privacy-section" style="margin-top: 80px; padding-top: 60px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-          <h1 style="font-size: 2.5rem; margin-bottom: 40px;">Terms of Use</h1>
+          <h2 id="terms" style="font-size: 2.5rem; margin-bottom: 40px;">Terms of Use</h2>
         </div>
 
         <div class="privacy-section">
@@ -647,19 +432,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="/about/">About</a>
         <a href="/#contact">Contact</a>
         <a href="/privacy-policy/">Privacy & Terms</a>
+        <a href="#" class="cky-banner-element">Cookie settings</a>
       </nav>
       <div class="footer-social" aria-label="Social links">
         <!-- X (formerly Twitter) - Official logo -->
         <a href="https://x.com/_smilexfd_" target="_blank" rel="noopener noreferrer" class="social-x" aria-label="Artur Morin on X">
-          <img src="../assets/icons/twitter-x.svg" alt="X" class="social-icon icon-x" width="16" height="16">
+          <img src="/assets/icons/twitter-x.svg" alt="X" class="social-icon icon-x" width="16" height="16">
         </a>
         <!-- Telegram -->
         <a href="https://t.me/SmileXFD" target="_blank" rel="noopener noreferrer" class="social-telegram" aria-label="Artur Morin on Telegram">
-          <img src="../assets/icons/telegram.svg" alt="Telegram" class="social-icon icon-telegram" width="16" height="16">
+          <img src="/assets/icons/telegram.svg" alt="Telegram" class="social-icon icon-telegram" width="16" height="16">
         </a>
         <!-- Threads by Meta - Official logo -->
         <a href="https://www.threads.net/@morinartur" target="_blank" rel="noopener noreferrer" class="social-threads" aria-label="Artur Morin on Threads">
-          <img src="../assets/icons/threads.svg" alt="Threads" class="social-icon icon-threads" width="16" height="16">
+          <img src="/assets/icons/threads.svg" alt="Threads" class="social-icon icon-threads" width="16" height="16">
         </a>
       </div>
     </div>
@@ -668,7 +454,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </footer>
 
-  <script src="../js/privacy-policy.js"></script>
+  <script src="/js/privacy-policy.js"></script>
   <script src="/js/logo.js"></script>
 </body>
 </html>

@@ -1745,3 +1745,19 @@ h1, h2, h3, h4 {
   display: block !important;
 }
 
+
+/* =============================================================================
+   Reduced motion - respect the OS "reduce motion" setting
+   ============================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .parallax { transform: none !important; }
+  .grain, .loader-grain, .cursor-trail { display: none !important; }
+}
+
+#main-content:focus { outline: none; }

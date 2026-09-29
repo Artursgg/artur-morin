@@ -12,7 +12,7 @@
 
   const HOME_URL = '/';
   const TOP_THRESHOLD = 10; // px - counts as "at the top"
-  const HOME_PATHS = ['/', '/index.html', '/photography-index.html'];
+  const HOME_PATHS = ['/', '/index.html'];
 
   const isHomePage = () => HOME_PATHS.includes(window.location.pathname);
   const isAtTop = () => window.scrollY <= TOP_THRESHOLD;

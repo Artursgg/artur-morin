@@ -58,88 +58,6 @@ class ImageLoader {
 // Initialize image loader
 const imageLoader = new ImageLoader();
 
-// Populate portfolio grid (work-grid)
-function populatePortfolioGrid() {
-  const workGrid = document.querySelector('.work-grid');
-  if (!workGrid || !imageLoader.loaded) return;
-
-  const workCards = Array.from(workGrid.querySelectorAll('.work-card'));
-  let cardIndex = 0;
-
-  // Loop through all categories
-  Object.keys(imageLoader.images.portfolio).forEach(category => {
-    const images = imageLoader.getPortfolioImages(category);
-
-    images.forEach(image => {
-      if (cardIndex >= workCards.length) return;
-
-      const workCard = workCards[cardIndex];
-      const img = workCard.querySelector('img');
-      // the large featured card is too wide for a thumbnail
-      const src = workCard.classList.contains('work-card--large') ? image.full : image.thumbnail;
-      if (img && src) {
-        const testImg = new Image();
-        testImg.onload = () => {
-          img.src = src;
-          img.alt = image.title || img.alt;
-        };
-        testImg.src = src;
-      }
-
-      const title = workCard.querySelector('h3');
-      if (title) title.textContent = image.title || '';
-
-      const description = workCard.querySelector('.work-card-info p');
-      if (description) description.textContent = image.description || '';
-
-      const categorySpan = workCard.querySelector('.work-category');
-      if (categorySpan) categorySpan.textContent = category;
-
-      cardIndex++;
-    });
-  });
-}
-
-// Populate dedicated portfolio page grid (6x6)
-function populatePortfolioPageGrid() {
-  const portfolioGrid = document.querySelector('.portfolio-grid-6x6');
-  if (!portfolioGrid || !imageLoader.loaded || !imageLoader.images) return;
-
-  const gridItems = Array.from(portfolioGrid.querySelectorAll('.grid-item'));
-  if (!gridItems.length) return;
-
-  const allImages = imageLoader.getPortfolioImages();
-  if (!allImages.length) return;
-
-  const maxItems = Math.min(gridItems.length, allImages.length);
-
-  for (let i = 0; i < maxItems; i++) {
-    const item = gridItems[i];
-    const image = allImages[i];
-    if (!image || !image.thumbnail || !image.full) continue;
-
-    let img = item.querySelector('img');
-    if (!img) {
-      img = document.createElement('img');
-      item.appendChild(img);
-    }
-
-    // Set thumbnail as src
-    img.src = image.thumbnail;
-    img.alt = image.alt || image.title || 'Portfolio image';
-    // Set full image path in data attribute for lightbox
-    img.setAttribute('data-src', image.full);
-    img.setAttribute('loading', 'lazy');
-
-    item.style.display = ''; // ensure visible
-  }
-
-  // Hide extra placeholders if fewer images
-  for (let i = maxItems; i < gridItems.length; i++) {
-    gridItems[i].style.display = 'none';
-  }
-}
-
 // Update hero image
 function updateHeroImage() {
   const heroImage = imageLoader.getHeroImage();
@@ -170,11 +88,7 @@ function updateAboutImage() {
 document.addEventListener('DOMContentLoaded', async () => {
   await imageLoader.loadImages();
 
-  console.log('Loaded images:', imageLoader.images);
-
   if (imageLoader.loaded) {
-    populatePortfolioGrid();
-    populatePortfolioPageGrid();
     updateHeroImage();
     updateAboutImage();
   }
