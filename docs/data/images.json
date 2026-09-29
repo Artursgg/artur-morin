@@ -283,14 +283,26 @@
     "portrait": "/assets/images/portfolio/about/Me-2.jpg"
   },
   "potw": {
-    "image": "/assets/images/portfolio/potw/Fireworks.jpg",
-    "webp": "/assets/images/portfolio/potw/Fireworks_TB.webp",
-    "width": 1000,
-    "height": 1500,
-    "title": "Blasting Emotions",
-    "caption": "All colours letting the old year pass away",
-    "location": "Tallinn",
-    "alt": "Picture of the Week - Fireworks"
+    "image": "/assets/images/portfolio/potw/2026-09-30-Eye-of-the-Sauron.jpg",
+    "width": 1600,
+    "height": 1067,
+    "title": "Eye of the Sauron",
+    "caption": "Beautiful Sun eclipse as a quiet eye from the sky",
+    "location": "Manzanares, Spain",
+    "alt": "Sun eclipse under the skies of Spain",
+    "webp": "/assets/images/portfolio/potw/2026-09-30-Eye-of-the-Sauron.webp"
   },
-  "potwHistory": []
+  "potwHistory": [
+    {
+      "image": "/assets/images/portfolio/potw/Fireworks.jpg",
+      "webp": "/assets/images/portfolio/potw/Fireworks_TB.webp",
+      "width": 1000,
+      "height": 1500,
+      "title": "Blasting Emotions",
+      "caption": "All colours letting the old year pass away",
+      "location": "Tallinn",
+      "alt": "Picture of the Week - Fireworks",
+      "replaced": "2026-09-30"
+    }
+  ]
 }
