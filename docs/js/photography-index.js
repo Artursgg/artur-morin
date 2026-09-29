@@ -547,84 +547,6 @@ if (mobileMenuToggle && primaryNav) {
 }
 
 // =============================================================================
-// CAPTCHA Challenge Generator
-// Creates a simple human verification question (math or word typing).
-// =============================================================================
-const challengeText = document.getElementById("challenge-text");
-const challengeInput = document.getElementById("challenge-input");
-const challengeHint = document.getElementById("challenge-hint");
-let challengeAnswer = "";
-
-function generateChallenge() {
-  if (!challengeText || !challengeInput) return;
-
-  // 50/50 chance of math question vs word typing
-  if (Math.random() > 0.5) {
-    // Math question: variety of operations
-    const operation = Math.random();
-    if (operation < 0.5) {
-      // Addition
-      const a = Math.floor(Math.random() * 10) + 3; // 3-12
-      const b = Math.floor(Math.random() * 10) + 2; // 2-11
-      challengeAnswer = String(a + b);
-      challengeText.textContent = `${a} + ${b} = ?`;
-    } else if (operation < 0.75) {
-      // Subtraction (result must be positive)
-      const a = Math.floor(Math.random() * 8) + 8; // 8-15
-      const b = Math.floor(Math.random() * 5) + 2; // 2-6
-      challengeAnswer = String(a - b);
-      challengeText.textContent = `${a} - ${b} = ?`;
-    } else {
-      // Simple multiplication
-      const a = Math.floor(Math.random() * 5) + 2; // 2-6
-      const b = Math.floor(Math.random() * 5) + 2; // 2-6
-      challengeAnswer = String(a * b);
-      challengeText.textContent = `${a} × ${b} = ?`;
-    }
-  } else {
-    // Word typing challenge - expanded options
-    const prompts = [
-      { text: 'Type the word "Artur"', answer: "Artur" },
-      { text: 'Type the word "Morin"', answer: "Morin" },
-      { text: 'Type the word "Photography"', answer: "Photography" },
-      { text: 'Type the word "Camera"', answer: "Camera" },
-      { text: 'Type the word "Lens"', answer: "Lens" },
-      { text: 'Type the word "Shutter"', answer: "Shutter" },
-      { text: 'Type the word "Aperture"', answer: "Aperture" },
-      { text: 'Type the word "Frame"', answer: "Frame" },
-      { text: 'Type the word "Light"', answer: "Light" },
-      { text: 'Type the word "Portrait"', answer: "Portrait" },
-      { text: 'Type the word "Editorial"', answer: "Editorial" },
-      { text: 'Type the word "Tallinn"', answer: "Tallinn" },
-      { text: 'Type the number "2024"', answer: "2024" },
-      { text: 'Type the number "2025"', answer: "2025" },
-      { text: 'Type the number "100"', answer: "100" },
-      { text: 'Type the number "50"', answer: "50" },
-      { text: 'Type the number "24"', answer: "24" },
-      { text: 'Type the number "35"', answer: "35" },
-      { text: 'Type the word "Studio"', answer: "Studio" },
-      { text: 'Type the word "Creative"', answer: "Creative" },
-      { text: 'Type the word "Visual"', answer: "Visual" },
-      { text: 'Type the word "Story"', answer: "Story" },
-      { text: 'Type the word "Image"', answer: "Image" },
-      { text: 'Type the word "Photo"', answer: "Photo" },
-      { text: 'Type the word "Capture"', answer: "Capture" },
-    ];
-    const picked = prompts[Math.floor(Math.random() * prompts.length)];
-    challengeAnswer = picked.answer;
-    challengeText.textContent = picked.text;
-  }
-
-  // Reset input state
-  challengeInput.value = "";
-  if (challengeHint) {
-    challengeHint.textContent = "Enter the answer shown above.";
-    challengeHint.classList.remove("error");
-  }
-  challengeInput.classList.remove("error");
-}
-
-// =============================================================================
 // Form Validation with Accessibility
 // =============================================================================
 const contactForm = document.querySelector('.contact-form');
@@ -830,27 +752,7 @@ if (contactForm) {
     const isEmailValid = validateEmail();
     const isMessageValid = validateMessage();
     
-    // Verify CAPTCHA answer
-    let isChallengeValid = true;
-    if (challengeInput && challengeAnswer) {
-      const inputValue = challengeInput.value.trim();
-      if (inputValue.toLowerCase() !== challengeAnswer.toLowerCase()) {
-        challengeInput.classList.add("error");
-        if (challengeHint) {
-          challengeHint.textContent = "That answer didn't match. Try again.";
-          challengeHint.classList.add("error");
-        }
-        challengeInput.focus();
-        isChallengeValid = false;
-      } else {
-        challengeInput.classList.remove("error");
-        if (challengeHint) {
-          challengeHint.classList.remove("error");
-        }
-      }
-    }
-    
-    if (isNameValid && isEmailValid && isMessageValid && isChallengeValid) {
+    if (isNameValid && isEmailValid && isMessageValid) {
       // Form is valid - send it via Web3Forms (https://web3forms.com)
       const formData = new FormData(contactForm);
       const project = formData.get('project');
@@ -922,9 +824,7 @@ if (contactForm) {
       }
     }
   });
-  
-  // Generate initial challenge
-  generateChallenge();
+
 }
 
 // =============================================================================

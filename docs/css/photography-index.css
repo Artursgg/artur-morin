@@ -2918,49 +2918,12 @@ h1, h2, h3, h4 {
   color: var(--gold-light);
 }
 
-/* CAPTCHA Challenge Styles */
-.challenge-label {
-  margin-top: 8px;
-  margin-bottom: 0; /* Prevent extra space */
-}
 
-.challenge-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 8px;
-  margin-bottom: 0; /* Prevent extra space */
-}
 
-.challenge-row #challenge-text {
-  font-size: 0.9rem;
-  color: var(--text);
-  font-weight: 500;
-  min-width: 150px;
-}
 
-.challenge-row #challenge-input {
-  flex: 1;
-  max-width: 200px;
-}
 
-.challenge-hint {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 4px;
-  margin-bottom: 0; /* Prevent extra space */
-  transition: color 0.3s ease;
-}
 
-.challenge-hint.error {
-  color: #ff6b6b;
-}
 
-#challenge-input.error {
-  border-color: #ff6b6b;
-  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
-}
 
 /* --------------------------------------------------------------------------
    Footer
@@ -4481,20 +4444,8 @@ h1, h2, h3, h4 {
     font-size: 1rem;
   }
 
-  .challenge-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
 
-  .challenge-row #challenge-text {
-    min-width: auto;
-    text-align: center;
-  }
 
-  .challenge-row #challenge-input {
-    max-width: 100%;
-  }
 
   /* Footer */
   .footer {
@@ -4829,9 +4780,6 @@ h1, h2, h3, h4 {
     font-size: 0.95rem;
   }
 
-  .challenge-row #challenge-text {
-    font-size: 0.85rem;
-  }
 
   /* Footer */
   .footer {
