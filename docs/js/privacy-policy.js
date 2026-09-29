@@ -173,8 +173,8 @@ if (mobileMenuToggle && primaryNav) {
     });
   }
   
-  // Initialize menu state - hidden on mobile by default
-  if (window.innerWidth <= 768) {
+  // Initialize menu state - hidden by default wherever the phone/tablet menu is used (<= 1024px)
+  if (window.innerWidth <= 1024) {
     primaryNav.setAttribute('aria-hidden', 'true');
     if (navOverlay) navOverlay.setAttribute('aria-hidden', 'true');
     // Remove focus and make links non-focusable when hidden (accessibility fix)
@@ -251,7 +251,7 @@ if (mobileMenuToggle && primaryNav) {
   
   // Handle window resize
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) {
+    if (window.innerWidth > 1024) {
       primaryNav.removeAttribute('aria-hidden');
       if (navOverlay) navOverlay.setAttribute('aria-hidden', 'true');
       mobileMenuToggle.setAttribute('aria-expanded', 'false');
@@ -261,11 +261,10 @@ if (mobileMenuToggle && primaryNav) {
       navLinks.forEach(link => {
         link.removeAttribute('tabindex');
       });
-    } else {
-      // On mobile, ensure menu is hidden
-      if (primaryNav.getAttribute('aria-hidden') !== 'true') {
-        closeMenu();
-      }
+    } else if (mobileMenuToggle.getAttribute('aria-expanded') !== 'true' && primaryNav.getAttribute('aria-hidden') !== 'true') {
+      // keep the closed menu hidden; an open menu stays open (phones fire
+      // "resize" when the address bar slides in/out while scrolling)
+      closeMenu();
     }
   });
 }

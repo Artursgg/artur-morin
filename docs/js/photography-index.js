@@ -446,8 +446,8 @@ if (mobileMenuToggle && primaryNav) {
     });
   }
   
-  // Initialize menu state - hidden on mobile by default
-  if (window.innerWidth <= 768) {
+  // Initialize menu state - hidden by default wherever the phone/tablet menu is used (<= 1024px)
+  if (window.innerWidth <= 1024) {
     primaryNav.setAttribute('aria-hidden', 'true');
     if (navOverlay) navOverlay.setAttribute('aria-hidden', 'true');
     // Remove focus and make links non-focusable when hidden (accessibility fix)
@@ -531,7 +531,7 @@ if (mobileMenuToggle && primaryNav) {
   
   // Handle window resize
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) {
+    if (window.innerWidth > 1024) {
       primaryNav.removeAttribute('aria-hidden');
       if (navOverlay) navOverlay.setAttribute('aria-hidden', 'true');
       mobileMenuToggle.setAttribute('aria-expanded', 'false');
@@ -541,8 +541,9 @@ if (mobileMenuToggle && primaryNav) {
       navLinks.forEach(link => {
         link.removeAttribute('tabindex');
       });
-    } else {
-      // Remove focus BEFORE setting aria-hidden (accessibility fix)
+    } else if (mobileMenuToggle.getAttribute('aria-expanded') !== 'true') {
+      // keep the closed menu hidden; an open menu stays open (phones fire
+      // "resize" when the address bar slides in/out while scrolling)
       removeNavFocus();
       primaryNav.setAttribute('aria-hidden', 'true');
       if (navOverlay) navOverlay.setAttribute('aria-hidden', 'true');
@@ -1974,7 +1975,9 @@ window.addEventListener('pagehide', (event) => {
       slide.setAttribute('aria-hidden', index === currentIndex ? 'false' : 'true');
     });
     dots.forEach((dot, index) => {
-      dot.setAttribute('aria-selected', index === currentIndex ? 'true' : 'false');
+      // aria-current marks the visible slide (aria-selected is only valid on role=tab)
+      if (index === currentIndex) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
     });
   }
   

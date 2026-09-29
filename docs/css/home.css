@@ -617,7 +617,7 @@
   background: rgba(255, 255, 255, 0.4);
 }
 
-.carousel-dots button[aria-selected="true"] {
+.carousel-dots button[aria-current="true"] {
   background: var(--gold);
 }
 
