@@ -386,21 +386,10 @@
         <h2 id="portfolio-heading">My <span class="italic">complete collection</span></h2>
       </header>
       
-      <!-- 6x6 Grid Layout -->
-<div class="portfolio-grid-6x6">
-  <!-- JS will dynamically insert .grid-item images here -->
-</div>
-
-<!-- Lightbox Modal -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" aria-hidden="true">
-  <button class="lightbox-close" aria-label="Close lightbox">×</button>
-  <button class="lightbox-prev" aria-label="Previous image">←</button>
-  <button class="lightbox-next" aria-label="Next image">→</button>
-  <div class="lightbox-content">
-    <img class="lightbox-image" src="" alt="">
-  </div>
-</div>
-
+      <!-- Grid is filled from data/images.json by js/portfolio-lightbox.js -->
+      <div class="portfolio-grid-6x6"></div>
+    </section>
+  </main>
 
   <footer class="footer" role="contentinfo">
     <div class="footer-content">
@@ -441,9 +430,20 @@
     </div>
   </footer>
 
+  <!-- Lightbox: must be a direct child of <body>. Inside a transformed parent
+       (e.g. .parallax) position:fixed stops being relative to the screen. -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" aria-hidden="true">
+    <button class="lightbox-close" aria-label="Close">×</button>
+    <button class="lightbox-prev" aria-label="Previous image">←</button>
+    <button class="lightbox-next" aria-label="Next image">→</button>
+    <img class="lightbox-image" src="" alt="">
+    <p class="lightbox-counter" aria-live="polite"></p>
+  </div>
+
   <script src="../js/imageLoader.js"></script>
   <script src="../js/photography-index.js"></script>
   <script src="../js/portfolio-lightbox.js"></script>
+  <script src="/js/logo.js"></script>
 </body>
 </html>
 

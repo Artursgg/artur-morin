@@ -159,5 +159,16 @@
   },
   "about": {
     "portrait": "/assets/images/portfolio/about/Me-2.jpg"
-  }
+  },
+  "potw": {
+    "image": "/assets/images/portfolio/potw/Fireworks.jpg",
+    "webp": "/assets/images/portfolio/potw/Fireworks_TB.webp",
+    "width": 1000,
+    "height": 1500,
+    "title": "Blasting Emotions",
+    "caption": "All colours letting the old year pass away",
+    "location": "Tallinn",
+    "alt": "Picture of the Week - Fireworks"
+  },
+  "potwHistory": []
 }
