@@ -40,6 +40,10 @@
   --radius-xl: 32px;  /* Extra large: hero sections, major containers */
 }
 
+/* width/height attributes are for layout stability (no jump while loading);
+   :where() keeps this at zero specificity so any component rule still wins */
+:where(img[width][height]) { height: auto; }
+
 /* --------------------------------------------------------------------------
    Growing Grid Lines Animation
    Fine grid lines that spread like vines across the page
@@ -163,6 +167,7 @@ html {
   -webkit-overflow-scrolling: touch;
   height: auto;
   overflow-x: hidden;
+  overflow-x: clip; /* no nested scroll box (see note at end) */
   overflow-y: auto;
   width: 100%;
   max-width: 100%;
@@ -198,7 +203,8 @@ body {
   font-weight: 300;
   line-height: 1.7;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-x: clip; /* no nested scroll box (see note at end) */
+  overflow-y: visible; /* the window scrolls, not <body> */
   position: relative;
   width: 100%;
   max-width: 100%;
@@ -212,6 +218,7 @@ main,
   position: relative;
   z-index: 1; /* Above grid lines */
   overflow-x: hidden;
+  overflow-x: clip; /* no nested scroll box (see note at end) */
   overflow-y: visible;
   width: 100%;
   max-width: 100%;
@@ -365,7 +372,7 @@ img {
     padding-top: 35px; /* Balanced top padding for tablet */
   }
   
-  .work .section-header h2 {
+  .work .section-header :is(h1, h2) {
     display: block;
     margin-top: 0; /* Ensure no overlap */
     margin-bottom: 0;
@@ -426,7 +433,7 @@ img {
     padding-top: 50px !important; /* Balanced top padding for mobile */
   }
   
-  .work .section-header h2 {
+  .work .section-header :is(h1, h2) {
     margin-top: 0;
   }
 }
@@ -486,7 +493,6 @@ img {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  display: none;
 }
 
 /* Film grain overlay for authentic photography feel */
@@ -2294,7 +2300,7 @@ h1, h2, h3, h4 {
   }
 }
 
-.section-header h2 {
+.section-header :is(h1, h2) {
   font-size: clamp(2rem, 4vw, 3rem);
   margin-top: 0;
 }
@@ -2915,49 +2921,12 @@ h1, h2, h3, h4 {
   color: var(--gold-light);
 }
 
-/* CAPTCHA Challenge Styles */
-.challenge-label {
-  margin-top: 8px;
-  margin-bottom: 0; /* Prevent extra space */
-}
 
-.challenge-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 8px;
-  margin-bottom: 0; /* Prevent extra space */
-}
 
-.challenge-row #challenge-text {
-  font-size: 0.9rem;
-  color: var(--text);
-  font-weight: 500;
-  min-width: 150px;
-}
 
-.challenge-row #challenge-input {
-  flex: 1;
-  max-width: 200px;
-}
 
-.challenge-hint {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 4px;
-  margin-bottom: 0; /* Prevent extra space */
-  transition: color 0.3s ease;
-}
 
-.challenge-hint.error {
-  color: #ff6b6b;
-}
 
-#challenge-input.error {
-  border-color: #ff6b6b;
-  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
-}
 
 /* --------------------------------------------------------------------------
    Footer
@@ -3482,6 +3451,7 @@ h1, h2, h3, h4 {
   html,
   body {
     overflow-x: hidden;
+    overflow-x: clip; /* no nested scroll box (see note at end) */
     width: 100%;
     max-width: 100%;
     position: relative;
@@ -3490,6 +3460,7 @@ h1, h2, h3, h4 {
   .nav {
     padding: 20px 4vw;
     overflow-x: hidden;
+    overflow-x: clip; /* no nested scroll box (see note at end) */
     width: 100%;
     max-width: 100%;
   }
@@ -3890,6 +3861,7 @@ h1, h2, h3, h4 {
   html,
   body {
     overflow-x: hidden;
+    overflow-x: clip; /* no nested scroll box (see note at end) */
     width: 100%;
     max-width: 100%;
     position: relative;
@@ -3905,6 +3877,7 @@ h1, h2, h3, h4 {
     justify-content: space-between;
     align-items: center;
     overflow-x: hidden;
+    overflow-x: clip; /* no nested scroll box (see note at end) */
     width: 100%;
     max-width: 100%;
   }
@@ -4478,20 +4451,8 @@ h1, h2, h3, h4 {
     font-size: 1rem;
   }
 
-  .challenge-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
 
-  .challenge-row #challenge-text {
-    min-width: auto;
-    text-align: center;
-  }
 
-  .challenge-row #challenge-input {
-    max-width: 100%;
-  }
 
   /* Footer */
   .footer {
@@ -4528,7 +4489,7 @@ h1, h2, h3, h4 {
     margin-bottom: 40px;
   }
 
-  .section-header h2 {
+  .section-header :is(h1, h2) {
     font-size: clamp(2rem, 4vw, 3rem); /* Match desktop size */
   }
 }
@@ -4826,9 +4787,6 @@ h1, h2, h3, h4 {
     font-size: 0.95rem;
   }
 
-  .challenge-row #challenge-text {
-    font-size: 0.85rem;
-  }
 
   /* Footer */
   .footer {
@@ -4877,7 +4835,7 @@ h1, h2, h3, h4 {
     margin-bottom: 32px;
   }
 
-  .section-header h2 {
+  .section-header :is(h1, h2) {
     font-size: 1.8rem;
   }
 }
@@ -4982,4 +4940,172 @@ h1, h2, h3, h4 {
   .lightbox-close { top: 10px; right: 10px; }
   .lightbox-prev  { left: 10px; }
   .lightbox-next  { right: 10px; }
+}
+
+/* =============================================================================
+   Reduced motion - respect the OS "reduce motion" setting
+   ============================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .parallax { transform: none !important; }
+  .grain, .loader-grain, .cursor-trail { display: none !important; }
+}
+
+#main-content:focus { outline: none; }
+
+/* =============================================================================
+   Mobile / tablet menu - frosted glass, matching the desktop nav bar
+   (was a flat 50% transparent overlay, links were hard to read)
+   ============================================================================= */
+@media (max-width: 1024px) {
+  /* frosted backdrop: page stays visible but blurred */
+  .nav-overlay,
+  .nav::after {
+    /* light frost - page stays recognisable; raise blur() for a stronger effect */
+    background: rgba(10, 10, 10, 0.5);
+    backdrop-filter: blur(6px) saturate(140%);
+    -webkit-backdrop-filter: blur(6px) saturate(140%);
+  }
+
+  /* links sit on a clean panel; the blur is only outside it (on the backdrop) */
+  .nav #primary-nav ul {
+    padding: 28px 44px !important;
+    background: rgba(15, 15, 15, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: var(--radius-lg) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35) !important;
+    /* centre on whole pixels (translate(-50%,-50%) can land on half pixels = soft text) */
+    inset: 0 !important;
+    margin: auto !important;
+    width: fit-content !important;
+    height: fit-content !important;
+    transform: none !important;
+  }
+}
+
+/* =============================================================================
+   Desktop nav layout (>= 1025px) - replaces the fixed pixel margins above
+   (margin-left: 195px / margin-right: 300px / -250px), which only lined up
+   around 1440px and overlapped or pushed "Let's Talk" off-screen on
+   iPad Pro and 1280-1366px laptops.
+   Logo | links + Portfolio | Let's Talk - free space is shared automatically.
+   ============================================================================= */
+@media (min-width: 1025px) {
+  .nav nav {
+    flex: 0 1 auto;
+    margin: 0 0 0 auto;
+  }
+  .nav-portfolio {
+    margin: 0 0 0 12px;
+  }
+  .nav-cta {
+    margin-left: auto;
+  }
+}
+
+/* Narrow desktops / iPad Pro: tighten spacing so everything fits on one row */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .nav {
+    gap: 12px;
+    padding-left: 3vw;
+    padding-right: 3vw;
+  }
+  .nav ul a {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* Hero: both columns share the width (1fr alone lets the carousel squeeze the text) */
+@media (min-width: 1025px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .hero { gap: 48px; }
+  .hero .btn { white-space: nowrap; }
+}
+
+/* "You are here": the separate desktop Portfolio button uses the same gold as nav links */
+.nav-portfolio.active,
+.nav #primary-nav ul a.active {
+  color: var(--gold) !important;
+}
+
+
+/* Note: "overflow-x: hidden" + "overflow-y: visible" silently becomes
+   overflow-y: auto, turning elements into nested scroll boxes that trap the
+   mouse wheel/trackpad ("dead stop" while scrolling the About page).
+   "overflow-x: clip" (after each hidden) clips without creating a scroll box;
+   older browsers ignore it and keep "hidden". */
+
+/* Mobile/tablet menu open: lock the page behind it (the window scrolls, so lock <html>) */
+@media (max-width: 1024px) {
+  html:has(#primary-nav[aria-hidden="false"]) {
+    overflow: hidden !important;
+  }
+}
+
+/* =============================================================================
+   AM logo on phones/tablets - same as desktop: full "Artur AM Morin" in its
+   glass box. Touch has no hover, so a tap plays the desktop hover collapse
+   (.logo-collapsing, added by js/logo.js) before scrolling up / going home.
+   ============================================================================= */
+@media (max-width: 1024px) {
+  .logo {
+    gap: 8px;
+  }
+  .logo::before {
+    opacity: 1;
+    left: 0;
+    right: 0;
+  }
+  .logo-name-first,
+  .logo-name-last {
+    opacity: 1;
+    transform: none;
+    max-width: none;
+    font-size: 1rem;
+  }
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+  }
+
+  .logo.logo-collapsing::before {
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .logo.logo-collapsing .logo-name-first {
+    transform: translateX(28px) scale(0.5);
+    opacity: 0;
+  }
+  .logo.logo-collapsing .logo-name-last {
+    transform: translateX(-28px) scale(0.5);
+    opacity: 0;
+  }
+  .logo.logo-collapsing .logo-mark {
+    background: var(--gold);
+    color: var(--bg);
+    box-shadow: 0 0 20px rgba(201, 166, 107, 0.6),
+                0 0 40px rgba(201, 166, 107, 0.4);
+  }
+}
+
+/* No blue/grey flash when tapping links, buttons and the card stack on phones/tablets
+   (the browser "tap highlight"); keyboard focus outlines are unaffected */
+a,
+button,
+[role="button"],
+.award-stack,
+.stack-card {
+  -webkit-tap-highlight-color: transparent;
 }

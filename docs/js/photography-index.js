@@ -5,97 +5,20 @@
  */
 
 // =============================================================================
-// Page Loader - Hide when page is fully loaded
+// Page Loader - fade out as soon as the page is ready, then remove it
+// (scripts load at the end of <body>, so the DOM is already there)
 // =============================================================================
 (function() {
   'use strict';
-  
-  function hideLoader() {
-    const pageLoader = document.getElementById("page-loader");
-    if (pageLoader && !pageLoader.classList.contains("hidden")) {
-      pageLoader.classList.add("hidden");
-    }
-  }
 
-  // Strategy 1: Immediate check if already loaded
-  if (document.readyState === "complete" || document.readyState === "interactive") {
-    setTimeout(hideLoader, 100);
-  }
+  const pageLoader = document.getElementById('page-loader');
+  if (!pageLoader) return;
 
-  // Strategy 2: Wait for full page load
-  window.addEventListener("load", function() {
-    setTimeout(hideLoader, 100);
-  });
-
-  // Strategy 3: Also try on DOMContentLoaded
-  // Check if DOMContentLoaded has already fired
-  if (document.readyState === "loading") {
-    // DOMContentLoaded hasn't fired yet, add listener
-  document.addEventListener("DOMContentLoaded", function() {
-    setTimeout(hideLoader, 500);
-  });
-  } else {
-    // DOMContentLoaded has already fired, call hideLoader directly
-    setTimeout(hideLoader, 500);
-  }
-
-  // Strategy 4: Aggressive fallback - force hide after 1 second
-  setTimeout(hideLoader, 1000);
-  
-  // Strategy 5: Final fallback - force hide after 2 seconds
-  setTimeout(hideLoader, 2000);
+  pageLoader.classList.add('hidden');
+  // remove after the fade so its animations stop running
+  setTimeout(() => pageLoader.remove(), 700);
 })();
 
-// =============================================================================
-// Camera Settings Rotation - Rotate through different camera settings
-// =============================================================================
-(function() {
-  'use strict';
-  
-  // Camera settings options (3 options for each field)
-  const fNumbers = ['2.8', '4.0', '5.6'];
-  const isoValues = ['400', '800', '1600'];
-  const shutterValues = ['60', '125', '250'];
-  
-  let currentIndex = 0;
-  
-  function rotateCameraSettings() {
-    const fNumberElement = document.querySelector('.f-number');
-    const isoValueElement = document.querySelector('.iso-value');
-    const shutterValueElement = document.querySelector('.shutter-value');
-    
-    if (!fNumberElement || !isoValueElement || !shutterValueElement) {
-      return; // Elements not found, exit early
-    }
-    
-    // Update to next index (cycle through 0, 1, 2)
-    currentIndex = (currentIndex + 1) % fNumbers.length;
-    
-    // Update values with fade effect
-    fNumberElement.style.opacity = '0';
-    isoValueElement.style.opacity = '0';
-    shutterValueElement.style.opacity = '0';
-    
-    setTimeout(() => {
-      fNumberElement.textContent = fNumbers[currentIndex];
-      isoValueElement.textContent = isoValues[currentIndex];
-      shutterValueElement.textContent = shutterValues[currentIndex];
-      
-      fNumberElement.style.opacity = '1';
-      isoValueElement.style.opacity = '1';
-      shutterValueElement.style.opacity = '1';
-    }, 200); // Half of transition time for smooth fade
-  }
-  
-  // Start rotation when DOM is ready
-  document.addEventListener('DOMContentLoaded', function() {
-    const pageLoader = document.getElementById('page-loader');
-    if (pageLoader) {
-      // Rotate every 2 seconds
-      setInterval(rotateCameraSettings, 2000);
-    }
-  });
-})();
 
 // Smooth scrolling is handled by CSS scroll-behavior: smooth
 // No custom JavaScript needed for better performance
@@ -364,6 +287,17 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     if (anchor.classList.contains('logo')) {
       return;
     }
+
+    // Skip link: move keyboard focus into the main content, not just the scroll position
+    if (anchor.classList.contains('skip-link')) {
+      const main = document.getElementById('main-content');
+      if (main) {
+        e.preventDefault();
+        main.setAttribute('tabindex', '-1');
+        main.focus();
+      }
+      return;
+    }
     
     // Skip if it's a nav link and mobile menu is open (handled by mobile menu handler)
     const primaryNav = document.querySelector('#primary-nav');
@@ -613,84 +547,6 @@ if (mobileMenuToggle && primaryNav) {
 }
 
 // =============================================================================
-// CAPTCHA Challenge Generator
-// Creates a simple human verification question (math or word typing).
-// =============================================================================
-const challengeText = document.getElementById("challenge-text");
-const challengeInput = document.getElementById("challenge-input");
-const challengeHint = document.getElementById("challenge-hint");
-let challengeAnswer = "";
-
-function generateChallenge() {
-  if (!challengeText || !challengeInput) return;
-
-  // 50/50 chance of math question vs word typing
-  if (Math.random() > 0.5) {
-    // Math question: variety of operations
-    const operation = Math.random();
-    if (operation < 0.5) {
-      // Addition
-      const a = Math.floor(Math.random() * 10) + 3; // 3-12
-      const b = Math.floor(Math.random() * 10) + 2; // 2-11
-      challengeAnswer = String(a + b);
-      challengeText.textContent = `${a} + ${b} = ?`;
-    } else if (operation < 0.75) {
-      // Subtraction (result must be positive)
-      const a = Math.floor(Math.random() * 8) + 8; // 8-15
-      const b = Math.floor(Math.random() * 5) + 2; // 2-6
-      challengeAnswer = String(a - b);
-      challengeText.textContent = `${a} - ${b} = ?`;
-    } else {
-      // Simple multiplication
-      const a = Math.floor(Math.random() * 5) + 2; // 2-6
-      const b = Math.floor(Math.random() * 5) + 2; // 2-6
-      challengeAnswer = String(a * b);
-      challengeText.textContent = `${a} × ${b} = ?`;
-    }
-  } else {
-    // Word typing challenge - expanded options
-    const prompts = [
-      { text: 'Type the word "Artur"', answer: "Artur" },
-      { text: 'Type the word "Morin"', answer: "Morin" },
-      { text: 'Type the word "Photography"', answer: "Photography" },
-      { text: 'Type the word "Camera"', answer: "Camera" },
-      { text: 'Type the word "Lens"', answer: "Lens" },
-      { text: 'Type the word "Shutter"', answer: "Shutter" },
-      { text: 'Type the word "Aperture"', answer: "Aperture" },
-      { text: 'Type the word "Frame"', answer: "Frame" },
-      { text: 'Type the word "Light"', answer: "Light" },
-      { text: 'Type the word "Portrait"', answer: "Portrait" },
-      { text: 'Type the word "Editorial"', answer: "Editorial" },
-      { text: 'Type the word "Tallinn"', answer: "Tallinn" },
-      { text: 'Type the number "2024"', answer: "2024" },
-      { text: 'Type the number "2025"', answer: "2025" },
-      { text: 'Type the number "100"', answer: "100" },
-      { text: 'Type the number "50"', answer: "50" },
-      { text: 'Type the number "24"', answer: "24" },
-      { text: 'Type the number "35"', answer: "35" },
-      { text: 'Type the word "Studio"', answer: "Studio" },
-      { text: 'Type the word "Creative"', answer: "Creative" },
-      { text: 'Type the word "Visual"', answer: "Visual" },
-      { text: 'Type the word "Story"', answer: "Story" },
-      { text: 'Type the word "Image"', answer: "Image" },
-      { text: 'Type the word "Photo"', answer: "Photo" },
-      { text: 'Type the word "Capture"', answer: "Capture" },
-    ];
-    const picked = prompts[Math.floor(Math.random() * prompts.length)];
-    challengeAnswer = picked.answer;
-    challengeText.textContent = picked.text;
-  }
-
-  // Reset input state
-  challengeInput.value = "";
-  if (challengeHint) {
-    challengeHint.textContent = "Enter the answer exactly as shown.";
-    challengeHint.classList.remove("error");
-  }
-  challengeInput.classList.remove("error");
-}
-
-// =============================================================================
 // Form Validation with Accessibility
 // =============================================================================
 const contactForm = document.querySelector('.contact-form');
@@ -714,9 +570,9 @@ if (contactForm) {
         nameInput.classList.add('text-jiggle');
       }, 10);
       return false;
-    } else if (value.length < 6) {
+    } else if (value.length < 2) {
       nameInput.setAttribute('aria-invalid', 'true');
-      nameError.textContent = 'Name must be at least 6 characters';
+      nameError.textContent = 'Please enter your name';
       nameInput.classList.remove('text-jiggle');
       setTimeout(() => {
         nameInput.classList.add('text-jiggle');
@@ -765,23 +621,9 @@ if (contactForm) {
       return false;
     }
     
-    // Stricter email format validation
-    // Rejects: consecutive dots, leading/trailing dots, invalid characters
-    const emailRegex = /^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
-    
-    // Check for common invalid patterns
-    if (value.includes('..') || value.startsWith('.') || value.endsWith('.') || 
-        value.startsWith('@') || value.endsWith('@') || !value.includes('@')) {
-      emailInput.setAttribute('aria-invalid', 'true');
-      emailError.textContent = 'Please enter a valid email address (e.g., name@example.com)';
-      emailInput.classList.remove('text-jiggle');
-      setTimeout(() => {
-        emailInput.classList.add('text-jiggle');
-      }, 10);
-      return false;
-    }
-    
-    if (!emailRegex.test(value)) {
+    // Standard format check: something@domain.tld (allows name+tag@gmail.com, a@b.ee)
+    const emailRegex = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(value) || value.includes('..')) {
       emailInput.setAttribute('aria-invalid', 'true');
       emailError.textContent = 'Please enter a valid email address (e.g., name@example.com)';
       emailInput.classList.remove('text-jiggle');
@@ -825,28 +667,6 @@ if (contactForm) {
     if (disposableDomains.includes(domain)) {
       emailInput.setAttribute('aria-invalid', 'true');
       emailError.textContent = 'Please use a permanent email address';
-      emailInput.classList.remove('text-jiggle');
-      setTimeout(() => {
-        emailInput.classList.add('text-jiggle');
-      }, 10);
-      return false;
-    }
-    
-    // Detect suspicious patterns common in spam
-    const suspiciousPatterns = [
-      /^test\d+@/i,           // test123@
-      /^user\d+@/i,           // user456@
-      /^email\d+@/i,          // email789@
-      /^spam/i,               // starts with "spam"
-      /spam@/i,               // contains "spam@"
-      /\d{10,}@/,             // 10+ consecutive digits before @
-      /^[a-z]\d{5,}@/i,       // single letter + 5+ digits
-      /^[a-z]{1,2}\d{6,}@/i   // 1-2 letters + 6+ digits
-    ];
-    
-    if (suspiciousPatterns.some(pattern => pattern.test(value))) {
-      emailInput.setAttribute('aria-invalid', 'true');
-      emailError.textContent = 'Please use a valid email address';
       emailInput.classList.remove('text-jiggle');
       setTimeout(() => {
         emailInput.classList.add('text-jiggle');
@@ -911,7 +731,7 @@ if (contactForm) {
     e.preventDefault();
     
     // Honeypot check - if filled, silently reject (likely a bot)
-    const honeypotField = document.getElementById('website');
+    const honeypotField = document.getElementById('website'); // name="botcheck": Web3Forms also rejects it server-side
     if (honeypotField && honeypotField.value.trim() !== '') {
       // Silently reject - don't show any error, just prevent submission
       return;
@@ -922,7 +742,8 @@ if (contactForm) {
     if (formStartTime) {
       const timeSpent = (Date.now() - formStartTime) / 1000; // in seconds
       if (timeSpent < 3) {
-        // Silently reject - form filled too quickly (likely a bot)
+        formStatus.textContent = 'One moment… please press Send again.';
+        formStatus.className = 'form-status error';
         return;
       }
     }
@@ -931,134 +752,63 @@ if (contactForm) {
     const isEmailValid = validateEmail();
     const isMessageValid = validateMessage();
     
-    // Verify CAPTCHA answer
-    let isChallengeValid = true;
-    if (challengeInput && challengeAnswer) {
-      const inputValue = challengeInput.value.trim();
-      if (inputValue !== challengeAnswer) {
-        challengeInput.classList.add("error");
-        if (challengeHint) {
-          challengeHint.textContent = "That answer didn't match. Try again.";
-          challengeHint.classList.add("error");
-        }
-        challengeInput.focus();
-        isChallengeValid = false;
-      } else {
-        challengeInput.classList.remove("error");
-        if (challengeHint) {
-          challengeHint.classList.remove("error");
-        }
-      }
-    }
-    
-    if (isNameValid && isEmailValid && isMessageValid && isChallengeValid) {
-      // Get reCAPTCHA token with timeout
-      let recaptchaToken = '';
-      try {
-        // Check if grecaptcha is loaded
-        if (typeof grecaptcha !== 'undefined' && grecaptcha.execute) {
-          // Add timeout to prevent hanging
-          const recaptchaPromise = grecaptcha.execute('6LdzCR8sAAAAAByR9D7ud0qxxJkBLlA4aOb-uYFK', { action: 'submit' });
-          const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('reCAPTCHA timeout')), 5000)
-          );
-          recaptchaToken = await Promise.race([recaptchaPromise, timeoutPromise]);
-        }
-      } catch (error) {
-        // Silently handle timeout/errors - form can still submit
-        if (error.message !== 'reCAPTCHA timeout') {
-          // Suppress 401/Unauthorized errors (domain not authorized in reCAPTCHA console)
-          const errorMsg = error.message || error.toString() || '';
-          const isUnauthorized = errorMsg.includes('401') || 
-                                 errorMsg.includes('Unauthorized') || 
-                                 errorMsg.includes('pat?k=') ||
-                                 error.status === 401;
-          
-          if (!isUnauthorized) {
-            console.warn('reCAPTCHA error (form will still submit):', errorMsg || 'Domain not authorized. Please add ' + window.location.hostname + ' to reCAPTCHA console.');
-          }
-          // Silently ignore 401 errors - domain needs to be added to reCAPTCHA console
-        }
-        // Continue with form submission even if reCAPTCHA fails (graceful degradation)
-      }
-
-      // Form is valid - prepare form submission
+    if (isNameValid && isEmailValid && isMessageValid) {
+      // Form is valid - send it via Web3Forms (https://web3forms.com)
       const formData = new FormData(contactForm);
-      const name = formData.get('name') || 'Client';
-      const email = formData.get('email');
       const project = formData.get('project');
-      const message = formData.get('message');
+      const fallbackEmail = contactForm.dataset.fallbackEmail;
+      const payload = {
+        access_key: contactForm.dataset.accessKey,
+        subject: `Portfolio Inquiry - ${project || 'General'}`,
+        from_name: 'arturmorin.page',
+        name: formData.get('name'),
+        email: formData.get('email'), // becomes the reply-to address
+        project: project || 'Not specified',
+        message: formData.get('message'),
+        botcheck: formData.get('botcheck') || '', // honeypot, also checked by Web3Forms
+      };
 
-      // Add FormSubmit configuration fields
-      const subject = `Portfolio Inquiry - ${project || 'General'}`;
-      
-      // Create hidden input for subject
-      let subjectInput = contactForm.querySelector('input[name="_subject"]');
-      if (!subjectInput) {
-        subjectInput = document.createElement('input');
-        subjectInput.type = 'hidden';
-        subjectInput.name = '_subject';
-        contactForm.appendChild(subjectInput);
-      }
-      subjectInput.value = subject;
-      
-      // Add redirect URL (thank you page)
-      let nextInput = contactForm.querySelector('input[name="_next"]');
-      if (!nextInput) {
-        nextInput = document.createElement('input');
-        nextInput.type = 'hidden';
-        nextInput.name = '_next';
-        contactForm.appendChild(nextInput);
-      }
-      nextInput.value = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'thank-you.html';
-      
-      // Disable FormSubmit's built-in captcha (we have our own)
-      let captchaInput = contactForm.querySelector('input[name="_captcha"]');
-      if (!captchaInput) {
-        captchaInput = document.createElement('input');
-        captchaInput.type = 'hidden';
-        captchaInput.name = '_captcha';
-        contactForm.appendChild(captchaInput);
-      }
-      captchaInput.value = 'false';
-      
-      // Add template for better email formatting
-      let templateInput = contactForm.querySelector('input[name="_template"]');
-      if (!templateInput) {
-        templateInput = document.createElement('input');
-        templateInput.type = 'hidden';
-        templateInput.name = '_template';
-        contactForm.appendChild(templateInput);
-      }
-      templateInput.value = 'table';
-      
-      // Add FormSubmit blacklist to filter common spam keywords
-      let blacklistInput = contactForm.querySelector('input[name="_blacklist"]');
-      if (!blacklistInput) {
-        blacklistInput = document.createElement('input');
-        blacklistInput.type = 'hidden';
-        blacklistInput.name = '_blacklist';
-        contactForm.appendChild(blacklistInput);
-      }
-      // Common spam keywords/phrases - FormSubmit will reject submissions containing these
-      blacklistInput.value = 'viagra,cialis,pharmacy,loan,debt,credit,investment,bitcoin,crypto,casino,gambling,poker,lottery,winner,prize,free money,get rich,work from home,make money fast,click here,limited time offer,act now,urgent,guaranteed,no risk,risk free,weight loss,diet pill,miracle,sexy,adult,xxx,porn,escort,dating,meet singles,enlarge,penis,breast,hot girls,sexy girls';
-
-      // Send event to Google Tag Manager
-      if (window.dataLayer) {
-        window.dataLayer.push({
-          'event': 'form_submit',
-          'form_name': 'contact_form_portfolio',
-          'project_type': project || 'general',
-          'recaptcha_verified': recaptchaToken ? true : false
-        });
-      }
-
-      // Show success message
       formStatus.textContent = 'Sending...';
       formStatus.className = 'form-status success';
-      
-      // Submit the form to FormSubmit (this will send the email automatically)
-      contactForm.submit();
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      // Sent in the background, so a provider outage shows a friendly message
+      // (with the email address) instead of the provider's error page
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+      try {
+        const res = await fetch(contactForm.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        });
+        const result = await res.json().catch(() => ({}));
+        if (!res.ok || !result.success) {
+          throw new Error(result.message || `HTTP ${res.status}`);
+        }
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            'event': 'form_submit',
+            'form_name': 'contact_form_portfolio',
+            'project_type': project || 'general'
+          });
+        }
+        window.location.href = '/thank-you/';
+      } catch (err) {
+        formStatus.innerHTML = '';
+        formStatus.append(
+          "Sorry, the message couldn't be sent right now. Please email me directly at ",
+          Object.assign(document.createElement('a'), { href: `mailto:${fallbackEmail}`, textContent: fallbackEmail }),
+          '.'
+        );
+        formStatus.className = 'form-status error';
+        if (window.dataLayer) window.dataLayer.push({ event: 'form_error', form_error: String(err.message) });
+      } finally {
+        clearTimeout(timeout);
+        if (submitBtn) submitBtn.disabled = false;
+      }
     } else {
       // Form has errors
       formStatus.textContent = 'Please fix the errors above and try again.';
@@ -1074,9 +824,7 @@ if (contactForm) {
       }
     }
   });
-  
-  // Generate initial challenge
-  generateChallenge();
+
 }
 
 // =============================================================================
@@ -1923,7 +1671,7 @@ if (document.readyState === 'loading') {
                 window.location.href = href;
               } else {
                 // Invalid URL - default to home
-                window.location.href = 'photography-index.html';
+                window.location.href = '/';
               }
             }
           }
@@ -2150,6 +1898,14 @@ window.addEventListener('pagehide', (event) => {
     const img = slide.querySelector('img');
     if (!img || imageData.has(img.src)) return Promise.resolve(null);
     
+    // width/height attributes give the aspect ratio without waiting for (lazy) downloads
+    const attrW = Number(img.getAttribute('width'));
+    const attrH = Number(img.getAttribute('height'));
+    if (attrW && attrH) {
+      imageData.set(img.src, { width: attrW, height: attrH, aspect: attrW / attrH });
+      return Promise.resolve({ aspect: attrW / attrH });
+    }
+
     return new Promise((resolve) => {
       if (img.complete && img.naturalWidth) {
         const aspect = img.naturalWidth / img.naturalHeight;
@@ -2176,7 +1932,11 @@ window.addEventListener('pagehide', (event) => {
     const data = imageData.get(img.src);
     if (!data) return;
     
-    const maxWidth = Math.min(760, window.innerWidth * 0.9);
+    // fit the frame to the carousel's own column, not the whole window
+    // (minus the prev/next buttons and gaps that sit beside the frame)
+    const buttonsWidth = (prevBtn?.offsetWidth || 0) + (nextBtn?.offsetWidth || 0) + 32;
+    const columnWidth = heroCarousel.clientWidth ? heroCarousel.clientWidth - buttonsWidth : window.innerWidth * 0.9;
+    const maxWidth = Math.min(760, columnWidth, window.innerWidth * 0.9);
     const maxHeight = window.innerHeight * 0.8;
     let targetWidth, targetHeight;
     
@@ -2246,7 +2006,9 @@ window.addEventListener('pagehide', (event) => {
   }
   
   // Handle seamless loop after transition
-  track.addEventListener('transitionend', () => {
+  track.addEventListener('transitionend', (e) => {
+    // ignore transitions bubbling up from children (hover/tilt effects)
+    if (e.target !== track || e.propertyName !== 'transform') return;
     isTransitioning = false;
     const totalSlides = slides.length;
     const currentTransform = track.style.transform;
@@ -2261,21 +2023,36 @@ window.addEventListener('pagehide', (event) => {
       }
       if (visualPos === 0) {
         track.style.transition = 'none';
-        track.style.transform = `translateX(-${totalSlides}%)`;
+        track.style.transform = `translateX(-${totalSlides * 100}%)`;
       }
     }
   });
   
+  // re-fit the frame when the window size or tablet orientation changes
+  let carouselResizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(carouselResizeTimer);
+    carouselResizeTimer = setTimeout(() => resizeWindowForSlide(currentIndex), 150);
+  }, { passive: true });
+
   prevBtn?.addEventListener('click', goPrev);
   nextBtn?.addEventListener('click', goNext);
   dots.forEach((dot, index) => dot.addEventListener('click', () => goToSlide(index)));
   
-  let carouselTimer = setInterval(goNext, 6000);
-  heroCarousel?.addEventListener('mouseenter', () => clearInterval(carouselTimer));
-  heroCarousel?.addEventListener('mouseleave', () => {
-    clearInterval(carouselTimer);
-    carouselTimer = setInterval(goNext, 6000);
-  });
+  // Autoplay: off for reduced-motion users; paused on hover, keyboard focus and hidden tabs
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let carouselTimer = null;
+  const stopAutoplay = () => { clearInterval(carouselTimer); carouselTimer = null; };
+  const startAutoplay = () => {
+    stopAutoplay();
+    if (!reduceMotion && !document.hidden) carouselTimer = setInterval(goNext, 6000);
+  };
+  startAutoplay();
+  heroCarousel.addEventListener('mouseenter', stopAutoplay);
+  heroCarousel.addEventListener('mouseleave', startAutoplay);
+  heroCarousel.addEventListener('focusin', stopAutoplay);
+  heroCarousel.addEventListener('focusout', startAutoplay);
+  document.addEventListener('visibilitychange', () => (document.hidden ? stopAutoplay() : startAutoplay()));
   
   // Initialize carousel
   Promise.all(slides.map((slide) => measureImage(slide))).then(() => {
@@ -2322,6 +2099,8 @@ window.addEventListener('pagehide', (event) => {
   let badgeHeight = 0;
   let pathLength = 0; // Total length of the rounded rectangle path
   let animationFrameId = null;
+  let cachedRadius = 0; // read once per resize, not every frame (getComputedStyle is expensive)
+  let badgeVisible = true;
   let offset = 0; // Current offset along the path (0 to 1)
   const ANIMATION_SPEED = 0.0008; // Speed of movement along path (0-1 per frame)
   
@@ -2495,6 +2274,7 @@ window.addEventListener('pagehide', (event) => {
     badgeHeight = badgeRect.height;
     
     const radius = getBorderRadius();
+    cachedRadius = radius;
     pathLength = calculatePathLength(badgeWidth, badgeHeight, radius, PADDING);
     
     // Set container size to accommodate the path
@@ -2504,7 +2284,7 @@ window.addEventListener('pagehide', (event) => {
   }
   
   function positionLetters() {
-    const radius = getBorderRadius();
+    const radius = cachedRadius;
     
     letters.forEach((letter, index) => {
       // Calculate position: each letter follows the previous one in order
@@ -2551,8 +2331,23 @@ window.addEventListener('pagehide', (event) => {
     }
     
     positionLetters();
-    animationFrameId = requestAnimationFrame(animate);
+    // pause while the badge is off-screen or the tab is hidden
+    animationFrameId = badgeVisible && !document.hidden ? requestAnimationFrame(animate) : null;
   }
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function resume() {
+    if (!reduceMotion && !animationFrameId && badgeVisible && !document.hidden && pathLength > 0) {
+      animationFrameId = requestAnimationFrame(animate);
+    }
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      badgeVisible = entry.isIntersecting;
+      resume();
+    }).observe(badgeWrapper || lettersContainer);
+  }
+  document.addEventListener('visibilitychange', resume);
   
   function init() {
     updateBadgeDimensions();
@@ -2563,8 +2358,9 @@ window.addEventListener('pagehide', (event) => {
       
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
       }
-      animate();
+      if (!reduceMotion) animate();
     } else {
       // Retry if dimensions not ready
       setTimeout(init, 50);
@@ -2591,8 +2387,7 @@ window.addEventListener('pagehide', (event) => {
     resizeTimeout = setTimeout(() => {
       updateBadgeDimensions();
       // Recalculate pathLength after resize
-      const radius = getBorderRadius();
-      pathLength = calculatePathLength(badgeWidth, badgeHeight, radius, PADDING);
+      pathLength = calculatePathLength(badgeWidth, badgeHeight, cachedRadius, PADDING);
       positionLetters();
     }, 150);
   });

@@ -3,22 +3,6 @@
  * ==========================================
  */
 
-// Set current date in privacy policy
-(function() {
-  'use strict';
-  
-  const currentDateElement = document.getElementById('current-date');
-  if (currentDateElement) {
-    const date = new Date();
-    const formattedDate = date.toLocaleDateString('en-GB', { 
-      day: '2-digit', 
-      month: '2-digit', 
-      year: 'numeric' 
-    });
-    currentDateElement.textContent = formattedDate;
-  }
-})();
-
 // =============================================================================
 // Wrap "Opening new experiences" letters for outline animation (near AM box)
 // =============================================================================
@@ -59,38 +43,7 @@ window.addEventListener('load', () => {
   document.body.classList.add('loaded');
 });
 
-// =============================================================================
-// Back/Forward Cache (bfcache) Support
-// Handle page restoration from bfcache to ensure everything works correctly
-// =============================================================================
-window.addEventListener('pageshow', (event) => {
-  // Check if page was restored from bfcache
-  if (event.persisted) {
-    // Re-initialize logo state if needed
-    const logo = document.querySelector('.logo');
-    if (logo) {
-      const logoMark = logo.querySelector('.logo-mark');
-      const logoNameFirst = logo.querySelector('.logo-name-first');
-      const logoNameLast = logo.querySelector('.logo-name-last');
-      
-      if (logoMark && logoNameFirst && logoNameLast) {
-        // Re-check if we're on mobile/tablet
-        function isMobileTablet() {
-          return window.innerWidth <= 1024;
-        }
-        
-        if (isMobileTablet()) {
-          const scrollY = window.scrollY || window.pageYOffset;
-          if (scrollY < 100) {
-            // At top, ensure text is hidden
-            logo.classList.remove('logo-text-expanded');
-            logo.classList.add('logo-text-hidden');
-          }
-        }
-      }
-    }
-  }
-}, { passive: true });
+// Back/forward cache: the logo state is handled by js/logo.js
 
 // =============================================================================
 // Spotlight Effect for "Let's Talk" Button
