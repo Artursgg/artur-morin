@@ -5097,15 +5097,16 @@ h1, h2, h3, h4 {
   /* frosted backdrop: page stays visible but blurred */
   .nav-overlay,
   .nav::after {
-    background: rgba(10, 10, 10, 0.55);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    /* light frost - page stays recognisable; raise blur() for a stronger effect */
+    background: rgba(10, 10, 10, 0.5);
+    backdrop-filter: blur(6px) saturate(140%);
+    -webkit-backdrop-filter: blur(6px) saturate(140%);
   }
 
   /* links sit on a clean panel; the blur is only outside it (on the backdrop) */
   .nav #primary-nav ul {
     padding: 28px 44px !important;
-    background: rgba(15, 15, 15, 0.6) !important;
+    background: rgba(15, 15, 15, 0.75) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: var(--radius-lg) !important;
     backdrop-filter: none !important;
