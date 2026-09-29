@@ -809,7 +809,7 @@ if (contactForm) {
     e.preventDefault();
     
     // Honeypot check - if filled, silently reject (likely a bot)
-    const honeypotField = document.getElementById('website'); // name="_honey": FormSubmit also filters it server-side
+    const honeypotField = document.getElementById('website'); // name="botcheck": Web3Forms also rejects it server-side
     if (honeypotField && honeypotField.value.trim() !== '') {
       // Silently reject - don't show any error, just prevent submission
       return;
@@ -851,94 +851,54 @@ if (contactForm) {
     }
     
     if (isNameValid && isEmailValid && isMessageValid && isChallengeValid) {
-      // Form is valid - prepare form submission
+      // Form is valid - send it via Web3Forms (https://web3forms.com)
       const formData = new FormData(contactForm);
-      const name = formData.get('name') || 'Client';
-      const email = formData.get('email');
       const project = formData.get('project');
-      const message = formData.get('message');
-
-      // Add FormSubmit configuration fields
-      const subject = `Portfolio Inquiry - ${project || 'General'}`;
-      
-      // Create hidden input for subject
-      let subjectInput = contactForm.querySelector('input[name="_subject"]');
-      if (!subjectInput) {
-        subjectInput = document.createElement('input');
-        subjectInput.type = 'hidden';
-        subjectInput.name = '_subject';
-        contactForm.appendChild(subjectInput);
-      }
-      subjectInput.value = subject;
-      
-      // Add redirect URL (thank you page)
-      let nextInput = contactForm.querySelector('input[name="_next"]');
-      if (!nextInput) {
-        nextInput = document.createElement('input');
-        nextInput.type = 'hidden';
-        nextInput.name = '_next';
-        contactForm.appendChild(nextInput);
-      }
-      nextInput.value = window.location.origin + '/thank-you/';
-      
-      // Add template for better email formatting
-      let templateInput = contactForm.querySelector('input[name="_template"]');
-      if (!templateInput) {
-        templateInput = document.createElement('input');
-        templateInput.type = 'hidden';
-        templateInput.name = '_template';
-        contactForm.appendChild(templateInput);
-      }
-      templateInput.value = 'table';
-      
-      // Add FormSubmit blacklist to filter common spam keywords
-      let blacklistInput = contactForm.querySelector('input[name="_blacklist"]');
-      if (!blacklistInput) {
-        blacklistInput = document.createElement('input');
-        blacklistInput.type = 'hidden';
-        blacklistInput.name = '_blacklist';
-        contactForm.appendChild(blacklistInput);
-      }
-      // Common spam keywords/phrases - FormSubmit will reject submissions containing these
-      blacklistInput.value = 'viagra,cialis,pharmacy,loan,debt,credit,investment,bitcoin,crypto,casino,gambling,poker,lottery,winner,prize,free money,get rich,work from home,make money fast,click here,limited time offer,act now,urgent,guaranteed,no risk,risk free,weight loss,diet pill,miracle,sexy,adult,xxx,porn,escort,dating,meet singles,enlarge,penis,breast,hot girls,sexy girls';
-
-      // Send event to Google Tag Manager
-      if (window.dataLayer) {
-        window.dataLayer.push({
-          'event': 'form_submit',
-          'form_name': 'contact_form_portfolio',
-          'project_type': project || 'general'
-        });
-      }
+      const fallbackEmail = contactForm.dataset.fallbackEmail;
+      const payload = {
+        access_key: contactForm.dataset.accessKey,
+        subject: `Portfolio Inquiry - ${project || 'General'}`,
+        from_name: 'arturmorin.page',
+        name: formData.get('name'),
+        email: formData.get('email'), // becomes the reply-to address
+        project: project || 'Not specified',
+        message: formData.get('message'),
+        botcheck: formData.get('botcheck') || '', // honeypot, also checked by Web3Forms
+      };
 
       formStatus.textContent = 'Sending...';
       formStatus.className = 'form-status success';
       const submitBtn = contactForm.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
 
-      // Send in the background via FormSubmit's AJAX endpoint, so a provider outage
-      // shows a friendly message (with the email address) instead of their error page
-      const ajaxUrl = contactForm.action.replace('formsubmit.co/', 'formsubmit.co/ajax/');
+      // Sent in the background, so a provider outage shows a friendly message
+      // (with the email address) instead of the provider's error page
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15000);
       try {
-        const res = await fetch(ajaxUrl, {
+        const res = await fetch(contactForm.action, {
           method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: new FormData(contactForm),
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload),
           signal: controller.signal,
         });
         const result = await res.json().catch(() => ({}));
-        if (!res.ok || String(result.success) !== 'true') {
+        if (!res.ok || !result.success) {
           throw new Error(result.message || `HTTP ${res.status}`);
         }
-        window.location.href = nextInput.value;
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            'event': 'form_submit',
+            'form_name': 'contact_form_portfolio',
+            'project_type': project || 'general'
+          });
+        }
+        window.location.href = '/thank-you/';
       } catch (err) {
-        const mail = contactForm.action.split('/').pop();
         formStatus.innerHTML = '';
         formStatus.append(
           "Sorry, the message couldn't be sent right now. Please email me directly at ",
-          Object.assign(document.createElement('a'), { href: `mailto:${mail}`, textContent: mail }),
+          Object.assign(document.createElement('a'), { href: `mailto:${fallbackEmail}`, textContent: fallbackEmail }),
           '.'
         );
         formStatus.className = 'form-status error';

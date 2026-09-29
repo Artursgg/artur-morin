@@ -592,7 +592,8 @@
         </div>
       </div>
 
-      <form class="contact-form reveal" aria-label="Contact form" action="https://formsubmit.co/inquirymorin@gmail.com" method="POST" novalidate>
+      <form class="contact-form reveal" aria-label="Contact form" action="https://api.web3forms.com/submit" method="POST" novalidate
+            data-access-key="YOUR_WEB3FORMS_ACCESS_KEY" data-fallback-email="inquirymorin@gmail.com">
         <div class="form-group">
           <label for="name">Name <span class="required" aria-label="required">*</span></label>
           <input type="text" id="name" name="name" placeholder="Your name" required aria-required="true" aria-invalid="false" minlength="2" autocomplete="name">
@@ -622,7 +623,7 @@
         <!-- Honeypot field - hidden from users but visible to bots -->
         <div class="form-group form-group--honeypot" aria-hidden="true">
           <label for="website">Website (leave blank)</label>
-          <input type="text" id="website" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="text" id="website" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
         </div>
         <div class="form-group form-group--full challenge-label">
           <label for="challenge-input">Human check <span class="required" aria-label="required">*</span></label>
@@ -634,7 +635,7 @@
         </div>
         <button type="submit" class="btn btn-primary btn-full">Send Message</button>
         <div class="form-status" role="status" aria-live="polite" aria-atomic="true"></div>
-        <p class="form-privacy-note">By submitting this form, you agree that your information will be processed by FormSubmit to deliver your message. <a href="/privacy-policy/" target="_blank" rel="noopener">Privacy & Terms</a></p>
+        <p class="form-privacy-note">By submitting this form, you agree that your information will be processed by Web3Forms to deliver your message. <a href="/privacy-policy/" target="_blank" rel="noopener">Privacy & Terms</a></p>
       </form>
     </section>
   </main>
