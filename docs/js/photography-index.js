@@ -1932,7 +1932,11 @@ window.addEventListener('pagehide', (event) => {
     const data = imageData.get(img.src);
     if (!data) return;
     
-    const maxWidth = Math.min(760, window.innerWidth * 0.9);
+    // fit the frame to the carousel's own column, not the whole window
+    // (minus the prev/next buttons and gaps that sit beside the frame)
+    const buttonsWidth = (prevBtn?.offsetWidth || 0) + (nextBtn?.offsetWidth || 0) + 32;
+    const columnWidth = heroCarousel.clientWidth ? heroCarousel.clientWidth - buttonsWidth : window.innerWidth * 0.9;
+    const maxWidth = Math.min(760, columnWidth, window.innerWidth * 0.9);
     const maxHeight = window.innerHeight * 0.8;
     let targetWidth, targetHeight;
     
@@ -2024,6 +2028,13 @@ window.addEventListener('pagehide', (event) => {
     }
   });
   
+  // re-fit the frame when the window size or tablet orientation changes
+  let carouselResizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(carouselResizeTimer);
+    carouselResizeTimer = setTimeout(() => resizeWindowForSlide(currentIndex), 150);
+  }, { passive: true });
+
   prevBtn?.addEventListener('click', goPrev);
   nextBtn?.addEventListener('click', goNext);
   dots.forEach((dot, index) => dot.addEventListener('click', () => goToSlide(index)));

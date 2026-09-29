@@ -1763,14 +1763,59 @@ h1, h2, h3, h4 {
 #main-content:focus { outline: none; }
 
 /* =============================================================================
-   Mobile / tablet menu background - solid enough to read the links
-   over any photo (was a 50% transparent overlay)
+   Mobile / tablet menu - frosted glass, matching the desktop nav bar
+   (was a flat 50% transparent overlay, links were hard to read)
    ============================================================================= */
 @media (max-width: 1024px) {
+  /* frosted backdrop: page stays visible but blurred */
   .nav-overlay,
   .nav::after {
-    background: rgba(12, 12, 12, 0.94);
-    backdrop-filter: blur(18px) saturate(140%);
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    background: rgba(10, 10, 10, 0.55);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+  }
+
+  /* links sit on a glass panel like the desktop nav */
+  .nav #primary-nav ul {
+    padding: 28px 44px !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: var(--radius-lg) !important;
+    backdrop-filter: blur(25px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(25px) saturate(200%) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35) !important;
+  }
+}
+
+/* =============================================================================
+   Desktop nav layout (>= 1025px) - replaces the fixed pixel margins above
+   (margin-left: 195px / margin-right: 300px / -250px), which only lined up
+   around 1440px and overlapped or pushed "Let's Talk" off-screen on
+   iPad Pro and 1280-1366px laptops.
+   Logo | links + Portfolio | Let's Talk - free space is shared automatically.
+   ============================================================================= */
+@media (min-width: 1025px) {
+  .nav nav {
+    flex: 0 1 auto;
+    margin: 0 0 0 auto;
+  }
+  .nav-portfolio {
+    margin: 0 0 0 12px;
+  }
+  .nav-cta {
+    margin-left: auto;
+  }
+}
+
+/* Narrow desktops / iPad Pro: tighten spacing so everything fits on one row */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .nav {
+    gap: 12px;
+    padding-left: 3vw;
+    padding-right: 3vw;
+  }
+  .nav ul a {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }
