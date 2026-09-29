@@ -167,6 +167,7 @@ html {
   -webkit-overflow-scrolling: touch;
   height: auto;
   overflow-x: hidden;
+  overflow-x: clip; /* no nested scroll box (see note at end) */
   overflow-y: auto;
   width: 100%;
   max-width: 100%;
@@ -202,7 +203,8 @@ body {
   font-weight: 300;
   line-height: 1.7;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-x: clip; /* no nested scroll box (see note at end) */
+  overflow-y: visible; /* the window scrolls, not <body> */
   position: relative;
   width: 100%;
   max-width: 100%;
@@ -216,6 +218,7 @@ main,
   position: relative;
   z-index: 1; /* Above grid lines */
   overflow-x: hidden;
+  overflow-x: clip; /* no nested scroll box (see note at end) */
   overflow-y: visible;
   width: 100%;
   max-width: 100%;
@@ -3448,6 +3451,7 @@ h1, h2, h3, h4 {
   html,
   body {
     overflow-x: hidden;
+    overflow-x: clip; /* no nested scroll box (see note at end) */
     width: 100%;
     max-width: 100%;
     position: relative;
@@ -3456,6 +3460,7 @@ h1, h2, h3, h4 {
   .nav {
     padding: 20px 4vw;
     overflow-x: hidden;
+    overflow-x: clip; /* no nested scroll box (see note at end) */
     width: 100%;
     max-width: 100%;
   }
@@ -3856,6 +3861,7 @@ h1, h2, h3, h4 {
   html,
   body {
     overflow-x: hidden;
+    overflow-x: clip; /* no nested scroll box (see note at end) */
     width: 100%;
     max-width: 100%;
     position: relative;
@@ -3871,6 +3877,7 @@ h1, h2, h3, h4 {
     justify-content: space-between;
     align-items: center;
     overflow-x: hidden;
+    overflow-x: clip; /* no nested scroll box (see note at end) */
     width: 100%;
     max-width: 100%;
   }
@@ -5031,4 +5038,18 @@ h1, h2, h3, h4 {
 .nav-portfolio.active,
 .nav #primary-nav ul a.active {
   color: var(--gold) !important;
+}
+
+
+/* Note: "overflow-x: hidden" + "overflow-y: visible" silently becomes
+   overflow-y: auto, turning elements into nested scroll boxes that trap the
+   mouse wheel/trackpad ("dead stop" while scrolling the About page).
+   "overflow-x: clip" (after each hidden) clips without creating a scroll box;
+   older browsers ignore it and keep "hidden". */
+
+/* Mobile/tablet menu open: lock the page behind it (the window scrolls, so lock <html>) */
+@media (max-width: 1024px) {
+  html:has(#primary-nav[aria-hidden="false"]) {
+    overflow: hidden !important;
+  }
 }
