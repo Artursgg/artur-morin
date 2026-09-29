@@ -1850,3 +1850,49 @@ h1, h2, h3, h4 {
     overflow: hidden !important;
   }
 }
+
+/* =============================================================================
+   AM logo on phones/tablets - same as desktop: full "Artur AM Morin" in its
+   glass box. Touch has no hover, so a tap plays the desktop hover collapse
+   (.logo-collapsing, added by js/logo.js) before scrolling up / going home.
+   ============================================================================= */
+@media (max-width: 1024px) {
+  .logo {
+    gap: 8px;
+  }
+  .logo::before {
+    opacity: 1;
+    left: 0;
+    right: 0;
+  }
+  .logo-name-first,
+  .logo-name-last {
+    opacity: 1;
+    transform: none;
+    max-width: none;
+    font-size: 1rem;
+  }
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+  }
+
+  .logo.logo-collapsing::before {
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .logo.logo-collapsing .logo-name-first {
+    transform: translateX(28px) scale(0.5);
+    opacity: 0;
+  }
+  .logo.logo-collapsing .logo-name-last {
+    transform: translateX(-28px) scale(0.5);
+    opacity: 0;
+  }
+  .logo.logo-collapsing .logo-mark {
+    background: var(--gold);
+    color: var(--bg);
+    box-shadow: 0 0 20px rgba(201, 166, 107, 0.6),
+                0 0 40px rgba(201, 166, 107, 0.4);
+  }
+}
