@@ -1933,10 +1933,15 @@ window.addEventListener('pagehide', (event) => {
     if (!data) return;
     
     // fit the frame to the carousel's own column, not the whole window
-    // (minus the prev/next buttons and gaps that sit beside the frame)
-    const buttonsWidth = (prevBtn?.offsetWidth || 0) + (nextBtn?.offsetWidth || 0) + 32;
+    // (minus the prev/next buttons and the gaps beside the frame - exact, unrounded)
+    // layout widths (offsetWidth ignores hover/entrance transforms)
+    const w = (el) => (el ? el.offsetWidth : 0);
+    const gap = parseFloat(getComputedStyle(heroCarousel).columnGap) || 0;
+    const visibleButtons = [prevBtn, nextBtn].filter((b) => b && w(b) > 0);
+    const buttonsWidth = visibleButtons.reduce((sum, b) => sum + w(b), 0) + gap * visibleButtons.length;
     const columnWidth = heroCarousel.clientWidth ? heroCarousel.clientWidth - buttonsWidth : window.innerWidth * 0.9;
-    const maxWidth = Math.min(760, columnWidth, window.innerWidth * 0.9);
+    const FRAME_PADDING = 24; // added around the photo below
+    const maxWidth = Math.min(760, columnWidth, window.innerWidth * 0.9) - FRAME_PADDING;
     const maxHeight = window.innerHeight * 0.8;
     let targetWidth, targetHeight;
     
@@ -1952,8 +1957,8 @@ window.addEventListener('pagehide', (event) => {
       targetHeight = size;
     }
     
-    windowEl.style.width = `${targetWidth + 24}px`;
-    windowEl.style.height = `${targetHeight + 24}px`;
+    windowEl.style.width = `${targetWidth + FRAME_PADDING}px`;
+    windowEl.style.height = `${targetHeight + FRAME_PADDING}px`;
   }
   
   function updateDots() {
@@ -2028,12 +2033,23 @@ window.addEventListener('pagehide', (event) => {
     }
   });
   
-  // re-fit the frame when the window size or tablet orientation changes
+  // re-fit the frame whenever its column changes size (window resize, tablet
+  // rotation, scrollbar appearing, fonts loading - not all fire "resize")
   let carouselResizeTimer;
-  window.addEventListener('resize', () => {
+  const refit = () => {
     clearTimeout(carouselResizeTimer);
-    carouselResizeTimer = setTimeout(() => resizeWindowForSlide(currentIndex), 150);
-  }, { passive: true });
+    carouselResizeTimer = setTimeout(() => resizeWindowForSlide(currentIndex), 100);
+  };
+  if ('ResizeObserver' in window) {
+    let lastWidth = heroCarousel.clientWidth;
+    new ResizeObserver(() => {
+      if (heroCarousel.clientWidth !== lastWidth) {
+        lastWidth = heroCarousel.clientWidth;
+        refit();
+      }
+    }).observe(heroCarousel);
+  }
+  window.addEventListener('resize', refit, { passive: true });
 
   prevBtn?.addEventListener('click', goPrev);
   nextBtn?.addEventListener('click', goNext);
@@ -2056,17 +2072,23 @@ window.addEventListener('pagehide', (event) => {
   
   // Initialize carousel
   Promise.all(slides.map((slide) => measureImage(slide))).then(() => {
+    // First sizing happens instantly: animating the frame from its default
+    // 760x600 to the photo's size on every page load made the page visibly
+    // shift sideways/down while loading. Animation is only for slide changes.
     if (track) {
       track.style.transition = 'none';
       track.style.transform = 'translateX(-100%)';
     }
+    windowEl.style.transition = 'none';
     resizeWindowForSlide(0);
     updateDots();
-    
+    void windowEl.offsetWidth; // apply the size before transitions come back
+
     setTimeout(() => {
       if (track) {
         track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0.15, 0.15, 1)';
       }
+      windowEl.style.transition = '';
     }, 50);
   });
 })();
@@ -2412,8 +2434,13 @@ window.addEventListener('pagehide', (event) => {
     // Remove existing orientation classes
     potwImageFrame.classList.remove('potw-landscape', 'potw-portrait');
     
-    // Wait for image to load to get actual dimensions
-    if (potwImage.complete && potwImage.naturalWidth > 0) {
+    // width/height attributes (written by the Photo Manager) give the shape
+    // straight away, so the frame doesn't change size when the lazy image loads
+    const attrW = Number(potwImage.getAttribute('width'));
+    const attrH = Number(potwImage.getAttribute('height'));
+    if (attrW && attrH) {
+      potwImageFrame.classList.add(attrW / attrH > 1 ? 'potw-landscape' : 'potw-portrait');
+    } else if (potwImage.complete && potwImage.naturalWidth > 0) {
       applyOrientationClass(potwImage, potwImageFrame);
     } else {
       // Image not loaded yet, wait for load event
