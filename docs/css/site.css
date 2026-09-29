@@ -550,23 +550,6 @@ img {
 }
 
 /* --------------------------------------------------------------------------
-   Hide reCAPTCHA v3 Badge
-   -------------------------------------------------------------------------- */
-.grecaptcha-badge {
-  visibility: hidden !important;
-  opacity: 0 !important;
-  position: fixed !important;
-  bottom: -9999px !important;
-  left: -9999px !important;
-  height: 0 !important;
-  width: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
-}
-
-/* --------------------------------------------------------------------------
    CookieYes Banner - Ensure Visibility
    -------------------------------------------------------------------------- */
 #cookieyes-banner,
@@ -751,22 +734,23 @@ h1, h2, h3, h4 {
 }
 
 @media (hover: hover) {
-  /* Hover effects only work on devices that support hover (desktop with mouse) */
+    /* Hover effects only work on devices that support hover (desktop with mouse) */
+    
   .logo:hover::before {
-      /* Black hole vortex effect - swoosh into the center without rotation */
-      transform: scale(0);
-      opacity: 0;
-      width: 0;
-      height: 0;
-      border-radius: 50%; /* Become circular like the icon */
-      background: transparent !important;
-      border-color: transparent !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-    }
+        /* Black hole vortex effect - swoosh into the center without rotation */
+        transform: scale(0);
+        opacity: 0;
+        width: 0;
+        height: 0;
+        border-radius: 50%; /* Become circular like the icon */
+        background: transparent !important;
+        border-color: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
   .logo:hover {
-      border-color: transparent;
-    }
+        border-color: transparent;
+      }
 }
 
 /* Ensure text and icon are above the background */
@@ -821,145 +805,156 @@ h1, h2, h3, h4 {
 }
 
 @media (hover: hover) {
-  /* Hover state - Artur slides right (toward center), Morin slides left (toward center) */
-  /* Only works on devices that support hover (desktop with mouse) */
+    /* Hover state - Artur slides right (toward center), Morin slides left (toward center) */
+    /* Only works on devices that support hover (desktop with mouse) */
+    
   .logo:hover .logo-name-first {
-      /* Artur slides from left side toward the center icon (moves right) */
-      transform: translateX(32px) scale(0.5);
-      opacity: 0;
-    }
+        /* Artur slides from left side toward the center icon (moves right) */
+        transform: translateX(32px) scale(0.5);
+        opacity: 0;
+      }
   .logo:hover .logo-name-last {
-      /* Morin slides from right side toward the center icon (moves left) */
-      transform: translateX(-32px) scale(0.5);
-      opacity: 0;
-    }
+        /* Morin slides from right side toward the center icon (moves left) */
+        transform: translateX(-32px) scale(0.5);
+        opacity: 0;
+      }
 }
 
 @media (max-width: 1024px) {
-  /* Mobile/Tablet: Toggle switch behavior - AM box moves right, text slides out from sides */
-    /* Override desktop background - reset it first */
+    /* Mobile/Tablet: Toggle switch behavior - AM box moves right, text slides out from sides */
+      /* Override desktop background - reset it first */
+      
     
   .logo::before {
-      content: '';
-      position: absolute;
-      inset: auto; /* Reset desktop inset */
-      left: -60px; /* Reduced to prevent horizontal scroll */
-      right: -60px; /* Reduced to prevent horizontal scroll */
-      top: -8px; /* Match nav ul padding for consistent height */
-      bottom: -8px; /* Match nav ul padding for consistent height */
-      width: auto; /* Override desktop width */
-      height: auto; /* Override desktop height */
-      border-radius: var(--radius-lg);
-      background: rgba(15, 15, 15, 0.6);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                  left 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                  right 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                  top 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                  bottom 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      transform: none !important; /* Override desktop transform */
-      transform-origin: center center;
-      z-index: -1; /* Behind text and icon */
-      pointer-events: none;
-      opacity: 0; /* Hidden by default */
-      will-change: opacity, left, right;
-    }
-    
-    /* Show background when text is expanded - covers actual content area */
+        content: '';
+        position: absolute;
+        inset: auto; /* Reset desktop inset */
+        left: -60px; /* Reduced to prevent horizontal scroll */
+        right: -60px; /* Reduced to prevent horizontal scroll */
+        top: -8px; /* Match nav ul padding for consistent height */
+        bottom: -8px; /* Match nav ul padding for consistent height */
+        width: auto; /* Override desktop width */
+        height: auto; /* Override desktop height */
+        border-radius: var(--radius-lg);
+        background: rgba(15, 15, 15, 0.6);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                    left 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                    right 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                    top 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                    bottom 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: none !important; /* Override desktop transform */
+        transform-origin: center center;
+        z-index: -1; /* Behind text and icon */
+        pointer-events: none;
+        opacity: 0; /* Hidden by default */
+        will-change: opacity, left, right;
+      }
+      
+      /* Show background when text is expanded - covers actual content area */
+      
     
   .logo.logo-text-expanded::before {
-      opacity: 1;
-      left: -60px; /* Reduced to prevent horizontal scroll */
-      right: -60px; /* Reduced to prevent horizontal scroll */
-      top: -8px; /* Match nav ul padding for consistent height */
-      bottom: -8px; /* Match nav ul padding for consistent height */
-    }
-    
-    /* Hide background when only AM box is visible */
+        opacity: 1;
+        left: -60px; /* Reduced to prevent horizontal scroll */
+        right: -60px; /* Reduced to prevent horizontal scroll */
+        top: -8px; /* Match nav ul padding for consistent height */
+        bottom: -8px; /* Match nav ul padding for consistent height */
+      }
+      
+      /* Hide background when only AM box is visible */
+      
     
   .logo.logo-text-hidden::before {
-      opacity: 0;
-      left: 0;
-      right: 0;
-    }
-    
-    /* Logo element styling */
+        opacity: 0;
+        left: 0;
+        right: 0;
+      }
+      
+      /* Logo element styling */
+      
     
   .logo {
-      border: 1px solid transparent; /* No border by default */
-      background: transparent;
-      overflow: visible; /* Allow text to extend but prevent header overflow */
-      max-width: 100%; /* Ensure logo doesn't exceed header width */
-      gap: 4px; /* Reduced gap between elements */
-      padding: 8px 14px; /* Consistent padding with nav links */
-      height: 44px; /* Match nav link height */
-      box-sizing: border-box;
-      transition: border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative; /* Ensure z-index context */
-    }
-    
-    /* Ensure text and icon are above background */
+        border: 1px solid transparent; /* No border by default */
+        background: transparent;
+        overflow: visible; /* Allow text to extend but prevent header overflow */
+        max-width: 100%; /* Ensure logo doesn't exceed header width */
+        gap: 4px; /* Reduced gap between elements */
+        padding: 8px 14px; /* Consistent padding with nav links */
+        height: 44px; /* Match nav link height */
+        box-sizing: border-box;
+        transition: border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative; /* Ensure z-index context */
+      }
+      
+      /* Ensure text and icon are above background */
+      
     
   .logo-name-first,
-    .logo-name-last,
-    .logo-mark {
-      position: relative;
-      z-index: 1; /* Above background */
-    }
-    
-    /* Show border when text is expanded */
+      .logo-name-last,
+      .logo-mark {
+        position: relative;
+        z-index: 1; /* Above background */
+      }
+      
+      /* Show border when text is expanded */
+      
     
   .logo.logo-text-expanded {
-      border-color: rgba(255, 255, 255, 0.08);
-    }
-    
-    /* Hide border when only AM box is visible */
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+      
+      /* Hide border when only AM box is visible */
+      
     
   .logo.logo-text-hidden {
-      border-color: transparent;
-    }
-    
-    /* Ensure transitions work smoothly for toggle */
+        border-color: transparent;
+      }
+      
+      /* Ensure transitions work smoothly for toggle */
+      
     
   .logo {
-      transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
+        transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
   .logo-name-first,
-    .logo-name-last {
-      transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                  opacity 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                  max-width 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                  font-size 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      font-size: 1.1rem; /* Base font size */
-    }
+      .logo-name-last {
+        transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                    opacity 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                    max-width 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                    font-size 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        font-size: 1.1rem; /* Base font size */
+      }
   .logo-mark {
-      transition: background 0.3s ease,
-                  color 0.3s ease,
-                  box-shadow 0.3s ease;
-    }
-    
-    /* Default state - only AM box visible, positioned at left */
+        transition: background 0.3s ease,
+                    color 0.3s ease,
+                    box-shadow 0.3s ease;
+      }
+      
+      /* Default state - only AM box visible, positioned at left */
+      
     
   .logo.logo-text-hidden {
-      transform: translateX(0);
-    }
+        transform: translateX(0);
+      }
   .logo.logo-text-hidden .logo-name-first,
-    .logo.logo-text-hidden .logo-name-last {
-      transform: translateX(0) scale(0.8);
-      opacity: 0;
-      max-width: 0;
-      overflow: hidden;
-      white-space: nowrap;
-      font-size: 0; /* Hide font size when hidden */
-    }
-    
-    /* When expanded - AM box moves right, text slides out from sides */
+      .logo.logo-text-hidden .logo-name-last {
+        transform: translateX(0) scale(0.8);
+        opacity: 0;
+        max-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        font-size: 0; /* Hide font size when hidden */
+      }
+      
+      /* When expanded - AM box moves right, text slides out from sides */
+      
     
   .logo.logo-text-expanded {
-      transform: translateX(60px); /* Smooth transform - moved more to right */
-    }
+        transform: translateX(60px); /* Smooth transform - moved more to right */
+      }
 }
 
 /* Slide in animations - Artur from left, Morin from right */
@@ -1109,50 +1104,54 @@ h1, h2, h3, h4 {
 }
 
 @media (min-width: 1025px) {
-  /* Desktop only - Apply backdrop-filter to parent nav ul */
-  .nav ul {
-      backdrop-filter: blur(25px) saturate(200%);
-      -webkit-backdrop-filter: blur(25px) saturate(200%);
-    }
+    /* Desktop only - Apply backdrop-filter to parent nav ul */
     
-    /* Hide Portfolio from desktop nav menu (it's a separate button) */
+  .nav ul {
+        backdrop-filter: blur(25px) saturate(200%);
+        -webkit-backdrop-filter: blur(25px) saturate(200%);
+      }
+      
+      /* Hide Portfolio from desktop nav menu (it's a separate button) */
+      
     
   .nav #primary-nav ul li.nav-portfolio-item,
-    .nav #primary-nav ul li:has(a[href*="/portfolio/"]),
-    .nav #primary-nav ul li:has(a[href*="portfolio.html"]),
-    .nav #primary-nav ul li:has(a[href="/portfolio/"]),
-    .nav #primary-nav ul li:has(a[href*="portfolio"]) {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-      width: 0 !important;
-      height: 0 !important;
-      overflow: hidden !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    
-    /* Fallback for browsers that don't support :has() - hide the link itself */
+      .nav #primary-nav ul li:has(a[href*="/portfolio/"]),
+      .nav #primary-nav ul li:has(a[href*="portfolio.html"]),
+      .nav #primary-nav ul li:has(a[href="/portfolio/"]),
+      .nav #primary-nav ul li:has(a[href*="portfolio"]) {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      
+      /* Fallback for browsers that don't support :has() - hide the link itself */
+      
     
   .nav #primary-nav ul li.nav-portfolio-item a,
-    .nav #primary-nav ul li a[href*="/portfolio/"],
-    .nav #primary-nav ul li a[href*="portfolio.html"],
-    .nav #primary-nav ul li a[href="/portfolio/"],
-    .nav #primary-nav ul li a[href*="portfolio"] {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-      width: 0 !important;
-      height: 0 !important;
-      overflow: hidden !important;
-    }
-    
-    /* Also hide the parent li if link is hidden */
+      .nav #primary-nav ul li a[href*="/portfolio/"],
+      .nav #primary-nav ul li a[href*="portfolio.html"],
+      .nav #primary-nav ul li a[href="/portfolio/"],
+      .nav #primary-nav ul li a[href*="portfolio"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+      }
+      
+      /* Also hide the parent li if link is hidden */
+      
     
   .nav #primary-nav ul li:has(a[href*="/portfolio/"][style*="display: none"]),
-    .nav #primary-nav ul li:has(a[href="/portfolio/"][style*="display: none"]) {
-      display: none !important;
-    }
+      .nav #primary-nav ul li:has(a[href="/portfolio/"][style*="display: none"]) {
+        display: none !important;
+      }
 }
 
 .nav ul a::after {
@@ -1165,22 +1164,24 @@ h1, h2, h3, h4 {
 }
 
 @media (min-width: 1025px) {
-  /* Desktop only - Heavy blur effect for navigation links */
-  .nav ul a::after {
-      backdrop-filter: blur(100px) saturate(200%);
-      -webkit-backdrop-filter: blur(100px) saturate(200%);
-      background: transparent;
-      transition: background 0.3s ease, backdrop-filter 0.3s ease;
-    }
+    /* Desktop only - Heavy blur effect for navigation links */
     
-    /* Enhanced hover effect for desktop navigation links */
+  .nav ul a::after {
+        backdrop-filter: blur(100px) saturate(200%);
+        -webkit-backdrop-filter: blur(100px) saturate(200%);
+        background: transparent;
+        transition: background 0.3s ease, backdrop-filter 0.3s ease;
+      }
+      
+      /* Enhanced hover effect for desktop navigation links */
+      
     
   .nav ul a:hover::after {
-      background: rgba(201, 166, 107, 0.15); /* Subtle gold background on hover */
-      backdrop-filter: blur(100px) saturate(250%);
-      -webkit-backdrop-filter: blur(100px) saturate(250%);
-      border: 1px solid rgba(201, 166, 107, 0.3); /* Subtle gold border */
-    }
+        background: rgba(201, 166, 107, 0.15); /* Subtle gold background on hover */
+        backdrop-filter: blur(100px) saturate(250%);
+        -webkit-backdrop-filter: blur(100px) saturate(250%);
+        border: 1px solid rgba(201, 166, 107, 0.3); /* Subtle gold border */
+      }
 }
 
 /* Interactive Grid Overlay - Photography Grid Effect */
@@ -1200,31 +1201,34 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 1024px) {
-  /* Grid overlay - visible on all devices */
-  /* Mobile/tablet menu will use it for click interactions */
+    /* Grid overlay - visible on all devices */
+    /* Mobile/tablet menu will use it for click interactions */
+    
   .nav-grid-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      z-index: 100; /* Above overlay, below menu */
-      overflow: hidden;
-    }
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 100; /* Above overlay, below menu */
+        overflow: hidden;
+      }
 }
 
 @media (min-width: 1025px) {
-  /* Hide mobile CTA button on desktop */
+    /* Hide mobile CTA button on desktop */
+    
   .nav-cta-mobile {
-      display: none !important;
-    }
+        display: none !important;
+      }
 }
 
 @media (max-width: 1024px) {
-  /* Remove active background on mobile/tablet */
+    /* Remove active background on mobile/tablet */
+    
   .nav #primary-nav ul a.active {
-      background: transparent !important;
-    }
+        background: transparent !important;
+      }
 }
 
 .nav-cta {
@@ -1250,92 +1254,95 @@ h1, h2, h3, h4 {
 }
 
 @media (min-width: 1025px) {
-  /* Background box that matches button height (60px) - Desktop only */
-  .nav-cta::after {
-      content: '';
-      position: absolute;
-      inset: 0; /* Fill entire button (60px height) */
-      border-radius: var(--radius-lg);
-      background: rgba(15, 15, 15, 0.6);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid var(--gold); /* Border on background */
-      z-index: -1; /* Behind button content and spotlight */
-      pointer-events: none;
-    }
+    /* Background box that matches button height (60px) - Desktop only */
     
-    /* Spotlight effect - isolated to CTA button only */
+  .nav-cta::after {
+        content: '';
+        position: absolute;
+        inset: 0; /* Fill entire button (60px height) */
+        border-radius: var(--radius-lg);
+        background: rgba(15, 15, 15, 0.6);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid var(--gold); /* Border on background */
+        z-index: -1; /* Behind button content and spotlight */
+        pointer-events: none;
+      }
+      
+      /* Spotlight effect - isolated to CTA button only */
+      
     
   .nav-cta {
-      position: relative;
-      overflow: hidden; /* Contain spotlight within button bounds */
-      isolation: isolate; /* Create new stacking context to isolate spotlight */
-    }
-    
-    /* Spotlight outer glow - isolated to button */
+        position: relative;
+        overflow: hidden; /* Contain spotlight within button bounds */
+        isolation: isolate; /* Create new stacking context to isolate spotlight */
+      }
+      
+      /* Spotlight outer glow - isolated to button */
+      
     
   .nav-cta::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle 120px at var(--spotlight-x, 50%) var(--spotlight-y, 50%), 
-        rgba(255, 255, 255, 1) 0%, 
-        rgba(255, 255, 200, 0.95) 35%, 
-        rgba(255, 240, 180, 0.7) 50%, 
-        rgba(201, 166, 107, 0.4) 65%,
-        rgba(180, 140, 80, 0.1) 75%,
-        transparent 85%);
-      opacity: var(--spotlight-opacity, 0);
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-      z-index: 0; /* Above background but below text */
-      filter: blur(1px);
-      mask-image: radial-gradient(circle at center, black 70%, transparent 90%);
-      -webkit-mask-image: radial-gradient(circle at center, black 70%, transparent 90%);
-      border-radius: var(--radius-lg);
-    }
-  /* Update extended background on hover - Desktop only */
-  .nav-cta:hover::after {
-      background: var(--gold);
-      border-color: var(--gold);
-    }
-  /* Desktop only - Apply backdrop-filter to outer container matching nav ul */
-  .nav-portfolio {
-      backdrop-filter: blur(25px) saturate(200%);
-      -webkit-backdrop-filter: blur(25px) saturate(200%);
-    }
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle 120px at var(--spotlight-x, 50%) var(--spotlight-y, 50%), 
+          rgba(255, 255, 255, 1) 0%, 
+          rgba(255, 255, 200, 0.95) 35%, 
+          rgba(255, 240, 180, 0.7) 50%, 
+          rgba(201, 166, 107, 0.4) 65%,
+          rgba(180, 140, 80, 0.1) 75%,
+          transparent 85%);
+        opacity: var(--spotlight-opacity, 0);
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 0; /* Above background but below text */
+        filter: blur(1px);
+        mask-image: radial-gradient(circle at center, black 70%, transparent 90%);
+        -webkit-mask-image: radial-gradient(circle at center, black 70%, transparent 90%);
+        border-radius: var(--radius-lg);
+      }
+    /* Update extended background on hover - Desktop only */
     
-    /* Inner background that wraps the text - matches nav ul a::after */
+  .nav-cta:hover::after {
+        background: var(--gold);
+        border-color: var(--gold);
+      }
+    /* Desktop only - Apply backdrop-filter to outer container matching nav ul */
+    
+  .nav-portfolio {
+        backdrop-filter: blur(25px) saturate(200%);
+        -webkit-backdrop-filter: blur(25px) saturate(200%);
+      }
+      
+      /* Inner background that wraps the text - matches nav ul a::after */
+      
     
   .nav-portfolio::after {
-      content: '';
-      position: absolute;
-      inset: 8px; /* Match outer padding to create inner box */
-      z-index: -1;
-      border-radius: var(--radius-sm); /* Inner border radius matching nav links */
-      pointer-events: none;
-      backdrop-filter: blur(100px) saturate(200%);
-      -webkit-backdrop-filter: blur(100px) saturate(200%);
-      background: transparent;
-      transition: background 0.3s ease, backdrop-filter 0.3s ease;
-    }
-    
-    /* Yellow background on hover - inner box becomes yellow */
+        content: '';
+        position: absolute;
+        inset: 8px; /* Match outer padding to create inner box */
+        z-index: -1;
+        border-radius: var(--radius-sm); /* Inner border radius matching nav links */
+        pointer-events: none;
+        backdrop-filter: blur(100px) saturate(200%);
+        -webkit-backdrop-filter: blur(100px) saturate(200%);
+        background: transparent;
+        transition: background 0.3s ease, backdrop-filter 0.3s ease;
+      }
+      
+      /* Yellow background on hover - inner box becomes yellow */
+      
     
   .nav-portfolio:hover::after {
-      background: rgba(201, 166, 107, 0.15);
-      backdrop-filter: blur(100px) saturate(250%);
-      -webkit-backdrop-filter: blur(100px) saturate(250%);
-      border: 1px solid rgba(201, 166, 107, 0.3);
-    }
-  /* Hide Portfolio in nav menu on desktop - show as separate button instead */
-  .nav-portfolio-mobile {
-      display: none;
-    }
+        background: rgba(201, 166, 107, 0.15);
+        backdrop-filter: blur(100px) saturate(250%);
+        -webkit-backdrop-filter: blur(100px) saturate(250%);
+        border: 1px solid rgba(201, 166, 107, 0.3);
+      }
 }
 
 .hero-content {
@@ -1675,11 +1682,6 @@ h1, h2, h3, h4 {
   transition: opacity 0.3s ease;
 }
 
-.contact-social {
-  display: flex;
-  gap: 16px;
-}
-
 /* Contact Form */
 .contact-form {
   display: grid;
@@ -1837,10 +1839,6 @@ h1, h2, h3, h4 {
   }
 }
 
-.footer-tagline-desktop {
-  display: block;
-}
-
 .footer-tagline-desktop-inline {
   display: none;
   font-size: 0.75rem;
@@ -1852,26 +1850,18 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 1024px) {
-  /* Hide desktop tagline in footer-bottom on mobile/tablet, show mobile tagline */
-  .footer-tagline-desktop {
-      display: none;
-    }
   .footer-tagline-mobile {
-      display: inline-block;
-    }
+        display: inline-block;
+      }
 }
 
 @media (min-width: 1025px) {
-  /* Show inline desktop tagline on desktop, hide footer-bottom tagline */
-  .footer-tagline-desktop {
-      display: none;
-    }
   .footer-tagline-mobile {
-      display: none;
-    }
+        display: none;
+      }
   .footer-tagline-desktop-inline {
-      display: inline-block;
-    }
+        display: inline-block;
+      }
 }
 
 /* X (formerly Twitter) - Pure black/white, clean and minimal */
@@ -1902,78 +1892,6 @@ h1, h2, h3, h4 {
   margin-bottom: 0;
 }
 
-/* --------------------------------------------------------------------------
-   Back to Top Button - Cinema Lens Style
-   Professional camera lens-inspired button with metallic finish
-   -------------------------------------------------------------------------- */
-.back-to-top {
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 50%, #1a1a1a 100%);
-  border: 2px solid rgba(201, 166, 107, 0.4);
-  box-shadow: 
-    0 0 0 1px rgba(0, 0, 0, 0.8),
-    0 0 0 3px rgba(201, 166, 107, 0.1),
-    inset 0 0 20px rgba(0, 0, 0, 0.9),
-    inset 0 2px 10px rgba(255, 255, 255, 0.03),
-    0 8px 32px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(201, 166, 107, 0.2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(0.8) translateY(20px);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-}
-
-/* Metallic texture effect using pseudo-element */
-.back-to-top::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: 
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.1) 2px,
-      rgba(0, 0, 0, 0.1) 4px
-    );
-  opacity: 0.3;
-  pointer-events: none;
-}
-
-/* Focus indicator - subtle pulsing ring */
-.back-to-top::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 70px;
-  height: 70px;
-  border: 1px solid rgba(201, 166, 107, 0.1);
-  border-radius: 50%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.back-to-top:hover::after {
-  opacity: 1;
-  animation: lensFocus 2s ease-in-out infinite;
-}
-
 @keyframes lensFocus {
   0%, 100% {
     transform: translate(-50%, -50%) scale(1);
@@ -1983,16 +1901,6 @@ h1, h2, h3, h4 {
     transform: translate(-50%, -50%) scale(1.1);
     opacity: 0.6;
   }
-}
-
-@media (max-width: 768px) {
-  /* Mobile adjustments */
-  .back-to-top {
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-    }
 }
 
 /* --------------------------------------------------------------------------
@@ -2005,397 +1913,420 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 1200px) {
-  /* --------------------------------------------------------------------------
-     Responsive - Large Tablet & Small Desktop
-     -------------------------------------------------------------------------- */
+    /* --------------------------------------------------------------------------
+       Responsive - Large Tablet & Small Desktop
+       -------------------------------------------------------------------------- */
+    
   :root {
-      --container-width: 1200px;
-      --section-padding: 100px;
-    }
+        --container-width: 1200px;
+        --section-padding: 100px;
+      }
   .work-grid {
-      gap: 20px;
-    }
+        gap: 20px;
+      }
   .services-grid {
-      gap: 20px;
-    }
+        gap: 20px;
+      }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-  /* --------------------------------------------------------------------------
-     Responsive - Tablet (Portrait & Landscape)
-     -------------------------------------------------------------------------- */
+    /* --------------------------------------------------------------------------
+       Responsive - Tablet (Portrait & Landscape)
+       -------------------------------------------------------------------------- */
+    
   :root {
-      --section-padding: 80px;
-    }
+        --section-padding: 80px;
+      }
   html,
-    body {
-      overflow-x: hidden;
-      overflow-x: clip; /* no nested scroll box (see note at end) */
-      width: 100%;
-      max-width: 100%;
-      position: relative;
-    }
+      body {
+        overflow-x: hidden;
+        overflow-x: clip; /* no nested scroll box (see note at end) */
+        width: 100%;
+        max-width: 100%;
+        position: relative;
+      }
   .nav {
-      padding: 20px 4vw;
-      overflow-x: hidden;
-      overflow-x: clip; /* no nested scroll box (see note at end) */
-      width: 100%;
-      max-width: 100%;
-    }
-    /* Position logo to align with burger menu button on tablet */
+        padding: 20px 4vw;
+        overflow-x: hidden;
+        overflow-x: clip; /* no nested scroll box (see note at end) */
+        width: 100%;
+        max-width: 100%;
+      }
+      /* Position logo to align with burger menu button on tablet */
+      
     
   .mobile-menu-toggle {
-      display: flex;
-      position: fixed;
-      top: 20px;
-      right: 4vw;
-      z-index: 102;
-    }
+        display: flex;
+        position: fixed;
+        top: 20px;
+        right: 4vw;
+        z-index: 102;
+      }
   .hero-content {
-      max-width: 100%;
-    }
+        max-width: 100%;
+      }
   .hero-title {
-      font-size: clamp(2.5rem, 5vw, 3.5rem);
-    }
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+      }
   .hero-lead {
-      max-width: 100%;
-      margin-left: auto;
-      margin-right: auto;
-      font-size: 1rem;
-    }
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 1rem;
+      }
   .hero-cta {
-      justify-content: center;
-      gap: 12px;
-    }
+        justify-content: center;
+        gap: 12px;
+      }
   .hero-stats {
-      justify-content: center;
-      gap: 40px;
-    }
+        justify-content: center;
+        gap: 40px;
+      }
   .hero-image {
-      max-width: 550px;
-      margin: 0 auto;
-    }
+        max-width: 550px;
+        margin: 0 auto;
+      }
   .scroll-hint {
-      display: none;
-    }
-    /* Work Grid - 2 columns on tablet */
+        display: none;
+      }
+      /* Work Grid - 2 columns on tablet */
+      
     
   .work-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
   .work-card {
-      grid-column: span 1;
-    }
+        grid-column: span 1;
+      }
   .work-card--large {
-      grid-column: span 2;
-    }
-    /* Services Grid - 2 columns on tablet */
+        grid-column: span 2;
+      }
+      /* Services Grid - 2 columns on tablet */
+      
     
   .services-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
   .service-card {
-      padding: 32px 24px;
-    }
+        padding: 32px 24px;
+      }
   .about-preview {
-      grid-template-columns: 1fr;
-      gap: 50px;
-      text-align: center;
-    }
+        grid-template-columns: 1fr;
+        gap: 50px;
+        text-align: center;
+      }
   .about-image {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    /* Contact Section - Stack on tablet */
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      /* Contact Section - Stack on tablet */
+      
     
   .contact {
-      grid-template-columns: 1fr;
-      gap: 50px;
-    }
+        grid-template-columns: 1fr;
+        gap: 50px;
+      }
   .contact-content {
-      text-align: center;
-    }
+        text-align: center;
+      }
   .contact-lead {
-      max-width: 100%;
-      margin-left: auto;
-      margin-right: auto;
-    }
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
   .contact-methods {
-      align-items: center;
-    }
-  .contact-social {
-      justify-content: center;
-    }
-    /* Form - 2 columns on tablet */
+        align-items: center;
+      }
+      /* Form - 2 columns on tablet */
+      
     
   .contact-form {
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
   .form-group--full {
-      grid-column: span 2;
-    }
+        grid-column: span 2;
+      }
 }
 
 @media (min-width: 481px) and (max-width: 768px) {
-  /* --------------------------------------------------------------------------
-     Responsive - Small Tablet (Landscape phones, small tablets)
-     -------------------------------------------------------------------------- */
+    /* --------------------------------------------------------------------------
+       Responsive - Small Tablet (Landscape phones, small tablets)
+       -------------------------------------------------------------------------- */
+    
   :root {
-      --section-padding: 70px;
-    }
+        --section-padding: 70px;
+      }
   .nav {
-      padding: 18px 4vw;
-    }
+        padding: 18px 4vw;
+      }
   .hero-title {
-      font-size: 2.4rem;
-    }
+        font-size: 2.4rem;
+      }
   .hero-stats {
-      gap: 32px;
-    }
+        gap: 32px;
+      }
   .stat-number {
-      font-size: 2.2rem;
-    }
+        font-size: 2.2rem;
+      }
   .work-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
   .services-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
   .contact-form {
-      grid-template-columns: 1fr;
-    }
+        grid-template-columns: 1fr;
+      }
   .form-group--full {
-      grid-column: span 1;
-    }
+        grid-column: span 1;
+      }
 }
 
 @media (max-width: 768px) {
-  /* --------------------------------------------------------------------------
-     Responsive - Mobile (Portrait)
-     -------------------------------------------------------------------------- */
-  :root {
-      --section-padding: 60px;
-    }
+    /* --------------------------------------------------------------------------
+       Responsive - Mobile (Portrait)
+       -------------------------------------------------------------------------- */
     
-    /* Overlay when menu is open */
+  :root {
+        --section-padding: 60px;
+      }
+      
+      /* Overlay when menu is open */
+      
     
   .nav::after {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.5); /* Lighter background - reduced from 0.7 to 0.5 */
-      z-index: 99;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-    }
-    /* Keep logo text visible on mobile but make it smaller */
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5); /* Lighter background - reduced from 0.7 to 0.5 */
+        z-index: 99;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+      /* Keep logo text visible on mobile but make it smaller */
+      
     
   .logo {
-      padding: 4px 8px; /* Reduced padding on mobile */
-      gap: 4px; /* Reduced gap */
-    }
-    
-    /* Further reduce spacing and positioning on mobile */
+        padding: 4px 8px; /* Reduced padding on mobile */
+        gap: 4px; /* Reduced gap */
+      }
+      
+      /* Further reduce spacing and positioning on mobile */
+      
     
   .logo.logo-text-expanded {
-      transform: translateX(55px); /* Smooth transform - moved more to right */
-    }
-    
-    /* Ensure hidden state for smooth animation */
+        transform: translateX(55px); /* Smooth transform - moved more to right */
+      }
+      
+      /* Ensure hidden state for smooth animation */
+      
     
   .logo.logo-text-hidden {
-      transform: translateX(0);
-    }
+        transform: translateX(0);
+      }
   .logo.logo-text-hidden .logo-name-first,
-    .logo.logo-text-hidden .logo-name-last {
-      font-size: 0 !important; /* Hide font size when hidden */
-    }
-    
-    /* Adjust background extension for mobile - covers full range but stays in view */
+      .logo.logo-text-hidden .logo-name-last {
+        font-size: 0 !important; /* Hide font size when hidden */
+      }
+      
+      /* Adjust background extension for mobile - covers full range but stays in view */
+      
     
   .logo.logo-text-expanded::before {
-      left: -50px; /* Cover Artur on mobile (text at -39px + padding) */
-      right: -50px; /* Cover Morin on mobile (text at +39px + padding) - reduced to stay in view */
-    }
+        left: -50px; /* Cover Artur on mobile (text at -39px + padding) */
+        right: -50px; /* Cover Morin on mobile (text at +39px + padding) - reduced to stay in view */
+      }
   .logo-name-first,
-    .logo-name-last {
-      font-size: 1.1rem; /* Smaller text on mobile */
-      display: inline-block; /* Keep visible */
-    }
+      .logo-name-last {
+        font-size: 1.1rem; /* Smaller text on mobile */
+        display: inline-block; /* Keep visible */
+      }
   .scroll-hint {
-      display: none;
-    }
+        display: none;
+      }
   .work-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
   .work-card,
-    .work-card--large {
-      grid-column: span 1;
-    }
+      .work-card--large {
+        grid-column: span 1;
+      }
   .work-card-info {
-      padding: 20px;
-    }
-    /* Services Section */
+        padding: 20px;
+      }
+      /* Services Section */
+      
     
   .services {
-      padding: var(--section-padding) 4vw;
-    }
+        padding: var(--section-padding) 4vw;
+      }
   .services-grid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
   .service-card {
-      padding: 28px 20px;
-    }
+        padding: 28px 20px;
+      }
   .service-number {
-      font-size: 2.5rem;
-    }
-    /* About Preview */
+        font-size: 2.5rem;
+      }
+      /* About Preview */
+      
     
   .about-preview {
-      padding: var(--section-padding) 4vw;
-      grid-template-columns: 1fr;
-      gap: 40px;
-      text-align: center;
-    }
-    /* Contact Section */
+        padding: var(--section-padding) 4vw;
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+      }
+      /* Contact Section */
+      
     
   .contact {
-      padding: var(--section-padding) 4vw;
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
+        padding: var(--section-padding) 4vw;
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
   .contact-content {
-      text-align: center;
-    }
+        text-align: center;
+      }
   .contact-email {
-      font-size: 1.2rem;
-    }
+        font-size: 1.2rem;
+      }
   .contact-methods {
-      align-items: center;
-      gap: 20px;
-    }
-  .contact-social {
-      justify-content: center;
-    }
-    /* Contact Form */
+        align-items: center;
+        gap: 20px;
+      }
+      /* Contact Form */
+      
     
   .contact-form {
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
   .form-group--full {
-      grid-column: span 1;
-    }
-    /* Footer */
+        grid-column: span 1;
+      }
+      /* Footer */
+      
     
   .footer {
-      padding: 50px 4vw 0;
-    }
-    /* Section Headers */
+        padding: 50px 4vw 0;
+      }
+      /* Section Headers */
+      
     
   .section-header {
-      margin-bottom: 40px;
-    }
+        margin-bottom: 40px;
+      }
 }
 
 @media (max-width: 480px) {
-  /* --------------------------------------------------------------------------
-     Responsive - Small Mobile (Portrait phones)
-     -------------------------------------------------------------------------- */
+    /* --------------------------------------------------------------------------
+       Responsive - Small Mobile (Portrait phones)
+       -------------------------------------------------------------------------- */
+    
   :root {
-      --section-padding: 50px;
-    }
+        --section-padding: 50px;
+      }
   .work-card-info {
-      padding: 16px;
-    }
-    /* Services */
+        padding: 16px;
+      }
+      /* Services */
+      
     
   .service-card {
-      padding: 24px 16px;
-    }
+        padding: 24px 16px;
+      }
   .service-number {
-      font-size: 2rem;
-    }
-    /* Contact */
+        font-size: 2rem;
+      }
+      /* Contact */
+      
     
   .contact {
-      padding: var(--section-padding) 4vw;
-      gap: 32px;
-    }
+        padding: var(--section-padding) 4vw;
+        gap: 32px;
+      }
   .contact-email {
-      font-size: 1.1rem;
-    }
-    /* Footer */
+        font-size: 1.1rem;
+      }
+      /* Footer */
+      
     
   .footer {
-      padding: 40px 4vw 0;
-    }
-    /* Clients */
+        padding: 40px 4vw 0;
+      }
+      /* Clients */
+      
     
   .clients {
-      padding: 60px 4vw;
-    }
+        padding: 60px 4vw;
+      }
   .clients-logos {
-      gap: 20px;
-    }
-    /* Section Headers */
+        gap: 20px;
+      }
+      /* Section Headers */
+      
     
   .section-header {
-      margin-bottom: 32px;
-    }
+        margin-bottom: 32px;
+      }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* =============================================================================
-     Reduced motion - respect the OS "reduce motion" setting
-     ============================================================================= */
+    /* =============================================================================
+       Reduced motion - respect the OS "reduce motion" setting
+       ============================================================================= */
+    
   *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
   .grain, .loader-grain, .cursor-trail { display: none !important; }
 }
 
 @media (min-width: 1025px) and (max-width: 1280px) {
-  /* Narrow desktops / iPad Pro: tighten spacing so everything fits on one row */
+    /* Narrow desktops / iPad Pro: tighten spacing so everything fits on one row */
+    
   .nav {
-      gap: 12px;
-      padding-left: 3vw;
-      padding-right: 3vw;
-    }
+        gap: 12px;
+        padding-left: 3vw;
+        padding-right: 3vw;
+      }
 }
 
 @media (max-width: 1024px) {
-  /* =============================================================================
-     AM logo on phones/tablets - same as desktop: full "Artur AM Morin" in its
-     glass box. Touch has no hover, so a tap plays the desktop hover collapse
-     (.logo-collapsing, added by js/logo.js) before scrolling up / going home.
-     ============================================================================= */
+    /* =============================================================================
+       AM logo on phones/tablets - same as desktop: full "Artur AM Morin" in its
+       glass box. Touch has no hover, so a tap plays the desktop hover collapse
+       (.logo-collapsing, added by js/logo.js) before scrolling up / going home.
+       ============================================================================= */
+    
   .logo {
-      gap: 8px;
-    }
+        gap: 8px;
+      }
   .logo::before {
-      opacity: 1;
-      left: 0;
-      right: 0;
-    }
+        opacity: 1;
+        left: 0;
+        right: 0;
+      }
   .logo.logo-collapsing::before {
-      opacity: 0;
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+        opacity: 0;
+        transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
 }
 
 /* No blue/grey flash when tapping links, buttons and the card stack on phones/tablets
