@@ -949,7 +949,8 @@ window.addEventListener('scroll', () => {
 // Each tap deals the top card: it stays in its place and the rest of the deck
 // takes the next place (so nothing is ever hidden under a dealt card). On
 // desktop the group stays centred and grows from the middle.
-// Order: 2024, 2025, TBC. A tap when all are out gathers them back.
+// Order: 2024, then 2025 + TBC (the last card follows on its own), then a
+// tap gathers them back.
 // The button deals all remaining cards at once ("Show 'em all!").
 // Cards stay in the normal grid; only transforms move them, so nothing jumps.
 // =============================================================================
@@ -1045,9 +1046,12 @@ window.addEventListener('scroll', () => {
   }
 
   function dealNext() {
+    const from = dealt;
     dealt += 1;
+    // a single card left in the deck comes out right after (no extra tap needed)
+    if (total - dealt === 1) dealt = total;
     fanned = false;
-    render(DEAL_ORDER.slice(dealt - 1)); // the dealt card stays, the deck slides on
+    render(DEAL_ORDER.slice(from)); // dealt cards move in order, the deck slides on
   }
 
   function dealAll() {
