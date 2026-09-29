@@ -74,13 +74,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     lastFocused = document.activeElement;
     show(index);
     lightbox.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    // the window scrolls (not <body>), so the page lock goes on <html>
+    document.documentElement.classList.add('lightbox-open');
     lightboxClose?.focus({ preventScroll: true });
   }
 
   function close() {
     lightbox.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    document.documentElement.classList.remove('lightbox-open');
     lastFocused?.focus({ preventScroll: true });
   }
 
@@ -111,7 +112,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     else if (e.key === 'ArrowRight') next();
   });
 
-  // Swipe left/right on touch screens, swipe down to close
+  // Swipe left/right on touch screens (no swipe-to-close: it fired while
+  // people were just trying to scroll)
   let touchX = 0;
   let touchY = 0;
   lightbox.addEventListener('touchstart', e => {
@@ -124,8 +126,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dy = e.changedTouches[0].clientY - touchY;
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
       dx < 0 ? next() : prev();
-    } else if (dy > 80 && Math.abs(dy) > Math.abs(dx)) {
-      close();
     }
   }, { passive: true });
 });

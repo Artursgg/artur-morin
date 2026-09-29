@@ -1942,6 +1942,7 @@ h1, h2, h3, h4 {
   font-size: 1.2rem;
   z-index: 10;
   position: relative;
+  flex-shrink: 0; /* keep 48px; only the photo frame adapts (buttons were squashed on load) */
 }
 
 .carousel-btn:hover {
@@ -5108,4 +5109,14 @@ button,
 .award-stack,
 .stack-card {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Lightbox open: lock the page behind it (the window scrolls, so lock <html>),
+   and keep touch gestures inside the viewer from scrolling the page */
+html.lightbox-open {
+  overflow: hidden !important;
+}
+.lightbox {
+  overscroll-behavior: contain;
+  touch-action: none;
 }
