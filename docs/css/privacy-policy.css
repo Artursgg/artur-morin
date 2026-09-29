@@ -1904,3 +1904,13 @@ h1, h2, h3, h4 {
     display: none;
   }
 }
+
+/* No blue/grey flash when tapping links, buttons and the card stack on phones/tablets
+   (the browser "tap highlight"); keyboard focus outlines are unaffected */
+a,
+button,
+[role="button"],
+.award-stack,
+.stack-card {
+  -webkit-tap-highlight-color: transparent;
+}

@@ -945,9 +945,10 @@ window.addEventListener('scroll', () => {
 
 // =============================================================================
 // Awards - card stack
-// Closed: the cards lie on top of each other like a deck (newest on top),
-// slightly rotated. Each tap on the deck deals the top card to its place
-// (2025, then 2024, then TBC); a tap when all are out gathers them back.
+// Closed: the cards lie on top of each other like a deck, slightly rotated.
+// Each tap deals the top card: it stays in its place and the rest of the deck
+// slides on to the next empty place (so nothing is ever hidden under a dealt
+// card). Order: 2024, 2025, TBC. A tap when all are out gathers them back.
 // The button deals all remaining cards at once ("Show 'em all!").
 // Cards stay in the normal grid; only transforms move them, so nothing jumps.
 // =============================================================================
@@ -962,44 +963,42 @@ window.addEventListener('scroll', () => {
   const toggleLabel = toggle && toggle.querySelector('.award-stack-toggle-label');
   if (!cards.length) return;
 
-  // How each card lies in the closed deck, bottom -> top: [x px, y px, rotate deg]
-  const POSES = [[-18, 14, -7], [14, 7, 5], [0, 0, 0]];
+  // Deal order, as positions in the HTML (0 = TBC, 1 = 2024, 2 = 2025)
+  const DEAL_ORDER = [1, 2, 0].filter((i) => i < cards.length);
+  cards.forEach((_, i) => { if (!DEAL_ORDER.includes(i)) DEAL_ORDER.push(i); });
+  // How cards lie in the deck by depth, top -> bottom: [x px, y px, rotate deg]
+  const POSES = [[0, 0, 0], [14, 7, 5], [-18, 14, -7]];
   const DEAL_DELAY = 80; // ms between cards when several move at once
   const total = cards.length;
-  let dealt = 0; // how many cards are out of the deck (taken from the top)
+  let dealt = 0; // how many cards (from the start of DEAL_ORDER) are out
   let fanned = false;
 
-  const isDealt = (i) => i >= total - dealt; // the top card (last) is dealt first
-
-  function pose(index) {
-    // extra cards (if more are added later) reuse the poses from the bottom up
-    return POSES[Math.max(0, POSES.length - total + index)] || [0, 0, 0];
-  }
+  const positionInOrder = (i) => DEAL_ORDER.indexOf(i);
+  const isDealt = (i) => positionInOrder(i) < dealt;
 
   // changed: indexes of cards that move now, in the order they should move
   function render(changed = []) {
-    const topOfDeck = total - dealt - 1;
+    const next = dealt < total ? DEAL_ORDER[dealt] : -1; // top of the deck
     cards.forEach((card, i) => {
       const order = changed.indexOf(i);
       card.style.transitionDelay = order > 0 ? `${order * DEAL_DELAY}ms` : '0ms';
       card.classList.toggle('is-dealt', isDealt(i));
-      card.classList.toggle('is-deck-top', i === topOfDeck);
+      card.classList.toggle('is-deck-top', i === next);
+      // dealt cards lie above the deck; inside the deck the next card is on top
+      card.style.zIndex = isDealt(i) ? String(20 + positionInOrder(i)) : String(10 - (positionInOrder(i) - dealt));
     });
 
     // Measure twice: setting the height can shift rows slightly, so place the
     // cards only after the height matches the new state.
     // (offsetLeft/offsetTop are layout positions - transforms don't affect them)
     for (let pass = 0; pass < 2; pass++) {
-      const centreX = stack.clientWidth / 2;
-      const spread = fanned && dealt < total ? 1.6 : 1; // hover: the deck fans a little
+      const spread = fanned && dealt === 0 ? 1.6 : 1; // hover: the closed deck fans a little
       // full-width cards on phones: a tighter fan so corners stay on screen
       const narrow = Math.min(1, stack.clientWidth / 700);
-      // one column (phones): the deck sits in its top card's slot and slides down
-      // as cards are dealt; rows (desktop/tablet): the deck stays centred
-      const oneColumn = cards.every((c) => c.offsetLeft === cards[0].offsetLeft);
-      const anchor = oneColumn && topOfDeck >= 0 ? cards[topOfDeck] : null;
-      const anchorX = anchor ? anchor.offsetLeft + anchor.offsetWidth / 2 : centreX;
-      const anchorY = anchor ? anchor.offsetTop : 0;
+      // the deck sits in the place of the card that will be dealt next
+      const anchor = cards[next >= 0 ? next : DEAL_ORDER[0]];
+      const anchorX = anchor.offsetLeft + anchor.offsetWidth / 2;
+      const anchorY = anchor.offsetTop;
 
       let height = 0;
       cards.forEach((card, i) => {
@@ -1007,7 +1006,8 @@ window.addEventListener('scroll', () => {
           card.style.transform = '';
           height = Math.max(height, card.offsetTop + card.offsetHeight);
         } else {
-          const [px, py, rot] = pose(i);
+          const depth = positionInOrder(i) - dealt; // 0 = top of the deck
+          const [px, py, rot] = POSES[Math.min(depth, POSES.length - 1)];
           const dx = anchorX - (card.offsetLeft + card.offsetWidth / 2) + px * spread * narrow;
           const dy = anchorY - card.offsetTop + py * spread;
           const r = rot * spread * (narrow < 1 ? narrow * 0.6 : 1);
@@ -1029,12 +1029,11 @@ window.addEventListener('scroll', () => {
   function dealNext() {
     dealt += 1;
     fanned = false;
-    render([total - dealt]);
+    render(DEAL_ORDER.slice(dealt - 1)); // the dealt card stays, the deck slides on
   }
 
   function dealAll() {
-    const moving = [];
-    for (let i = total - dealt - 1; i >= 0; i--) moving.push(i); // top card first
+    const moving = DEAL_ORDER.slice(dealt);
     dealt = total;
     fanned = false;
     render(moving);
@@ -1043,14 +1042,15 @@ window.addEventListener('scroll', () => {
   function gather() {
     dealt = 0;
     fanned = false;
-    render(cards.map((_, i) => i)); // left/first card goes back first, top card last
+    render(DEAL_ORDER.slice().reverse()); // last dealt goes back first
   }
 
   stack.addEventListener('click', () => (dealt < total ? dealNext() : gather()));
   toggle && toggle.addEventListener('click', () => (dealt < total ? dealAll() : gather()));
 
-  // hover hint on desktop: the closed deck fans slightly
-  stack.addEventListener('mouseenter', () => { if (dealt === 0) { fanned = true; render(); } });
+  // hover hint (mouse only): the closed deck fans slightly
+  const canHover = window.matchMedia('(hover: hover)');
+  stack.addEventListener('mouseenter', () => { if (canHover.matches && dealt === 0) { fanned = true; render(); } });
   stack.addEventListener('mouseleave', () => { if (fanned) { fanned = false; render(); } });
 
   // re-measure when the layout changes (resize, rotation, fonts loading)

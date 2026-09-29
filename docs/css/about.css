@@ -5228,10 +5228,7 @@ h1, h2, h3, h4 {
   -webkit-user-select: none;
 }
 
-/* later cards lie on top */
-.stack-card:nth-child(1) { z-index: 1; }
-.stack-card:nth-child(2) { z-index: 2; }
-.stack-card:nth-child(3) { z-index: 3; }
+/* stacking order (which card lies on top) is set by js/about.js */
 
 /* cards still in the deck under the top one: darker, text hidden (real depth) */
 .stack-card:not(.is-dealt):not(.is-deck-top) {
@@ -5306,10 +5303,10 @@ h1, h2, h3, h4 {
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
-  /* one column: newest first, so dealing fills the column from the top */
+  /* one column: in dealing order (2024, 2025, TBC), so it fills from the top */
   .stack-card:nth-child(1) { order: 3; }
-  .stack-card:nth-child(2) { order: 2; }
-  .stack-card:nth-child(3) { order: 1; }
+  .stack-card:nth-child(2) { order: 1; }
+  .stack-card:nth-child(3) { order: 2; }
   .stack-card {
     min-height: 180px;
   }
@@ -5359,4 +5356,14 @@ h1, h2, h3, h4 {
     box-shadow: 0 0 20px rgba(201, 166, 107, 0.6),
                 0 0 40px rgba(201, 166, 107, 0.4);
   }
+}
+
+/* No blue/grey flash when tapping links, buttons and the card stack on phones/tablets
+   (the browser "tap highlight"); keyboard focus outlines are unaffected */
+a,
+button,
+[role="button"],
+.award-stack,
+.stack-card {
+  -webkit-tap-highlight-color: transparent;
 }
