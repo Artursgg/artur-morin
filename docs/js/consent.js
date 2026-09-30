@@ -1,5 +1,6 @@
 // =============================================================================
-// Cookie consent (CookieYes) + Google Tag Manager / Analytics - shared by every page
+// Cookie consent (CookieYes) + Google Tag Manager - shared by every page
+//   (Google Analytics runs inside GTM as a Google Tag)
 //   - Google Consent Mode v2 defaults to "denied" for everything
 //   - Google tags are only loaded after the visitor accepts "Analytics"
 //   - "Cookie settings" links (class="cky-banner-element") reopen the banner
@@ -9,7 +10,6 @@
   'use strict';
 
   var GTM_ID = 'GTM-K97CNH32';
-  var GA_ID = 'G-X89C2WMLSL';
   var COOKIEYES_SRC = 'https://cdn-cookieyes.com/client_data/0cc137e141492894816e3e85bd125764/script.js';
   var isProduction = /(^|\.)arturmorin\.page$/.test(window.location.hostname);
 
@@ -44,10 +44,9 @@
     if (tagsLoaded) return;
     tagsLoaded = true;
     window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+    // Google Analytics (G-X89C2WMLSL) is set up as a "Google Tag" inside GTM,
+    // so it is not loaded separately here (that would count every visit twice)
     addScript('https://www.googletagmanager.com/gtm.js?id=' + GTM_ID);
-    addScript('https://www.googletagmanager.com/gtag/js?id=' + GA_ID);
-    window.gtag('js', new Date());
-    window.gtag('config', GA_ID);
   }
 
   function applyConsent(analytics, ads) {
