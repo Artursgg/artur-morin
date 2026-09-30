@@ -65,13 +65,17 @@ def main():
             img["thumbnailSmall"] = site_path(small)
 
             # large: long side 1600px (skip if the original is barely bigger)
+            large = cat_dir / "large" / full.name
             if long > LARGE_LONG_SIDE * 1.1:
-                large = cat_dir / "large" / full.name
                 if force or not large.exists():
                     resize(full, large, LARGE_LONG_SIDE, 75)
                     made += 1
+            # a heavily compressed original can be smaller than its re-saved
+            # 1600px version - then the viewer should just use the original
+            if large.exists() and large.stat().st_size < full.stat().st_size:
                 img["large"] = site_path(large)
             else:
+                large.unlink(missing_ok=True)
                 img["large"] = img["full"]
 
     DATA_FILE.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

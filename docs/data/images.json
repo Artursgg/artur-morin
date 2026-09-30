@@ -65,7 +65,7 @@
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Raven-stare.jpg",
-        "large": "/assets/images/portfolio/portrait/large/Raven-stare.jpg"
+        "large": "/assets/images/portfolio/portrait/full/Raven-stare.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Starry-eyes.jpg",
@@ -85,7 +85,7 @@
         "width": 3000,
         "height": 2000,
         "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Duck-sanctuary.jpg",
-        "large": "/assets/images/portfolio/portrait/large/Duck-sanctuary.jpg"
+        "large": "/assets/images/portfolio/portrait/full/Duck-sanctuary.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Up-side-duck.jpg",
@@ -95,7 +95,7 @@
         "width": 3000,
         "height": 2000,
         "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Up-side-duck.jpg",
-        "large": "/assets/images/portfolio/portrait/large/Up-side-duck.jpg"
+        "large": "/assets/images/portfolio/portrait/full/Up-side-duck.jpg"
       }
     ],
     "other": [
@@ -107,7 +107,7 @@
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/other/thumbnails/small/apex-predator.jpg",
-        "large": "/assets/images/portfolio/other/large/apex-predator.jpg"
+        "large": "/assets/images/portfolio/other/full/apex-predator.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/other/thumbnails/Till'-the-win_pl.jpg",
@@ -201,7 +201,7 @@
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Bentley-front.jpg",
-        "large": "/assets/images/portfolio/cars/large/Bentley-front.jpg"
+        "large": "/assets/images/portfolio/cars/full/Bentley-front.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Sunset-lambo.jpg",
@@ -251,7 +251,7 @@
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/classy-luxury.jpg",
-        "large": "/assets/images/portfolio/cars/large/classy-luxury.jpg"
+        "large": "/assets/images/portfolio/cars/full/classy-luxury.jpg"
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel_pl.jpg",
