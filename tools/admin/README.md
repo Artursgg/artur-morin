@@ -35,6 +35,21 @@ python3 tools/admin/server.py
 - **Publish** does `git add docs && git commit && git push`. GitHub Pages updates in about a minute.
 - **Preview site** opens your local copy of the site with the changes, before publishing.
 
+## Safety net
+
+- **Deleted or added a photo in Finder?** The Photo Manager checks the folders every time it opens or you
+  switch back to its tab. A red **Needs attention** box appears:
+  - *Photo files missing*: **Restore** (brings the files back from the last published version) or
+    **Remove from site**. Photos that were never published can only be removed.
+  - *Not on the site yet*: photos found in a `full/` folder. **Add to portfolio** creates the other sizes,
+    **Delete file** moves the file to Recently deleted.
+- **Publish is blocked** while any photo is missing files, so a broken image can't reach the live site.
+- **Delete** doesn't erase anything: the photo goes to **Recently deleted** (bottom of the page, last 50 items,
+  stored in `tools/admin/.trash/`, not uploaded) and **Restore** puts it back in the same place.
+- **Undo last publish** (top bar) puts the live site back to how it was before your last publish.
+- If GitHub changed while the Photo Manager was open (e.g. you merged a pull request), Publish catches up
+  automatically. If an upload ever fails, the status says *waiting to upload*: press Publish again.
+
 ## Where things live
 
 | What | Where |

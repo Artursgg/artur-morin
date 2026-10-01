@@ -10,6 +10,10 @@ Opens http://localhost:8787 with a drag & drop interface that:
   - sets the Picture of the Week on the home page
   - publishes the changes (git commit + push -> GitHub Pages)
 
+Safety: photos deleted or added in Finder are detected ("Needs attention"),
+Delete moves photos to a trash (tools/admin/.trash) so they can be restored,
+Publish refuses while photos are broken, and the last publish can be undone.
+
 Images are resized in the browser, so no extra software is needed.
 Only runs on your own machine; nothing here is deployed (docs/ is the site).
 """
@@ -44,6 +48,12 @@ SITEMAP_PAGES = [  # (path, changefreq, priority)
     ("/about/", "monthly", "0.8"),
     ("/privacy-policy/", "yearly", "0.3"),
 ]
+
+TRASH_DIR = ADMIN_DIR / ".trash"          # not part of the site (git-ignored)
+TRASH_FILE = TRASH_DIR / "trash.json"
+TRASH_KEEP = 50                            # newest items kept in "Recently deleted"
+SIZE_KEYS = ("full", "large", "thumbnail", "thumbnailSmall")
+COMMIT_PREFIX = "Photo Manager: "          # marks commits that "Undo last publish" may revert
 
 POTW_START = "<!-- POTW:START (managed by tools/admin - edit via Photo Manager) -->"
 POTW_END = "<!-- POTW:END -->"
@@ -102,6 +112,84 @@ def fs_path(url_path):
     if POTW_DIR.resolve() in p.parents:
         raise ValueError("Picture of the Week images are managed separately")
     return p
+
+
+def file_keys(img):
+    """distinct size keys of an entry (large may point to the full file)"""
+    seen, out = set(), []
+    for k in SIZE_KEYS:
+        v = img.get(k)
+        if v and v not in seen:
+            seen.add(v); out.append(k)
+    return out
+
+
+def in_last_publish(url_path):
+    """True if this file exists in the last commit (so it can be restored with git)"""
+    return git("cat-file", "-e", f"HEAD:docs{url_path}")[0] == 0
+
+
+def health(data):
+    """Photos whose files are missing (e.g. deleted in Finder) and photo files
+    that are in the folders but not on the site (e.g. added in Finder)."""
+    missing = []
+    listed = set()
+    for cat, images in data["portfolio"].items():
+        for img in images:
+            listed.update(img.get(k) for k in SIZE_KEYS if img.get(k))
+            gone = [k for k in file_keys(img) if not (SITE / img[k].lstrip("/")).is_file()]
+            if gone:
+                missing.append({
+                    "category": cat, "title": img.get("title", ""), "full": img["full"],
+                    "thumbnail": img.get("thumbnail") if "thumbnail" not in gone else None,
+                    "missing": gone,
+                    "restorable": all(in_last_publish(img[k]) for k in gone),
+                })
+    unlisted = []
+    for f in sorted(PORTFOLIO_DIR.glob("*/full/*")):
+        if f.suffix.lower() in IMAGE_EXTS and site_path(f) not in listed:
+            unlisted.append({"category": f.parent.parent.name, "path": site_path(f), "name": f.name})
+    potw = data.get("potw") or {}
+    potw_missing = bool(potw.get("image")) and not (SITE / potw["image"].lstrip("/")).is_file()
+    return {"missing": missing, "unlisted": unlisted, "potwMissing": potw_missing}
+
+
+def load_trash():
+    try:
+        return json.loads(TRASH_FILE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+
+
+def save_trash(items):
+    TRASH_DIR.mkdir(parents=True, exist_ok=True)
+    TRASH_FILE.write_text(json.dumps(items[:TRASH_KEEP], indent=2, ensure_ascii=False), encoding="utf-8")
+    keep = {f for it in items[:TRASH_KEEP] for f in it.get("files", {}).values()}
+    for f in TRASH_DIR.iterdir():                     # drop files of items that fell off the list
+        if f.name != TRASH_FILE.name and f.name not in keep:
+            f.unlink(missing_ok=True)
+
+
+def move_to_trash(url_paths):
+    """move files into the trash folder; returns {url_path: trash file name}"""
+    TRASH_DIR.mkdir(parents=True, exist_ok=True)
+    moved = {}
+    stamp = date.today().isoformat()
+    for u in url_paths:
+        src = fs_path(u)
+        if src.is_file():
+            name = unique_name(TRASH_DIR, f"{stamp}-{slugify(src.parent.name)}-{src.stem}", src.suffix)
+            src.rename(TRASH_DIR / name)
+            moved[u] = name
+    return moved
+
+
+def last_publish():
+    code, msg = git("log", "-1", "--format=%s")
+    if code != 0:
+        return None
+    revertable = msg.startswith(COMMIT_PREFIX) or msg.startswith(f'Revert "{COMMIT_PREFIX}')
+    return {"message": msg, "canUndo": revertable}
 
 
 def is_used_elsewhere(data, url_path):
@@ -192,14 +280,36 @@ def git_status():
     return [line for line in out.splitlines() if line.strip()]
 
 
+def push_with_retry(log):
+    code, out = git("push")
+    log.append(f"$ git push\n{out}")
+    if code != 0 and ("rejected" in out or "fetch first" in out or "non-fast-forward" in out):
+        # GitHub changed meanwhile (e.g. a merged pull request): catch up, then push again
+        code, out = git("pull", "--rebase", "--autostash")
+        log.append(f"$ git pull --rebase --autostash\n{out}")
+        if code != 0:
+            git("rebase", "--abort")
+            return False
+        code, out = git("push")
+        log.append(f"$ git push\n{out}")
+    return code == 0
+
+
+def unpushed():
+    """commits made here that haven't reached GitHub yet (e.g. after a failed upload)"""
+    code, out = git("rev-list", "--count", "@{u}..HEAD")
+    return int(out) if code == 0 and out.isdigit() else 0
+
+
 def publish(message):
     log = []
-    for args in (["add", "docs"], ["commit", "-m", message], ["push"]):
+    for args in (["add", "docs"], ["commit", "-m", COMMIT_PREFIX + message]):
         code, out = git(*args)
         log.append(f"$ git {' '.join(args[:1])}\n{out}")
         if code != 0:
             return False, "\n\n".join(log)
-    return True, "\n\n".join(log)
+    ok = push_with_retry(log)
+    return ok, "\n\n".join(log)
 
 
 # -----------------------------------------------------------------------------
@@ -232,7 +342,7 @@ class Handler(SimpleHTTPRequestHandler):
         if not self.host_ok():
             return self.reply({"error": "forbidden"}, 403)
         if urlparse(self.path).path == "/api/data":
-            return self.reply({"data": load_data(), "changes": git_status()})
+            return self.reply(self.state(load_data()))
         return super().do_GET()
 
     def do_POST(self):
@@ -255,6 +365,12 @@ class Handler(SimpleHTTPRequestHandler):
             "/api/delete": self.api_delete,
             "/api/potw": self.api_potw,
             "/api/publish": self.api_publish,
+            "/api/restore-missing": self.api_restore_missing,
+            "/api/remove-missing": self.api_delete,
+            "/api/adopt": self.api_adopt,
+            "/api/delete-unlisted": self.api_delete_unlisted,
+            "/api/trash-restore": self.api_trash_restore,
+            "/api/undo-publish": self.api_undo_publish,
         }.get(urlparse(self.path).path)
         if not route:
             return self.reply({"error": "not found"}, 404)
@@ -262,6 +378,12 @@ class Handler(SimpleHTTPRequestHandler):
             self.reply(route(body))
         except Exception as exc:  # show the error in the UI
             self.reply({"error": str(exc)}, 500)
+
+    def state(self, data, **extra):
+        """every reply carries the health check, trash and last publish, so the UI stays current"""
+        return {"data": data, "changes": git_status(), "unpushed": unpushed(), "health": health(data),
+                "trash": [{k: it.get(k) for k in ("id", "title", "category", "deleted", "kind")} for it in load_trash()],
+                "lastPublish": last_publish(), **extra}
 
     def reply(self, payload, status=200):
         raw = json.dumps(payload).encode()
@@ -305,7 +427,7 @@ class Handler(SimpleHTTPRequestHandler):
         images = data["portfolio"].setdefault(category, [])
         images.insert(0, entry) if body.get("position") == "start" else images.append(entry)
         save_data(data)
-        return {"data": data, "changes": git_status()}
+        return self.state(data)
 
     def api_save(self, body):
         """Save order / titles / categories edited in the UI."""
@@ -318,11 +440,13 @@ class Handler(SimpleHTTPRequestHandler):
                         raise ValueError(f"Missing file: {img[key]}")
         data["portfolio"] = new_portfolio
         save_data(data)
-        return {"data": data, "changes": git_status()}
+        return self.state(data)
 
     def api_delete(self, body):
+        """take a photo off the site; its files go to "Recently deleted" (also used
+        for photos whose files were deleted in Finder - whatever is left is kept)"""
         data = load_data()
-        for images in data["portfolio"].values():
+        for cat, images in data["portfolio"].items():
             match = next((i for i, img in enumerate(images) if img["full"] == body["full"]), None)
             if match is not None:
                 entry = images.pop(match)
@@ -330,10 +454,13 @@ class Handler(SimpleHTTPRequestHandler):
         else:
             raise ValueError("Photo not found - reload the page")
         save_data(data)
-        for key in ("full", "thumbnail", "thumbnailSmall", "large"):
-            if entry.get(key) and not is_used_elsewhere(data, entry[key]):
-                fs_path(entry[key]).unlink(missing_ok=True)
-        return {"data": data, "changes": git_status()}
+        paths = [entry[k] for k in file_keys(entry) if not is_used_elsewhere(data, entry[k])]
+        trash = load_trash()
+        trash.insert(0, {"id": f"{date.today().isoformat()}-{len(trash)}-{slugify(entry.get('title', ''))}",
+                         "kind": "photo", "title": entry.get("title", ""), "category": cat, "index": match,
+                         "entry": entry, "files": move_to_trash(paths), "deleted": date.today().isoformat()})
+        save_trash(trash)
+        return self.state(data)
 
     def api_potw(self, body):
         data = load_data()
@@ -365,17 +492,124 @@ class Handler(SimpleHTTPRequestHandler):
         data["potw"] = potw
         save_data(data)
         write_potw_html(potw)
-        return {"data": data, "changes": git_status()}
+        return self.state(data)
 
     def api_publish(self, body):
+        h = health(load_data())
+        if h["missing"] or h["potwMissing"]:
+            n = len(h["missing"]) + (1 if h["potwMissing"] else 0)
+            raise ValueError(f"Not published: {n} photo(s) are missing files (deleted in Finder?). "
+                             "Restore or remove them under 'Needs attention' first.")
         if not git_status():
-            return {"ok": True, "log": "Nothing to publish - no changes.", "changes": []}
+            if unpushed():
+                log = []
+                if not push_with_retry(log):        # finish an earlier publish whose upload failed
+                    raise RuntimeError("\n\n".join(log))
+                return self.state(load_data(), ok=True, log="\n\n".join(log))
+            return self.state(load_data(), ok=True, log="Nothing to publish - no changes.")
         write_sitemap(load_data())
         message = body.get("message", "").strip() or "Update photos"
         ok, log = publish(message)
         if not ok:
             raise RuntimeError(log)
-        return {"ok": True, "log": log, "changes": git_status()}
+        return self.state(load_data(), ok=True, log=log)
+
+    # --- safety --------------------------------------------------------------
+    def find(self, data, full):
+        for cat, images in data["portfolio"].items():
+            for i, img in enumerate(images):
+                if img["full"] == full:
+                    return cat, i, img
+        raise ValueError("Photo not found - reload the page")
+
+    def api_restore_missing(self, body):
+        """bring back files deleted in Finder from the last published version"""
+        data = load_data()
+        _, _, img = self.find(data, body["full"])
+        gone = [img[k] for k in file_keys(img) if not fs_path(img[k]).is_file()]
+        if not all(in_last_publish(u) for u in gone):
+            raise ValueError("This photo was never published, so there is no copy to restore. Remove it instead.")
+        for u in gone:
+            code, out = git("checkout", "HEAD", "--", "docs" + u)
+            if code != 0:
+                raise RuntimeError(out)
+        return self.state(data)
+
+    def api_adopt(self, body):
+        """add a photo that was copied into a category's full/ folder in Finder"""
+        data = load_data()
+        full = fs_path(body["path"])
+        if not full.is_file() or full.parent.name != "full":
+            raise ValueError("File not found")
+        if any(img["full"] == body["path"] for imgs in data["portfolio"].values() for img in imgs):
+            raise ValueError("Already on the site")
+        folder, name, category = full.parent.parent, full.name, full.parent.parent.name
+        thumb, small = folder / "thumbnails" / name, folder / "thumbnails" / "small" / name
+        write_data_url(thumb, body["thumbnail"])
+        write_data_url(small, body["thumbnailSmall"])
+        title = body.get("title", "").strip() or "Untitled"
+        entry = {"thumbnail": site_path(thumb), "full": body["path"],
+                 "alt": body.get("alt", "").strip() or title, "title": title,
+                 "width": int(body.get("width") or 0), "height": int(body.get("height") or 0),
+                 "thumbnailSmall": site_path(small)}
+        if body.get("large"):
+            large = folder / "large" / name
+            write_data_url(large, body["large"])
+            entry["large"] = site_path(large)
+        else:
+            entry["large"] = body["path"]
+        data["portfolio"].setdefault(category, []).append(entry)
+        save_data(data)
+        return self.state(data)
+
+    def api_delete_unlisted(self, body):
+        data = load_data()
+        if any(img["full"] == body["path"] for imgs in data["portfolio"].values() for img in imgs):
+            raise ValueError("This photo is on the site - use its Delete button instead")
+        trash = load_trash()
+        trash.insert(0, {"id": f"{date.today().isoformat()}-{len(trash)}-file", "kind": "file",
+                         "title": Path(body["path"]).name, "category": Path(body["path"]).parent.parent.name,
+                         "files": move_to_trash([body["path"]]), "deleted": date.today().isoformat()})
+        save_trash(trash)
+        return self.state(data)
+
+    def api_trash_restore(self, body):
+        trash = load_trash()
+        item = next((t for t in trash if t["id"] == body["id"]), None)
+        if not item:
+            raise ValueError("Not in Recently deleted any more")
+        for u in item["files"]:
+            if fs_path(u).exists():
+                raise ValueError(f"A file with the same name exists again: {u}")
+        for u, name in item["files"].items():
+            dest = fs_path(u)
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            (TRASH_DIR / name).rename(dest)
+        data = load_data()
+        if item["kind"] == "photo":
+            images = data["portfolio"].setdefault(item.get("category") or "other", [])
+            images.insert(min(item.get("index", len(images)), len(images)), item["entry"])
+            save_data(data)
+        trash.remove(item)
+        save_trash(trash)
+        return self.state(data)
+
+    def api_undo_publish(self, body):
+        """put the site back to how it was before the last Photo Manager publish"""
+        lp = last_publish()
+        if not lp or not lp["canUndo"]:
+            raise ValueError("The last change on GitHub wasn't made by the Photo Manager, so it can't be undone here.")
+        if git_status():
+            raise ValueError("You have unpublished changes. Publish them first, then undo.")
+        log = []
+        code, out = git("revert", "--no-edit", "HEAD")
+        log.append(f"$ git revert\n{out}")
+        if code != 0:
+            git("revert", "--abort")
+            raise RuntimeError("\n\n".join(log))
+        if not push_with_retry(log):
+            raise RuntimeError("\n\n".join(log))
+        return self.state(load_data(), ok=True, log="\n\n".join(log))
 
 
 def main():

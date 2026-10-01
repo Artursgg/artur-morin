@@ -123,6 +123,23 @@
   .toast.show { opacity: 1; }
   .toast.error { border-color: var(--danger); color: var(--danger); }
 
+  /* Needs attention / Recently deleted */
+  .attention { border: 1px solid rgba(224,104,92,.45); background: rgba(224,104,92,.06); border-radius: 14px; padding: 16px 18px; margin-bottom: 22px; }
+  .attention h3 { margin: 0 0 4px; font-size: 15px; color: var(--danger); }
+  .attention > p { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+  .attention h4 { margin: 14px 0 8px; font-size: 13px; font-weight: 600; color: var(--text); }
+  .issue { display: flex; align-items: center; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px; margin-bottom: 8px; }
+  .issue .ph { width: 56px; height: 56px; border-radius: 6px; background: #000 center/cover no-repeat; flex: 0 0 56px; display: grid; place-items: center; color: var(--muted); font-size: 11px; }
+  .issue .info { flex: 1; min-width: 0; }
+  .issue .info b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .issue .info span { color: var(--muted); font-size: 12px; }
+  .issue input { background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; width: 180px; }
+  .issue .btn { padding: 6px 10px; font-size: 12px; white-space: nowrap; }
+  details.trash { margin-top: 28px; color: var(--muted); }
+  details.trash summary { cursor: pointer; font-size: 13px; }
+  details.trash .issue .info b { color: var(--text); }
+  #undo-btn[hidden] { display: none; }
+
   @media (max-width: 800px) {
     header { padding: 12px 16px; }
     main { padding: 16px; }
@@ -140,12 +157,14 @@
   <div class="spacer"></div>
   <span class="status" id="status">Loading…</span>
   <a class="btn" href="/portfolio/" target="_blank">Preview site ↗</a>
+  <button class="btn" id="undo-btn" hidden title="Put the live site back to how it was before the last publish">Undo last publish</button>
   <button class="btn btn-gold" id="publish-btn" disabled>Publish</button>
 </header>
 
 <main>
   <!-- ============================ PORTFOLIO ============================ -->
   <div id="tab-portfolio">
+    <section class="attention" id="attention" hidden></section>
     <label class="drop" id="drop">
       <div>
         <h2>Drop photos here</h2>
@@ -165,6 +184,10 @@
     </div>
     <div class="queue" id="queue"></div>
     <div id="categories"></div>
+    <details class="trash" id="trash" hidden>
+      <summary>Recently deleted (<span id="trash-count">0</span>) - restore a photo you deleted</summary>
+      <div id="trash-list" style="margin-top:10px"></div>
+    </details>
   </div>
 
   <!-- ======================= PICTURE OF THE WEEK ======================= -->
@@ -206,7 +229,8 @@
 
 <script>
 const $ = (s, el = document) => el.querySelector(s);
-const state = { data: null, changes: [] };
+const state = { data: null, changes: [], health: { missing: [], unlisted: [] }, trash: [], lastPublish: null };
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // ---------------------------------------------------------------------------
 // API
@@ -219,9 +243,19 @@ async function api(path, body, { keepData = false } = {}) {
   } : undefined);
   const json = await res.json();
   if (!res.ok) throw new Error(json.error || res.statusText);
-  if (json.data && !keepData) state.data = json.data;
+  if (json.data && !keepData) {
+    state.data = json.data;
+    // redraw so every card edits the fresh data (stale cards would silently lose edits)
+    if (state.ready) renderPortfolio();
+  }
   if (json.changes) state.changes = json.changes;
+  if ('unpushed' in json) state.unpushed = json.unpushed;
+  if (json.health) state.health = json.health;
+  if (json.trash) state.trash = json.trash;
+  if ('lastPublish' in json) state.lastPublish = json.lastPublish;
   renderStatus();
+  renderAttention();
+  renderTrash();
   return json;
 }
 
@@ -234,10 +268,113 @@ function toast(msg, isError = false) {
   t._timer = setTimeout(() => t.classList.remove('show'), isError ? 6000 : 2200);
 }
 
+function problemCount() {
+  return state.health.missing.length + (state.health.potwMissing ? 1 : 0);
+}
+
 function renderStatus() {
   const n = state.changes.length;
-  $('#status').innerHTML = n ? `<b>${n}</b> unpublished change${n > 1 ? 's' : ''}` : 'Everything is published';
-  $('#publish-btn').disabled = !n;
+  const waiting = state.unpushed || 0;
+  const broken = problemCount();
+  $('#status').innerHTML = broken
+    ? `<b style="color:var(--danger)">${broken}</b> photo${broken > 1 ? 's need' : ' needs'} attention`
+    : n ? `<b>${n}</b> unpublished change${n > 1 ? 's' : ''}`
+    : waiting ? '<b>Published here, waiting to upload</b> - press Publish again'
+    : 'Everything is published';
+  $('#publish-btn').disabled = (!n && !waiting) || broken > 0;
+  $('#publish-btn').title = broken ? 'Fix the photos under "Needs attention" first' : '';
+  const undo = $('#undo-btn');
+  undo.hidden = !(state.lastPublish && state.lastPublish.canUndo) || n > 0 || waiting > 0;
+}
+
+// ---------------------------------------------------------------------------
+// Needs attention: files deleted/added in Finder, broken Picture of the Week
+// ---------------------------------------------------------------------------
+const SIZE_NAMES = { full: 'full size', large: 'viewer size', thumbnail: 'thumbnail', thumbnailSmall: 'small thumbnail' };
+
+function renderAttention() {
+  const box = $('#attention');
+  const { missing = [], unlisted = [], potwMissing } = state.health;
+  box.hidden = !missing.length && !unlisted.length && !potwMissing;
+  if (box.hidden) { box.innerHTML = ''; return; }
+  const cats = state.data ? Object.keys(state.data.portfolio) : [];
+  let html = '<h3>Needs attention</h3><p>Files were changed outside the Photo Manager (e.g. in Finder). Broken photos block publishing, so nothing breaks on the live site.</p>';
+  if (missing.length) {
+    html += '<h4>Photo files missing</h4>';
+    html += missing.map((m) => `
+      <div class="issue" data-full="${esc(m.full)}">
+        <div class="ph" style="${m.thumbnail ? `background-image:url('${esc(m.thumbnail)}')` : ''}">${m.thumbnail ? '' : 'missing'}</div>
+        <div class="info"><b>${esc(m.title || 'Untitled')}</b><span>${esc(m.category)} · missing: ${m.missing.map((k) => SIZE_NAMES[k] || k).join(', ')}</span></div>
+        ${m.restorable ? '<button class="btn act-restore">Restore</button>' : '<span class="status" title="It was never published, so there is no copy">no copy to restore</span>'}
+        <button class="btn btn-danger act-remove">Remove from site</button>
+      </div>`).join('');
+  }
+  if (potwMissing) {
+    html += '<h4>Picture of the Week image missing</h4><div class="issue"><div class="ph">missing</div><div class="info"><b>Picture of the Week</b><span>Choose a new photo in the Picture of the Week tab</span></div></div>';
+  }
+  if (unlisted.length) {
+    html += '<h4>Not on the site yet (found in the folders)</h4>';
+    html += unlisted.map((u) => `
+      <div class="issue" data-path="${esc(u.path)}">
+        <div class="ph" style="background-image:url('${esc(u.path)}')"></div>
+        <div class="info"><b>${esc(u.name)}</b><span>in ${esc(u.category)}</span></div>
+        <input class="adopt-title" value="${esc(titleFromFile(u.name))}" aria-label="Title">
+        <button class="btn btn-gold act-adopt">Add to portfolio</button>
+        <button class="btn btn-danger act-delete-file">Delete file</button>
+      </div>`).join('');
+  }
+  box.innerHTML = html;
+
+  box.querySelectorAll('.act-restore').forEach((b) => b.addEventListener('click', () => run(b, '/api/restore-missing', { full: b.closest('.issue').dataset.full }, 'Restored')));
+  box.querySelectorAll('.act-remove').forEach((b) => b.addEventListener('click', () => {
+    if (confirm('Remove this photo from the site? Any files that are left go to "Recently deleted".')) run(b, '/api/remove-missing', { full: b.closest('.issue').dataset.full }, 'Removed');
+  }));
+  box.querySelectorAll('.act-delete-file').forEach((b) => b.addEventListener('click', () => run(b, '/api/delete-unlisted', { path: b.closest('.issue').dataset.path }, 'Moved to Recently deleted')));
+  box.querySelectorAll('.act-adopt').forEach((b) => b.addEventListener('click', () => adopt(b)));
+}
+
+async function run(button, path, body, done) {
+  button.disabled = true;
+  try {
+    await flushSave();
+    await api(path, body);
+    renderPortfolio();
+    toast(done);
+  } catch (err) { toast(err.message, true); button.disabled = false; }
+}
+
+async function adopt(button) {
+  const row = button.closest('.issue');
+  const path = row.dataset.path;
+  const title = row.querySelector('.adopt-title').value.trim() || titleFromFile(path.split('/').pop());
+  button.disabled = true;
+  button.textContent = 'resizing…';
+  try {
+    const blob = await (await fetch(path, { cache: 'no-store' })).blob();
+    const bitmap = await loadBitmap(blob);
+    const ratio = Math.max(bitmap.width, bitmap.height) / Math.min(bitmap.width, bitmap.height);
+    const thumb = resize(bitmap, Math.min(1600, Math.round(800 * ratio)), 'image/jpeg', 0.8);
+    const small = resize(bitmap, Math.min(800, Math.round(400 * ratio)), 'image/jpeg', 0.75);
+    const large = Math.max(bitmap.width, bitmap.height) > 1760 ? resize(bitmap, 1600, 'image/jpeg', 0.75) : null;
+    await flushSave();
+    await api('/api/adopt', { path, title, alt: title, thumbnail: thumb.url, thumbnailSmall: small.url,
+      large: large && large.url, width: bitmap.width, height: bitmap.height });
+    renderPortfolio();
+    toast('Added to the portfolio');
+  } catch (err) { toast(err.message, true); button.disabled = false; button.textContent = 'Add to portfolio'; }
+}
+
+function renderTrash() {
+  const items = state.trash || [];
+  $('#trash').hidden = !items.length;
+  $('#trash-count').textContent = items.length;
+  $('#trash-list').innerHTML = items.map((t) => `
+    <div class="issue" data-id="${esc(t.id)}">
+      <div class="ph">${t.kind === 'file' ? 'file' : 'photo'}</div>
+      <div class="info"><b>${esc(t.title || 'Untitled')}</b><span>${esc(t.category || '')} · deleted ${esc(t.deleted || '')}</span></div>
+      <button class="btn act-trash-restore">Restore</button>
+    </div>`).join('');
+  $('#trash-list').querySelectorAll('.act-trash-restore').forEach((b) => b.addEventListener('click', () => run(b, '/api/trash-restore', { id: b.closest('.issue').dataset.id }, 'Restored')));
 }
 
 // ---------------------------------------------------------------------------
@@ -340,7 +477,7 @@ function renderPortfolio() {
         saveSoon(0);
       });
       $('.f-del', card).addEventListener('click', async () => {
-        if (!confirm(`Delete "${img.title || 'this photo'}"? The files are removed too.`)) return;
+        if (!confirm(`Delete "${img.title || 'this photo'}"? You can restore it from "Recently deleted" at the bottom.`)) return;
         try {
           await flushSave();
           await api('/api/delete', { full: img.full });
@@ -577,6 +714,28 @@ $('#upload-category').addEventListener('change', e => {
   try { localStorage.setItem('uploadCategory', e.target.value); } catch {}
 });
 
+$('#undo-btn').addEventListener('click', async () => {
+  const msg = state.lastPublish ? state.lastPublish.message.replace(/^Photo Manager: /, '') : '';
+  if (!confirm(`Undo the last publish ("${msg}")?\nThe live site goes back to how it was before it (about 1 minute).`)) return;
+  const b = $('#undo-btn');
+  b.disabled = true;
+  try {
+    await api('/api/undo-publish', {});
+    renderPortfolio();
+    renderPotw();
+    toast('Undone - the live site updates in about a minute');
+  } catch (err) { toast(err.message, true); }
+  b.disabled = false;
+});
+
+// Re-check when you come back to this tab (e.g. after deleting files in Finder)
+async function refresh() {
+  if (dragged || saveTimer || document.hidden) return;
+  try { await api('/api/data'); renderPortfolio(); } catch {}
+}
+window.addEventListener('focus', refresh);
+document.addEventListener('visibilitychange', refresh);
+
 // ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
@@ -584,6 +743,7 @@ setupDropZone($('#drop'), $('#file-input'), uploadFiles);
 setupDropZone($('#potw-drop'), $('#potw-file'), pickPotw);
 
 api('/api/data').then(() => {
+  state.ready = true;
   renderPortfolio();
   renderPotw();
 }).catch(err => toast('Could not load data: ' + err.message, true));
