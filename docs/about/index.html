@@ -13,6 +13,26 @@
   <meta name="author" content="Artur Morin">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://arturmorin.page/about/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://arturmorin.page/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "About",
+        "item": "https://arturmorin.page/about/"
+      }
+    ]
+  }
+  </script>
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -208,7 +228,10 @@
         </div>
       </div>
       <div class="about-hero-image reveal">
-        <img width="802" height="1168" src="/assets/images/portfolio/about/Me-2.jpg" alt="Artur Morin - Photographer portrait" fetchpriority="high" decoding="async">
+        <picture>
+          <source srcset="/assets/images/portfolio/about/Me-2.webp" type="image/webp">
+          <img width="802" height="1168" src="/assets/images/portfolio/about/Me-2.jpg" alt="Artur Morin - Photographer portrait" fetchpriority="high" decoding="async">
+        </picture>
         <div class="image-decoration"></div>
       </div>
     </section>
