@@ -50,6 +50,18 @@ python3 tools/admin/server.py
 - If GitHub changed while the Photo Manager was open (e.g. you merged a pull request), Publish catches up
   automatically. If an upload ever fails, the status says *waiting to upload*: press Publish again.
 
+## WebP and the portfolio page
+
+- Every photo also gets a **WebP copy** next to the JPG (about half the size). Browsers that
+  support WebP (all current ones) load it; the JPG stays as the fallback. The copies are made
+  with `cwebp` (`brew install webp`); without it the Photo Manager page makes them in Chrome.
+  If WebP would be bigger than the JPG, only the JPG is kept.
+- The photo grid is written straight into `docs/portfolio/index.html` (between the `GRID:START`
+  and `GRID:END` comments), so Google sees the photos and their **alt text** without running
+  JavaScript. It is rewritten on every save and before every publish. Don't edit it by hand.
+- **Alt text** describes what is in the photo (for blind visitors and image search). Edit it
+  in the Photo Manager's alt field.
+
 ## Where things live
 
 | What | Where |

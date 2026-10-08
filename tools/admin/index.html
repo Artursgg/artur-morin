@@ -256,7 +256,35 @@ async function api(path, body, { keepData = false } = {}) {
   renderStatus();
   renderAttention();
   renderTrash();
+  if (json.webpTodo && json.webpTodo.length) makeWebp(json.webpTodo);
   return json;
+}
+
+// WebP copies: the server makes them with cwebp; on a computer without it,
+// this page makes them in the browser instead (Chrome / Edge / Firefox)
+let webpBusy = false;
+async function makeWebp(todo) {
+  if (webpBusy) return;
+  const probe = document.createElement('canvas');
+  probe.width = probe.height = 1;
+  if (!probe.toDataURL('image/webp').startsWith('data:image/webp')) return; // e.g. Safari
+  webpBusy = true;
+  try {
+    for (let i = 0; i < todo.length; i++) {
+      const blob = await (await fetch(todo[i], { cache: 'no-store' })).blob();
+      const bitmap = await createImageBitmap(blob);
+      const { url } = resize(bitmap, Math.max(bitmap.width, bitmap.height), 'image/webp', 0.8);
+      await fetch('/api/webp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: todo[i], data: url, last: i === todo.length - 1 }),
+      });
+    }
+  } catch (err) {
+    console.warn('WebP copies skipped:', err);
+  } finally {
+    webpBusy = false;
+  }
 }
 
 function toast(msg, isError = false) {

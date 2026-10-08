@@ -46,12 +46,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Photo viewer: the 1600px version unless the screen really needs more pixels
+  // (WebP when there is one - every current browser shows it; JPG is the fallback)
+  let useWebp = true;
   function viewerSrc(image) {
     const needed = Math.max(window.innerWidth, window.innerHeight) * (window.devicePixelRatio || 1);
-    return image.large && needed <= 1600 * 1.15 ? image.large : image.full;
+    const key = image.large && needed <= 1600 * 1.15 ? 'large' : 'full';
+    return (useWebp && image.webp?.[key]) || image[key];
   }
 
-  // Render portfolio grid
+  // The grid is normally already in the HTML (written by the Photo Manager, so
+  // search engines see the photos); this only builds it when it is missing
   function renderGrid() {
     grid.innerHTML = '';
     images.forEach((image, idx) => {
@@ -90,6 +94,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     currentIndex = index;
     const image = images[currentIndex];
 
+    lightboxImage.onerror = () => {   // very old browser without WebP: use the JPGs
+      if (!useWebp || !image.webp) return;
+      useWebp = false;
+      lightboxImage.src = viewerSrc(image);
+    };
     lightboxImage.src = viewerSrc(image);
     lightboxImage.alt = image.alt || image.title || 'Portfolio image';
     if (lightboxCounter) lightboxCounter.textContent = `${currentIndex + 1} / ${images.length}`;
@@ -118,12 +127,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const prev = () => show(currentIndex - 1);
   const next = () => show(currentIndex + 1);
 
-  renderGrid();
+  if (grid.querySelectorAll('.grid-item').length !== images.length) renderGrid();
 
-  // One listener for the whole grid
+  // One listener for the whole grid (pre-rendered items are links to the photo,
+  // so they also work without JavaScript)
   grid.addEventListener('click', e => {
     const item = e.target.closest('.grid-item');
-    if (item) open(Number(item.dataset.index));
+    if (!item || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    open(Number(item.dataset.index));
   });
 
   lightboxClose?.addEventListener('click', close);

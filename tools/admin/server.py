@@ -22,6 +22,7 @@ import base64
 import html
 import json
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -55,6 +56,12 @@ TRASH_KEEP = 50                            # newest items kept in "Recently dele
 SIZE_KEYS = ("full", "large", "thumbnail", "thumbnailSmall")
 COMMIT_PREFIX = "Photo Manager: "          # marks commits that "Undo last publish" may revert
 
+PORTFOLIO_PAGE = SITE / "portfolio" / "index.html"
+GRID_START = "<!-- GRID:START (managed by tools/admin - written by the Photo Manager, don't edit by hand) -->"
+GRID_END = "<!-- GRID:END -->"
+CACHE_DIR = ADMIN_DIR / ".cache"           # local only (git-ignored)
+WEBP_SKIP = CACHE_DIR / "webp-skip.json"   # photos where WebP came out bigger than the JPG
+
 POTW_START = "<!-- POTW:START (managed by tools/admin - edit via Photo Manager) -->"
 POTW_END = "<!-- POTW:END -->"
 
@@ -69,7 +76,124 @@ def load_data():
 
 
 def save_data(data):
+    make_webp()
+    attach_webp(data)
     DATA_FILE.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    write_grid_html(data)
+
+
+# -----------------------------------------------------------------------------
+# WebP: a .webp copy next to each .jpg (created by the browser, see /api/webp)
+# -----------------------------------------------------------------------------
+def webp_of(url_path):
+    return url_path.rsplit(".", 1)[0] + ".webp"
+
+
+def attach_webp(data):
+    """record which sizes have a WebP copy on disk (works for Finder changes too)"""
+    for images in data["portfolio"].values():
+        for img in images:
+            found = {k: webp_of(img[k]) for k in SIZE_KEYS
+                     if img.get(k) and (SITE / webp_of(img[k]).lstrip("/")).is_file()}
+            if found:
+                img["webp"] = found
+            else:
+                img.pop("webp", None)
+
+
+def load_webp_skip():
+    try:
+        return set(json.loads(WEBP_SKIP.read_text()))
+    except (OSError, ValueError):
+        return set()
+
+
+def webp_todo():
+    """JPGs under the portfolio folder without a WebP copy (minus known 'bigger as WebP')"""
+    skip = load_webp_skip()
+    out = []
+    for f in sorted(PORTFOLIO_DIR.rglob("*.jpg")) + sorted(PORTFOLIO_DIR.rglob("*.jpeg")):
+        u = site_path(f)
+        if POTW_DIR in f.parents or ".trash" in f.parts:
+            continue
+        if u not in skip and not f.with_suffix(".webp").exists():
+            out.append(u)
+    return out
+
+
+CWEBP = shutil.which("cwebp") or next((p for p in ("/opt/homebrew/bin/cwebp", "/usr/local/bin/cwebp")
+                                       if Path(p).exists()), None)
+
+
+def make_webp():
+    """create missing WebP copies with cwebp (brew install webp). Without cwebp the
+    Photo Manager page makes them in the browser instead (see /api/webp)."""
+    if not CWEBP:
+        return
+    todo, skip = webp_todo(), load_webp_skip()
+    for u in todo:
+        jpg = SITE / u.lstrip("/")
+        out = jpg.with_suffix(".webp")
+        r = subprocess.run([CWEBP, "-quiet", "-q", "80", "-m", "6", "-metadata", "icc", str(jpg), "-o", str(out)],
+                           capture_output=True)
+        if r.returncode != 0 or not out.exists():
+            continue
+        if out.stat().st_size >= jpg.stat().st_size:   # no gain: keep only the JPG
+            out.unlink()
+            skip.add(u)
+    if skip:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        WEBP_SKIP.write_text(json.dumps(sorted(skip)))
+
+
+# -----------------------------------------------------------------------------
+# Pre-rendered portfolio grid (static HTML in docs/portfolio/index.html, so the
+# photos are in the page itself - for Google and for a fast first paint)
+# -----------------------------------------------------------------------------
+GRID_SIZES = ("(max-width: 480px) calc((92vw - 12px) / 2 * {c}), (max-width: 768px) calc((92vw - 16px) / 2 * {c}), "
+              "(max-width: 1024px) calc((92vw - 40px) / 3 * {c}), calc((90vw - 80px) / 5 * {c})")
+
+
+def render_grid(data):
+    e = lambda v: html.escape(str(v or ""), quote=True)
+    items = []
+    n = 0
+    for images in data["portfolio"].values():
+        for img in images:
+            w, h = img.get("width") or 0, img.get("height") or 0
+            ratio = (w / h) if w and h else 1
+            wide = lambda short, cap: round(min(cap, short * ratio) if ratio >= 1 else short)
+            sizes = GRID_SIZES.format(c=f"{max(1, ratio):.2f}")
+            webp = img.get("webp", {})
+            srcset = (f'{img["thumbnailSmall"]} {wide(400, 1600)}w, {img["thumbnail"]} {wide(800, 1600)}w'
+                      if img.get("thumbnailSmall") else "")
+            source = ""
+            if webp.get("thumbnail"):
+                ws = ", ".join(x for x in (
+                    f'{webp["thumbnailSmall"]} {wide(400, 1600)}w' if webp.get("thumbnailSmall") else "",
+                    f'{webp["thumbnail"]} {wide(800, 1600)}w') if x)
+                source = f'\n          <source type="image/webp" srcset="{e(ws)}" sizes="{e(sizes)}">'
+            tw, th = (wide(800, 1600), round(wide(800, 1600) / ratio)) if w and h else (800, 800)
+            lazy = 'loading="lazy" ' if n >= 10 else ""      # first two rows load straight away
+            img_tag = (f'<img src="{e(img["thumbnail"])}"'
+                       + (f' srcset="{e(srcset)}" sizes="{e(sizes)}"' if srcset else "")
+                       + f' alt="{e(img.get("alt") or img.get("title"))}" width="{tw}" height="{th}" {lazy}decoding="async">')
+            items.append(f'      <a class="grid-item" href="{e(img.get("large") or img["full"])}" data-index="{n}" '
+                         f'aria-label="Open {e(img.get("title") or "photo")}">\n'
+                         f'        <picture>{source}\n          {img_tag}\n        </picture>\n      </a>')
+            n += 1
+    return GRID_START + "\n" + "\n".join(items) + "\n      " + GRID_END
+
+
+def write_grid_html(data):
+    if not PORTFOLIO_PAGE.exists():
+        return
+    page = PORTFOLIO_PAGE.read_text(encoding="utf-8")
+    start, end = page.find(GRID_START), page.find(GRID_END)
+    if start == -1 or end == -1:
+        return  # markers missing: the page still works (JS builds the grid)
+    page = page[:start] + render_grid(data) + page[end + len(GRID_END):]
+    PORTFOLIO_PAGE.write_text(page, encoding="utf-8")
 
 
 def slugify(text):
@@ -114,6 +238,13 @@ def fs_path(url_path):
     return p
 
 
+def photo_files(img, data=None):
+    """all files of an entry, incl. WebP copies (for Delete / Recently deleted)"""
+    paths = [img[k] for k in file_keys(img)]
+    paths += [webp_of(p) for p in paths if (SITE / webp_of(p).lstrip("/")).is_file()]
+    return paths
+
+
 def file_keys(img):
     """distinct size keys of an entry (large may point to the full file)"""
     seen, out = set(), []
@@ -147,7 +278,7 @@ def health(data):
                 })
     unlisted = []
     for f in sorted(PORTFOLIO_DIR.glob("*/full/*")):
-        if f.suffix.lower() in IMAGE_EXTS and site_path(f) not in listed:
+        if f.suffix.lower() in {".jpg", ".jpeg", ".png"} and site_path(f) not in listed:
             unlisted.append({"category": f.parent.parent.name, "path": site_path(f), "name": f.name})
     potw = data.get("potw") or {}
     potw_missing = bool(potw.get("image")) and not (SITE / potw["image"].lstrip("/")).is_file()
@@ -194,7 +325,8 @@ def last_publish():
 
 def is_used_elsewhere(data, url_path):
     return any(
-        url_path in (img.get("thumbnail"), img.get("full"), img.get("thumbnailSmall"), img.get("large"))
+        url_path in (img.get("thumbnail"), img.get("full"), img.get("thumbnailSmall"), img.get("large"),
+                     *img.get("webp", {}).values())
         for images in data["portfolio"].values()
         for img in images
     )
@@ -371,6 +503,7 @@ class Handler(SimpleHTTPRequestHandler):
             "/api/delete-unlisted": self.api_delete_unlisted,
             "/api/trash-restore": self.api_trash_restore,
             "/api/undo-publish": self.api_undo_publish,
+            "/api/webp": self.api_webp,
         }.get(urlparse(self.path).path)
         if not route:
             return self.reply({"error": "not found"}, 404)
@@ -383,7 +516,7 @@ class Handler(SimpleHTTPRequestHandler):
         """every reply carries the health check, trash and last publish, so the UI stays current"""
         return {"data": data, "changes": git_status(), "unpushed": unpushed(), "health": health(data),
                 "trash": [{k: it.get(k) for k in ("id", "title", "category", "deleted", "kind")} for it in load_trash()],
-                "lastPublish": last_publish(), **extra}
+                "lastPublish": last_publish(), "webpTodo": [] if CWEBP else webp_todo(), **extra}
 
     def reply(self, payload, status=200):
         raw = json.dumps(payload).encode()
@@ -454,7 +587,7 @@ class Handler(SimpleHTTPRequestHandler):
         else:
             raise ValueError("Photo not found - reload the page")
         save_data(data)
-        paths = [entry[k] for k in file_keys(entry) if not is_used_elsewhere(data, entry[k])]
+        paths = [p for p in photo_files(entry) if not is_used_elsewhere(data, p)]
         trash = load_trash()
         trash.insert(0, {"id": f"{date.today().isoformat()}-{len(trash)}-{slugify(entry.get('title', ''))}",
                          "kind": "photo", "title": entry.get("title", ""), "category": cat, "index": match,
@@ -507,6 +640,7 @@ class Handler(SimpleHTTPRequestHandler):
                     raise RuntimeError("\n\n".join(log))
                 return self.state(load_data(), ok=True, log="\n\n".join(log))
             return self.state(load_data(), ok=True, log="Nothing to publish - no changes.")
+        save_data(load_data())                  # fresh WebP copies + page grid before upload
         write_sitemap(load_data())
         message = body.get("message", "").strip() or "Update photos"
         ok, log = publish(message)
@@ -569,7 +703,8 @@ class Handler(SimpleHTTPRequestHandler):
         trash = load_trash()
         trash.insert(0, {"id": f"{date.today().isoformat()}-{len(trash)}-file", "kind": "file",
                          "title": Path(body["path"]).name, "category": Path(body["path"]).parent.parent.name,
-                         "files": move_to_trash([body["path"]]), "deleted": date.today().isoformat()})
+                         "files": move_to_trash([body["path"]] + ([webp_of(body["path"])] if (SITE / webp_of(body["path"]).lstrip("/")).is_file() else [])),
+                         "deleted": date.today().isoformat()})
         save_trash(trash)
         return self.state(data)
 
@@ -593,6 +728,25 @@ class Handler(SimpleHTTPRequestHandler):
         trash.remove(item)
         save_trash(trash)
         return self.state(data)
+
+    def api_webp(self, body):
+        """store a browser-made WebP copy next to a JPG (only if it is smaller)"""
+        jpg = fs_path(body["path"])
+        if jpg.suffix.lower() not in (".jpg", ".jpeg") or not jpg.is_file():
+            raise ValueError("JPG not found")
+        _, b64 = body["data"].split(",", 1)
+        raw = base64.b64decode(b64)
+        if not (raw[:4] == b"RIFF" and raw[8:12] == b"WEBP"):
+            raise ValueError("Not a WebP image")
+        if len(raw) >= jpg.stat().st_size:
+            skip = load_webp_skip() | {body["path"]}
+            CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            WEBP_SKIP.write_text(json.dumps(sorted(skip)))
+            return {"saved": False, "webpTodo": webp_todo()}
+        jpg.with_suffix(".webp").write_bytes(raw)
+        if body.get("last"):                      # update images.json + grid once at the end
+            save_data(load_data())
+        return {"saved": True, "bytes": len(raw), "jpgBytes": jpg.stat().st_size}
 
     def api_undo_publish(self, body):
         """put the site back to how it was before the last Photo Manager publish"""

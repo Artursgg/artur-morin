@@ -846,6 +846,11 @@
   outline-offset: 3px;
 }
 
+.portfolio-grid-6x6 .grid-item picture {
+  display: block;
+  height: 100%;
+}
+
 .portfolio-grid-6x6 .grid-item img {
   display: block;
   width: 100%;

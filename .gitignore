@@ -1,3 +1,4 @@
 .DS_Store
 tools/admin/.trash/
 __pycache__/
+tools/admin/.cache/

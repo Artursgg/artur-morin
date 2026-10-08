@@ -8,270 +8,425 @@
       {
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Sunset-and-joy.jpg",
         "full": "/assets/images/portfolio/landscape/full/Sunset-and-joy.jpg",
-        "alt": "Sunset and Joy",
+        "alt": "Silhouettes of people raising their arms on a beach at sunset, pink clouds over the bay",
         "title": "Sunset and Joy",
         "width": 3118,
         "height": 4144,
         "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Sunset-and-joy.jpg",
-        "large": "/assets/images/portfolio/landscape/large/Sunset-and-joy.jpg"
+        "large": "/assets/images/portfolio/landscape/large/Sunset-and-joy.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/landscape/full/Sunset-and-joy.webp",
+          "large": "/assets/images/portfolio/landscape/large/Sunset-and-joy.webp",
+          "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Sunset-and-joy.webp",
+          "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Sunset-and-joy.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Wooden-barrier.jpg",
         "full": "/assets/images/portfolio/landscape/full/Wooden-barrier.jpg",
-        "alt": "Wooden Barrier",
+        "alt": "Black and white close-up of weathered vertical wooden planks on a barn wall, bare trees blurred behind",
         "title": "Wooden Barrier",
         "width": 1900,
         "height": 2850,
         "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Wooden-barrier.jpg",
-        "large": "/assets/images/portfolio/landscape/large/Wooden-barrier.jpg"
+        "large": "/assets/images/portfolio/landscape/large/Wooden-barrier.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/landscape/full/Wooden-barrier.webp",
+          "large": "/assets/images/portfolio/landscape/large/Wooden-barrier.webp",
+          "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Wooden-barrier.webp",
+          "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Wooden-barrier.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Pine-d-alone_pl.jpg",
         "full": "/assets/images/portfolio/landscape/full/Pine-d-alone.jpg",
-        "alt": "Pine-d alone",
+        "alt": "A lone pine tree in front of a pale wall with a large painted number 5, soft evening light",
         "title": "Pine-d alone",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Pine-d-alone.jpg",
-        "large": "/assets/images/portfolio/landscape/large/Pine-d-alone.jpg"
+        "large": "/assets/images/portfolio/landscape/large/Pine-d-alone.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/landscape/full/Pine-d-alone.webp",
+          "large": "/assets/images/portfolio/landscape/large/Pine-d-alone.webp",
+          "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Pine-d-alone_pl.webp",
+          "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Pine-d-alone.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/B&W-brick-wall.jpg",
         "full": "/assets/images/portfolio/landscape/full/B&W-brick-wall.jpg",
-        "alt": "B&W Brick Wall",
+        "alt": "Black and white glass-block window with one cracked pane, set in an old brick wall with graffiti",
         "title": "B&W Brick Wall",
         "width": 2600,
         "height": 1733,
         "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/B&W-brick-wall.jpg",
-        "large": "/assets/images/portfolio/landscape/large/B&W-brick-wall.jpg"
+        "large": "/assets/images/portfolio/landscape/large/B&W-brick-wall.jpg",
+        "webp": {
+          "large": "/assets/images/portfolio/landscape/large/B&W-brick-wall.webp",
+          "thumbnail": "/assets/images/portfolio/landscape/thumbnails/B&W-brick-wall.webp",
+          "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/B&W-brick-wall.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Photo-1-2026-09-30-00-01-58.jpg",
         "full": "/assets/images/portfolio/landscape/full/Photo-1-2026-09-30-00-01-58.jpg",
-        "alt": "Lonely Baloon",
+        "alt": "A tiny hot air balloon in an empty evening sky above a forest edge and a power line pylon",
         "title": "Lonely Baloon",
         "width": 1518,
         "height": 2022,
         "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Photo-1-2026-09-30-00-01-58.jpg",
-        "large": "/assets/images/portfolio/landscape/large/Photo-1-2026-09-30-00-01-58.jpg"
+        "large": "/assets/images/portfolio/landscape/large/Photo-1-2026-09-30-00-01-58.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/landscape/full/Photo-1-2026-09-30-00-01-58.webp",
+          "large": "/assets/images/portfolio/landscape/large/Photo-1-2026-09-30-00-01-58.webp",
+          "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Photo-1-2026-09-30-00-01-58.webp",
+          "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Photo-1-2026-09-30-00-01-58.webp"
+        }
       }
     ],
     "portrait": [
       {
         "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Raven-stare.jpg",
         "full": "/assets/images/portfolio/portrait/full/Raven-stare.jpg",
-        "alt": "Raven Stare",
+        "alt": "A black raven perched on a branch, staring at the camera through the bars of its enclosure",
         "title": "Raven Stare",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Raven-stare.jpg",
-        "large": "/assets/images/portfolio/portrait/full/Raven-stare.jpg"
+        "large": "/assets/images/portfolio/portrait/full/Raven-stare.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/portrait/full/Raven-stare.webp",
+          "large": "/assets/images/portfolio/portrait/full/Raven-stare.webp",
+          "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Raven-stare.webp",
+          "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Raven-stare.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Starry-eyes.jpg",
         "full": "/assets/images/portfolio/portrait/full/Starry-eyes.jpg",
-        "alt": "Starry Eyes",
+        "alt": "A small red-furred animal peering out of tall grass in a dim enclosure at dusk",
         "title": "Starry Eyes",
         "width": 3000,
         "height": 2000,
         "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Starry-eyes.jpg",
-        "large": "/assets/images/portfolio/portrait/large/Starry-eyes.jpg"
+        "large": "/assets/images/portfolio/portrait/large/Starry-eyes.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/portrait/full/Starry-eyes.webp",
+          "large": "/assets/images/portfolio/portrait/large/Starry-eyes.webp",
+          "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Starry-eyes.webp",
+          "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Starry-eyes.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Duck-sanctuary.jpg",
         "full": "/assets/images/portfolio/portrait/full/Duck-sanctuary.jpg",
-        "alt": "Duck Sanctuary",
+        "alt": "A wooden house at night with warm lit windows reflected in a dark pond, ducks resting on the shore",
         "title": "Duck Sanctuary",
         "width": 3000,
         "height": 2000,
         "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Duck-sanctuary.jpg",
-        "large": "/assets/images/portfolio/portrait/full/Duck-sanctuary.jpg"
+        "large": "/assets/images/portfolio/portrait/full/Duck-sanctuary.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/portrait/full/Duck-sanctuary.webp",
+          "large": "/assets/images/portfolio/portrait/full/Duck-sanctuary.webp",
+          "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Duck-sanctuary.webp",
+          "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Duck-sanctuary.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Up-side-duck.jpg",
         "full": "/assets/images/portfolio/portrait/full/Up-side-duck.jpg",
-        "alt": "Up Side Duck",
+        "alt": "Close-up of a white duck with a red face turning its head upside down while preening",
         "title": "Up Side Duck",
         "width": 3000,
         "height": 2000,
         "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Up-side-duck.jpg",
-        "large": "/assets/images/portfolio/portrait/full/Up-side-duck.jpg"
+        "large": "/assets/images/portfolio/portrait/full/Up-side-duck.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/portrait/full/Up-side-duck.webp",
+          "large": "/assets/images/portfolio/portrait/full/Up-side-duck.webp",
+          "thumbnail": "/assets/images/portfolio/portrait/thumbnails/Up-side-duck.webp",
+          "thumbnailSmall": "/assets/images/portfolio/portrait/thumbnails/small/Up-side-duck.webp"
+        }
       }
     ],
     "other": [
       {
         "thumbnail": "/assets/images/portfolio/other/thumbnails/Apex-predator.jpg",
         "full": "/assets/images/portfolio/other/full/apex-predator.jpg",
-        "alt": "Apex Predator",
+        "alt": "Dark silhouette of a polar bear's head behind aquarium glass, lit by teal reflections",
         "title": "Apex Predator",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/other/thumbnails/small/apex-predator.jpg",
-        "large": "/assets/images/portfolio/other/full/apex-predator.jpg"
+        "large": "/assets/images/portfolio/other/full/apex-predator.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/other/full/apex-predator.webp",
+          "large": "/assets/images/portfolio/other/full/apex-predator.webp",
+          "thumbnail": "/assets/images/portfolio/other/thumbnails/Apex-predator.webp",
+          "thumbnailSmall": "/assets/images/portfolio/other/thumbnails/small/apex-predator.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/other/thumbnails/Till'-the-win_pl.jpg",
         "full": "/assets/images/portfolio/other/full/Till'-the-win.jpg",
-        "alt": "Till' The Win",
+        "alt": "A young girl in a pink shirt sprinting on a red indoor running track, a coach watching behind",
         "title": "Till' The Win",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/other/thumbnails/small/Till'-the-win.jpg",
-        "large": "/assets/images/portfolio/other/large/Till'-the-win.jpg"
+        "large": "/assets/images/portfolio/other/large/Till'-the-win.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/other/full/Till'-the-win.webp",
+          "large": "/assets/images/portfolio/other/large/Till'-the-win.webp",
+          "thumbnail": "/assets/images/portfolio/other/thumbnails/Till'-the-win_pl.webp",
+          "thumbnailSmall": "/assets/images/portfolio/other/thumbnails/small/Till'-the-win.webp"
+        }
       }
     ],
     "street": [
       {
         "thumbnail": "/assets/images/portfolio/street/thumbnails/Grumpy-town_pl.jpg",
         "full": "/assets/images/portfolio/street/full/Grumpy-town.jpg",
-        "alt": "Grumpy Town",
+        "alt": "A ferry and the old town church spire on the horizon across a grey sea under heavy clouds",
         "title": "Grumpy Town",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/street/thumbnails/small/Grumpy-town.jpg",
-        "large": "/assets/images/portfolio/street/large/Grumpy-town.jpg"
+        "large": "/assets/images/portfolio/street/large/Grumpy-town.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/street/full/Grumpy-town.webp",
+          "large": "/assets/images/portfolio/street/large/Grumpy-town.webp",
+          "thumbnail": "/assets/images/portfolio/street/thumbnails/Grumpy-town_pl.webp",
+          "thumbnailSmall": "/assets/images/portfolio/street/thumbnails/small/Grumpy-town.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/street/thumbnails/no-words-needed-irony.jpg",
         "full": "/assets/images/portfolio/street/full/no-words-needed-irony.jpg",
-        "alt": "No Words Needed Irony",
+        "alt": "A no-dumping sign in Estonian and Russian next to waste dumped beside a green bin shelter",
         "title": "No Words Needed Irony",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/street/thumbnails/small/no-words-needed-irony.jpg",
-        "large": "/assets/images/portfolio/street/large/no-words-needed-irony.jpg"
+        "large": "/assets/images/portfolio/street/large/no-words-needed-irony.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/street/full/no-words-needed-irony.webp",
+          "large": "/assets/images/portfolio/street/large/no-words-needed-irony.webp",
+          "thumbnail": "/assets/images/portfolio/street/thumbnails/no-words-needed-irony.webp",
+          "thumbnailSmall": "/assets/images/portfolio/street/thumbnails/small/no-words-needed-irony.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/street/thumbnails/Parking-lot-vibe.jpg",
         "full": "/assets/images/portfolio/street/full/Parking-lot-vibe.jpg",
-        "alt": "Parking Lot Vibe",
+        "alt": "A blurred abandoned building seen through a rusty chain-link fence topped with wire",
         "title": "Parking Lot Vibe",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/street/thumbnails/small/Parking-lot-vibe.jpg",
-        "large": "/assets/images/portfolio/street/large/Parking-lot-vibe.jpg"
+        "large": "/assets/images/portfolio/street/large/Parking-lot-vibe.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/street/full/Parking-lot-vibe.webp",
+          "large": "/assets/images/portfolio/street/large/Parking-lot-vibe.webp",
+          "thumbnail": "/assets/images/portfolio/street/thumbnails/Parking-lot-vibe.webp",
+          "thumbnailSmall": "/assets/images/portfolio/street/thumbnails/small/Parking-lot-vibe.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Photo-2-2026-09-30-00-01-58.jpg",
         "full": "/assets/images/portfolio/landscape/full/Photo-2-2026-09-30-00-01-58.jpg",
-        "alt": "IronMan",
+        "alt": "A glowing pedestrian figure sign shining against a black background",
         "title": "IronMan",
         "width": 1872,
         "height": 2560,
         "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Photo-2-2026-09-30-00-01-58.jpg",
-        "large": "/assets/images/portfolio/landscape/large/Photo-2-2026-09-30-00-01-58.jpg"
+        "large": "/assets/images/portfolio/landscape/large/Photo-2-2026-09-30-00-01-58.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/landscape/full/Photo-2-2026-09-30-00-01-58.webp",
+          "large": "/assets/images/portfolio/landscape/large/Photo-2-2026-09-30-00-01-58.webp",
+          "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Photo-2-2026-09-30-00-01-58.webp",
+          "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Photo-2-2026-09-30-00-01-58.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Photo-3-2026-09-30-00-01-58.jpg",
         "full": "/assets/images/portfolio/landscape/full/Photo-3-2026-09-30-00-01-58.jpg",
-        "alt": "Big Sur Moon",
+        "alt": "A full moon rising over a parking lot, cranes and street lights against a pink evening sky",
         "title": "Big Sur Moon",
         "width": 1518,
         "height": 2022,
         "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Photo-3-2026-09-30-00-01-58.jpg",
-        "large": "/assets/images/portfolio/landscape/large/Photo-3-2026-09-30-00-01-58.jpg"
+        "large": "/assets/images/portfolio/landscape/large/Photo-3-2026-09-30-00-01-58.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/landscape/full/Photo-3-2026-09-30-00-01-58.webp",
+          "large": "/assets/images/portfolio/landscape/large/Photo-3-2026-09-30-00-01-58.webp",
+          "thumbnail": "/assets/images/portfolio/landscape/thumbnails/Photo-3-2026-09-30-00-01-58.webp",
+          "thumbnailSmall": "/assets/images/portfolio/landscape/thumbnails/small/Photo-3-2026-09-30-00-01-58.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/other/thumbnails/Geometrical-splash_PL.jpg",
         "full": "/assets/images/portfolio/other/full/Geometrical-splash.jpg",
-        "alt": "Geometrical Splash",
+        "alt": "Black and white upward view of stacked corner balconies with railings on a modern building",
         "title": "Geometrical Splash",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/other/thumbnails/small/Geometrical-splash.jpg",
-        "large": "/assets/images/portfolio/other/large/Geometrical-splash.jpg"
+        "large": "/assets/images/portfolio/other/large/Geometrical-splash.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/other/full/Geometrical-splash.webp",
+          "large": "/assets/images/portfolio/other/large/Geometrical-splash.webp",
+          "thumbnail": "/assets/images/portfolio/other/thumbnails/Geometrical-splash_PL.webp",
+          "thumbnailSmall": "/assets/images/portfolio/other/thumbnails/small/Geometrical-splash.webp"
+        }
       }
     ],
     "cars": [
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/neat-mini.jpg",
         "full": "/assets/images/portfolio/cars/full/neat-mini.jpg",
-        "alt": "Neat Mini",
+        "alt": "A silver Mini Clubman with blue stripes parked in front of a yellow and black warehouse",
         "title": "Neat Mini",
         "width": 2809,
         "height": 4213,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/neat-mini.jpg",
-        "large": "/assets/images/portfolio/cars/large/neat-mini.jpg"
+        "large": "/assets/images/portfolio/cars/large/neat-mini.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/cars/full/neat-mini.webp",
+          "large": "/assets/images/portfolio/cars/large/neat-mini.webp",
+          "thumbnail": "/assets/images/portfolio/cars/thumbnails/neat-mini.webp",
+          "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/neat-mini.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Bentley-front.jpg",
         "full": "/assets/images/portfolio/cars/full/Bentley-front.jpg",
-        "alt": "Bentley Front",
+        "alt": "The front grille and headlight of a Bentley emerging from shadow in a dark showroom",
         "title": "Bentley Front",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Bentley-front.jpg",
-        "large": "/assets/images/portfolio/cars/full/Bentley-front.jpg"
+        "large": "/assets/images/portfolio/cars/full/Bentley-front.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/cars/full/Bentley-front.webp",
+          "large": "/assets/images/portfolio/cars/full/Bentley-front.webp",
+          "thumbnail": "/assets/images/portfolio/cars/thumbnails/Bentley-front.webp",
+          "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Bentley-front.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Sunset-lambo.jpg",
         "full": "/assets/images/portfolio/cars/full/Sunset-lambo.jpg",
-        "alt": "Sunset Lambo",
+        "alt": "Close-up of an orange Lamborghini's door and side mirror in deep shadow",
         "title": "Sunset Lambo",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Sunset-lambo.jpg",
-        "large": "/assets/images/portfolio/cars/large/Sunset-lambo.jpg"
+        "large": "/assets/images/portfolio/cars/large/Sunset-lambo.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/cars/full/Sunset-lambo.webp",
+          "large": "/assets/images/portfolio/cars/large/Sunset-lambo.webp",
+          "thumbnail": "/assets/images/portfolio/cars/thumbnails/Sunset-lambo.webp",
+          "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Sunset-lambo.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Roar-of-a-beast.jpg",
         "full": "/assets/images/portfolio/cars/full/Roar-of-a-beast.jpg",
-        "alt": "Roar Of A Beast",
+        "alt": "A black Ford Mustang facing the camera on a wet parking lot in front of an office building",
         "title": "Roar Of A Beast",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Roar-of-a-beast.jpg",
-        "large": "/assets/images/portfolio/cars/large/Roar-of-a-beast.jpg"
+        "large": "/assets/images/portfolio/cars/large/Roar-of-a-beast.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/cars/full/Roar-of-a-beast.webp",
+          "large": "/assets/images/portfolio/cars/large/Roar-of-a-beast.webp",
+          "thumbnail": "/assets/images/portfolio/cars/thumbnails/Roar-of-a-beast.webp",
+          "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Roar-of-a-beast.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Ying-yang_pl.jpg",
         "full": "/assets/images/portfolio/cars/full/Ying-yang.jpg",
-        "alt": "Ying Yang",
+        "alt": "A white and a black stretch limousine parked one after the other in front of bare trees",
         "title": "Ying Yang",
         "width": 3000,
         "height": 2000,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Ying-yang.jpg",
-        "large": "/assets/images/portfolio/cars/large/Ying-yang.jpg"
+        "large": "/assets/images/portfolio/cars/large/Ying-yang.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/cars/full/Ying-yang.webp",
+          "large": "/assets/images/portfolio/cars/large/Ying-yang.webp",
+          "thumbnail": "/assets/images/portfolio/cars/thumbnails/Ying-yang_pl.webp",
+          "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/Ying-yang.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Pan-till-you-done_pl.jpg",
         "full": "/assets/images/portfolio/cars/full/pan-till-you-done.jpg",
-        "alt": "Pan Till You Done",
+        "alt": "Panning shot of a black pickup truck speeding along a wet road beside a yellow car",
         "title": "Pan Till You Done",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/pan-till-you-done.jpg",
-        "large": "/assets/images/portfolio/cars/large/pan-till-you-done.jpg"
+        "large": "/assets/images/portfolio/cars/large/pan-till-you-done.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/cars/full/pan-till-you-done.webp",
+          "large": "/assets/images/portfolio/cars/large/pan-till-you-done.webp",
+          "thumbnail": "/assets/images/portfolio/cars/thumbnails/Pan-till-you-done_pl.webp",
+          "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/pan-till-you-done.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/Classy-luxury.jpg",
         "full": "/assets/images/portfolio/cars/full/classy-luxury.jpg",
-        "alt": "Classy Luxury",
+        "alt": "Side view of a sports car's curved door and mirror in dark green light",
         "title": "Classy Luxury",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/classy-luxury.jpg",
-        "large": "/assets/images/portfolio/cars/full/classy-luxury.jpg"
+        "large": "/assets/images/portfolio/cars/full/classy-luxury.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/cars/full/classy-luxury.webp",
+          "large": "/assets/images/portfolio/cars/full/classy-luxury.webp",
+          "thumbnail": "/assets/images/portfolio/cars/thumbnails/Classy-luxury.webp",
+          "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/classy-luxury.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel_pl.jpg",
         "full": "/assets/images/portfolio/cars/full/heavy-cromed-squirrel.jpg",
-        "alt": "Heavy Cromed Squirrel",
+        "alt": "Raindrops on the bonnet and kidney grille of a vintage champagne-coloured BMW",
         "title": "Heavy Cromed Squirrel",
         "width": 1905,
         "height": 2858,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/heavy-cromed-squirrel.jpg",
-        "large": "/assets/images/portfolio/cars/large/heavy-cromed-squirrel.jpg"
+        "large": "/assets/images/portfolio/cars/large/heavy-cromed-squirrel.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/cars/full/heavy-cromed-squirrel.webp",
+          "large": "/assets/images/portfolio/cars/large/heavy-cromed-squirrel.webp",
+          "thumbnail": "/assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel_pl.webp",
+          "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/heavy-cromed-squirrel.webp"
+        }
       },
       {
         "thumbnail": "/assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel-2.jpg",
         "full": "/assets/images/portfolio/cars/full/heavy-cromed-squirrel-2.jpg",
-        "alt": "Heavy Cromed Squirrel 2",
+        "alt": "Close-up of a rain-covered chrome side mirror on a vintage BMW",
         "title": "Heavy Cromed Squirrel 2",
         "width": 2000,
         "height": 3000,
         "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/heavy-cromed-squirrel-2.jpg",
-        "large": "/assets/images/portfolio/cars/large/heavy-cromed-squirrel-2.jpg"
+        "large": "/assets/images/portfolio/cars/large/heavy-cromed-squirrel-2.jpg",
+        "webp": {
+          "full": "/assets/images/portfolio/cars/full/heavy-cromed-squirrel-2.webp",
+          "large": "/assets/images/portfolio/cars/large/heavy-cromed-squirrel-2.webp",
+          "thumbnail": "/assets/images/portfolio/cars/thumbnails/heavy-cromed-squirrel-2.webp",
+          "thumbnailSmall": "/assets/images/portfolio/cars/thumbnails/small/heavy-cromed-squirrel-2.webp"
+        }
       }
     ],
     "products": []
